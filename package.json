@@ -1,6 +1,6 @@
 {
   "name": "ziko",
-  "version": "0.68.2",
+  "version": "1.0.0",
   "description": "A versatile JavaScript library offering a rich set of Hyperscript Based UI components, advanced mathematical utilities, interactivity ,animations, client side routing and more ...",
   "keywords": [
     "front-end",
