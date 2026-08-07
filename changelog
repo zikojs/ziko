@@ -26,3 +26,4 @@
 1.7.0
     - Add props Parser
     - Improve state checker
+    - Refactor UIElement init

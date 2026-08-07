@@ -1,12 +1,7 @@
-export const call_with_optional_props = (Component) => {
-    return (...args) => {
-        const first = args[0];
-        const isChild = first?.isUIElement?.() || isPrimitive(first) ;
-        return isChild 
-                ? new Component({}, ...args)
-                : new Component(first, ...args.slice(1))
-    };
-};
+export * from './call_with_optional_props.js';
+export * from './parse_props.js';
+export * from './checkers.js'
+
 export function add_vendor_prefix(property) {
 	const propertyUC = property.slice(0, 1).toUpperCase() + property.slice(1);
 	const vendors = ['Webkit', 'Moz', 'O', 'ms'];
@@ -59,9 +54,9 @@ const CloneElement = (UIElement) => {
 const cloneUI=UIElement=>{
   return Object.assign(Object.create(Object.getPrototypeOf(UIElement)),UIElement)
 }
-function isPrimitive(value) {
-    return typeof value !== 'object' && typeof value !== 'function' || value === null;
-}
+// function isPrimitive(value) {
+//     return typeof value !== 'object' && typeof value !== 'function' || value === null;
+// }
 const waitElm=(UIElement)=>{
     return new Promise(resolve => {
         if (UIElement) {
@@ -87,7 +82,7 @@ export{
   linkStyle,
   CloneElement,
   cloneUI,
-  isPrimitive,
+  // isPrimitive,
   // addSuffixeToNumber,
   waitElm
 }

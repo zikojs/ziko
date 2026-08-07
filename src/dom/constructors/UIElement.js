@@ -16,7 +16,7 @@ import {
   ViewListeners,
 } from '../../events/index.js'
 class UIElement extends UIElementCore{
-  constructor({element, name ='', type='html', render = __Ziko__.__Config__.default.render}={}){
+  constructor({element, name ='', type = 'html', render = __Ziko__.__Config__.default.render, props}={}){
     super()
     this.exp = {
       events : {
@@ -36,7 +36,7 @@ class UIElement extends UIElementCore{
       ViewListeners,
     );
 
-    if(element)this.init(element, name, type, render);
+    if(element) this.init({element, name, type, render, props});
   }
   on(event_name, callback, {details_setter, category = 'global', isCustom = false, preventDefault = false} = {}){
     if(event_name instanceof Array) event_name.forEach(

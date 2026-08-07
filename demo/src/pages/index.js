@@ -39,6 +39,9 @@ globalThis.f = tags.ul(For({
     each : items,
     mapFn : (item, i)=> tags.li(item, i)
 })).mount()
+
+
+globalThis.tt = tags.h1({onClick : (e)=> console.log(e.target), onPtrDown : ()=> {}, class : 'test'}, 'Test props parsing').mount()
 // setParams({page : "2"}, true)
 // setParams({lang : 'ar'}, true)
 // console.log('index')
