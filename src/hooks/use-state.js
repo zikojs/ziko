@@ -2,8 +2,9 @@
 
 // if (!globalThis.__Ziko__) __init__global__();
 
+export const STATE_GETTER = Symbol.for("ziko.stateGetter");
+
 export function useState(initialValue) {
-    
     const state = {
         value: initialValue,
         subscribers: new Set(),
@@ -13,13 +14,14 @@ export function useState(initialValue) {
     function getValue() {
         return {
             value: state.value,
-            isStateGetter: () => true,
             _subscribe: (fn) => {
                 state.subscribers.add(fn);
                 return () => state.subscribers.delete(fn);
             },
         };
     }
+
+    getValue[STATE_GETTER] = true;
 
     function setValue(newValue) {
         if (state.paused) return;
@@ -42,6 +44,7 @@ export function useState(initialValue) {
             if (typeof newValue === "function") {
                 newValue = newValue(state.value);
             }
+
             state.value = newValue;
             state.subscribers.forEach((fn) => fn(state.value));
         },
@@ -51,6 +54,4 @@ export function useState(initialValue) {
     return [getValue, setValue, controller];
 }
 
-export const isStateGetter = (arg) => {
-    return typeof arg === "function" && arg?.()?.isStateGetter?.() === true;
-};
+export const isStateGetter = (arg) => typeof arg === "function" && arg[STATE_GETTER] === true;

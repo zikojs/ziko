@@ -23,3 +23,6 @@
         - Use getComputedStyle() instead of inline style lookup to detect initial display values
         - Defer initial render with requestAnimationFrame to ensure CSS is applied before measuring
     - Improve `data/string` and `data/parser` Intellisence
+1.7.0
+    - Add props Parser
+    - Improve state checker
