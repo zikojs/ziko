@@ -1,5 +1,6 @@
 import {UIElement} from "../constructors/UIElement.js";
 import { HTMLTags, SVGTags, MathMLTags } from "./tags-list.js";
+import { isStateGetter } from "../../hooks/use-state.js";
 
 const tags = new Proxy({}, {
   get(target, prop) {
@@ -20,7 +21,7 @@ const tags = new Proxy({}, {
       if(
         ['string', 'number'].includes(typeof args[0]) 
         || args[0] instanceof UIElement 
-        || (typeof args[0] === 'function' && args[0]().isStateGetter())
+        || isStateGetter(args[0])
       ) return new UIElement({element : tag, name : tag, type}).append(...args);
       // console.log(args[0])
       return new UIElement({element : tag, type}).setAttr(args.shift()).append(...args)

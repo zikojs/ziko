@@ -16,7 +16,7 @@ const [value, setVaue] = useState(0)
 
 globalThis.v = value
 globalThis.sv = setVaue
-tags.h1(value).mount()
+globalThis.vv = tags.h1(value).mount()
 
 const {h2} = tags
 

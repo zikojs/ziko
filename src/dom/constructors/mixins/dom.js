@@ -1,4 +1,5 @@
 import { text } from "../../text/index.js";
+import { isStateGetter } from "../../../hooks/use-state.js";
 
 export function append(...ele) {
   __addItem__.call(this, "append", "push", ...ele);
@@ -79,8 +80,8 @@ export async function __addItem__(adder, pusher, ...ele) {
     if (["number", "string"].includes(typeof ele[i])) ele[i] = text(ele[i]);
         // Fix Items Latter
     if (ele[i] instanceof Function) {
-     const getter = ele[i]();
-      if (getter.isStateGetter) {
+      if (isStateGetter(ele[i])) {
+        const getter = ele[i]();
         ele[i] = text(getter.value);
         getter._subscribe(
             (newValue) => (ele[i].element.textContent = newValue),
