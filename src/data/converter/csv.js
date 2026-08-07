@@ -14,13 +14,15 @@ const csv2object = (csv, delimiter = ",") => {
 };
 const csv2json = (csv, delimiter = ",") => JSON.stringify(csv2object(csv,delimiter));
 const csv2sql=(csv, Table)=>{
+    const sanitizeId = s => s.trim().replace(/[^a-zA-Z0-9_]/g, '');
+    const escapeVal = s => "'" + s.trim().replace(/'/g, "''") + "'";
     const lines = csv.trim().trimEnd().split('\n').filter(n=>n);
-    const columns = lines[0].split(',');
-    let sqlQuery = `INSERT INTO ${Table} (${columns.join(', ')}) Values `
+    const columns = lines[0].split(',').map(sanitizeId);
+    let sqlQuery = "INSERT INTO " + sanitizeId(Table) + " (" + columns.join(', ') + ") Values ";
     let sqlValues = []
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',');
-      sqlValues.push(`(${values})`)
+      const values = lines[i].split(',').map(escapeVal);
+      sqlValues.push("(" + values.join(', ') + ")")
     }
     return sqlQuery+sqlValues.join(",\n");
   }
