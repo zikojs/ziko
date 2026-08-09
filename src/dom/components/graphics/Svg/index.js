@@ -1,5 +1,5 @@
-import {UIElement}  from "../constructors/UIElement.js";
-class ZikoUISvg extends UIElement {
+import {UIElement}  from "../../../constructors/UIElement.js";
+class UISvg extends UIElement {
     constructor(w=360,h=300) {
       super("svg","svg");
       //this.cache={};
@@ -62,8 +62,8 @@ class ZikoUISvg extends UIElement {
     
   }
 
-  const Svg =(w,h)=>new ZikoUISvg(w,h);
+  const Svg =(w,h)=>new UISvg(w,h);
   export{
     Svg,
-    ZikoUISvg,
+    UISvg,
 }

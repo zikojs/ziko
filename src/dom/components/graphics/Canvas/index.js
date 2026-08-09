@@ -1,6 +1,6 @@
-import {UIElement} from "../constructors/UIElement.js";
-import {Matrix} from "../../math/matrix/Matrix.js"
-class ZikoUICanvas extends UIElement{
+import {UIElement} from "../../../constructors/UIElement.js";
+import {Matrix} from "../../../../math/matrix/index.js"
+class UICanvas extends UIElement{
     constructor(w,h){
         super("canvas","canvas");
         this.ctx = this.element?.getContext("2d");
@@ -121,7 +121,7 @@ class ZikoUICanvas extends UIElement{
     }
     clone(){
         console.log(this.width)
-        const canvas=new ZikoUICanvas();
+        const canvas=new UICanvas();
         canvas.items=this.items;
         canvas.transformMatrix=this.transformMatrix;
         canvas.axisMatrix=this.axisMatrix;
@@ -168,8 +168,8 @@ class ZikoUICanvas extends UIElement{
     }
 }
 
-const Canvas=(w,h)=>new ZikoUICanvas(w,h);
+const Canvas=(w,h)=>new UICanvas(w,h);
 export{
-    ZikoUICanvas,
+    UICanvas,
     Canvas
 }

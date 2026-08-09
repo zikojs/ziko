@@ -29,5 +29,6 @@
     - Refactor UIElement init
 1.8.0
     - Add `useEffect` hook
+    - Move `Flex` `View` `Suspense` `HTMLWrapper` `SVGWrapper` `Canvas` `SVG` `Switch` to `./src/dom/components`
     - Remove `src/watch`, `src/events-dep`
     

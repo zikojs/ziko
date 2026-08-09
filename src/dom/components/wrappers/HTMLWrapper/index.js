@@ -1,4 +1,4 @@
-import { UIElement } from "../../constructors/UIElement.js";
+import { UIElement } from "../../../constructors/UIElement.js";
 
 class UIHTMLWrapper extends UIElement {
     constructor(content){

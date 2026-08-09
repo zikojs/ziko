@@ -1,5 +1,5 @@
-import {UIElement} from "../mini/UIElement.js";
-class ZikoUISuspense extends UIElement{
+import {UIElement} from "../../mini/UIElement.js";
+export class UISuspense extends UIElement{
     constructor(fallback_ui, callback){
         super({element : "div", name : "suspense"})
         this.setAttr({
@@ -20,8 +20,4 @@ class ZikoUISuspense extends UIElement{
     }
 }
 
-const Suspense = (fallback_ui, callback) => new ZikoUISuspense(fallback_ui, callback);
-export{
-    ZikoUISuspense,
-    Suspense
-}
+export const Suspense = (fallback_ui, callback) => new UISuspense(fallback_ui, callback);

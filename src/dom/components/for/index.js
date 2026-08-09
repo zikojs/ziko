@@ -1,4 +1,4 @@
-import { Fragment, UIFragment } from "../fragment/index.js";
+import { Fragment, UIFragment } from "../Fragment/index.js";
 
 class UIFor extends UIFragment{
     constructor({each, fallback, mapFn = () => {}} = {}){
