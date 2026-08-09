@@ -1,17 +1,33 @@
+export declare const STATE_GETTER: unique symbol;
+
+/**
+ * Reactive state getter.
+ */
+export type StateGetter<T> = (() => {
+    value: T;
+    _subscribe: (fn: (value: T) => void) => () => void;
+}) & {
+    [STATE_GETTER]: true;
+};
+
+/**
+ * Creates a reactive state.
+ *
+ * @param initialValue Initial state value.
+ *
+ * @example
+ * const [count, setCount] = useState(0);
+ */
 export function useState<T>(
     initialValue: T
 ): [
-    /** getter function */
-    () => {
-        value: T;
-        isStateGetter: () => true;
-        _subscribe: (fn: (value: T) => void) => void;
-    },
+    /** Getter function */
+    StateGetter<T>,
 
-    /** setter function */
+    /** Setter function */
     (newValue: T | ((prev: T) => T)) => void,
 
-    /** controller */
+    /** Controller */
     {
         pause: () => void;
         resume: () => void;
@@ -21,5 +37,7 @@ export function useState<T>(
     }
 ];
 
-/** check if argument is a state getter */
-export function isStateGetter(arg: any): boolean;
+/**
+ * Checks if a value is a state getter.
+ */
+export function isStateGetter(arg: unknown): arg is StateGetter<unknown>;

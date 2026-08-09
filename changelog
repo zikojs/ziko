@@ -27,3 +27,7 @@
     - Add props Parser
     - Improve state checker
     - Refactor UIElement init
+1.8.0
+    - Add `useEffect` hook
+    - Remove `src/watch`, `src/events-dep`
+    
