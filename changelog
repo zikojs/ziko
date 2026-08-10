@@ -32,3 +32,5 @@
     - Move `Flex` `View` `Suspense` `HTMLWrapper` `SVGWrapper` `Canvas` `SVG` `Switch` to `./src/dom/components`
     - Remove `src/watch`, `src/events-dep`
     
+1.9.0 
+    - Setup Symbol-based Nominal Branding by using unique symbols as runtime brands to identify objects without importing their classes.
