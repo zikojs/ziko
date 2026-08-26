@@ -1,7 +1,6 @@
 **/node_modules
 dist
 .vscode
-Addons
 test
 _link 
 __html/

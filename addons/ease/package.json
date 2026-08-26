@@ -1,0 +1,27 @@
+{
+  "name": "@zikojs/ease",
+  "version": "0.0.0",
+  "description": "A collection of easing functions for animations, transitions, interpolation, and motion-based effects.",
+  "keywords": [
+    "zikojs",
+    "ziko",
+    "ease",
+    "animation"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports":{
+    ".":{
+      "import" : "./src/index.js",
+      "types" : "./src/index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "author": "zakaria elalaoui",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
