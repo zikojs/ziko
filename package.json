@@ -1,97 +1,25 @@
 {
-  "name": "ziko",
-  "version": "1.10.0",
-  "description": "A versatile JavaScript library offering a rich set of Hyperscript Based UI components, advanced mathematical utilities, interactivity ,animations, client side routing and more ...",
-  "keywords": [
-    "front-end",
-    "framework",
-    "zikojs",
-    "ziko",
-    "math",
-    "user-interface",
-    "time",
-    "dom",
-    "single page application",
-    "file based routing"
-  ],
-  "type": "module",
-  "main": "dist/ziko.mjs",
-  "module": "dist/ziko.mjs",
-  "unpkg": "dist/ziko.min.js",
-  "files": [
-    "src",
-    "dist",
-    "LICENCE"
-  ],
-  "exports": {
-    "./src/*": {
-      "import": "./src/*"
-    },
-    "./*": {
-      "import": "./src/*/index.js"
-    },
-    ".": {
-      "import": "./dist/ziko.mjs",
-      "require": "./dist/ziko.cjs"
-    },
-    "./helpers": {
-      "import": "./src/__helpers__.js"
-    },
-    "./events": {
-      "import": "./src/events/index.js"
-    },
-    "./watch": {
-      "import": "./src/watch/index.js"
-    },
-    "./use": {
-      "import": "./src/use/index.js"
-    },
-    "./hooks": {
-      "import": "./src/hooks/index.js"
-    },
-    "./ui": {
-      "import": "./src/ui/index.js",
-      "type": "./src/ui/index.d.ts"
-    },
-    "./tags": {
-      "import": "./src/tags/index.js"
-    },
-    "./src": "./src/index.js",
-    "./html": {},
-    "./app": {},
-    "./components": {}
-  },
-  "sideEffects": true,
-  "bin": {
-    "create-ziko-app": "starter/bin/index.js"
-  },
-  "scripts": {
-    "test": "npx vitest",
-    "test-link": "node _link/index.js",
-    "lint": "eslint src/*/*/*",
-    "dev": "cross-env NODE_ENV=development rollup --config rollup.config.js",
-    "watch": "cross-env NODE_ENV=development rollup --config rollup.config.js -w",
-    "build": "cross-env NODE_ENV=production rollup --config rollup.config.js"
+  "name": "ziko-root",
+  "version": "1.0.0",
+  "description": "",
+  "private": "true",
+  "homepage": "https://github.com/zakarialaoui10/ziko#readme",
+  "bugs": {
+    "url": "https://github.com/zakarialaoui10/ziko/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zakarialaoui10/ziko.js.git"
+    "url": "git+https://github.com/zakarialaoui10/ziko.git"
   },
-  "author": "zakaria elalaoui",
+  "workspaces":[
+    "packages/*"
+  ],
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/zakarialaoui10/ziko.js/issues"
+  "author": "zakaria elalaoui",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/zakarialaoui10/ziko.js#readme",
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^29.0.0",
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@vitest/coverage-v8": "^4.0.18",
-    "cross-env": "^10.1.0",
-    "eslint": "^10.0.0",
-    "jsdom": "^26.0.0",
-    "rollup": "^4.57.1",
-    "vitest": "^4.0.18"
+  "dependencies": {
   }
 }
