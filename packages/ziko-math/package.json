@@ -1,0 +1,31 @@
+{
+  "name": "@zikojs/math",
+  "version": "0.0.2",
+  "description": "",
+  "keywords": [
+    "zikojs",
+    "ziko",
+    "math",
+    "matrix",
+    "complex"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports":{
+    ".":{
+      "import" : "./src/index.js",
+      "types" : "./src/index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "author": "zakaria elalaoui",
+  "type": "module",
+  "main": "src/index.js",
+  "dependencies": {
+    "ziko": "workspace:*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
