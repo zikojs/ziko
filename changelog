@@ -34,3 +34,6 @@
     
 1.9.0 
     - Setup Symbol-based Nominal Branding by using unique symbols as runtime brands to identify objects without importing their classes.
+    - fix(state): improve derived state getter handling
+        - mark derived getters with STATE_GETTER
+        - add unsubscribe support to derived state subscriptions

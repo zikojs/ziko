@@ -81,6 +81,7 @@ export async function __addItem__(adder, pusher, ...ele) {
         // Fix Items Latter
     if (ele[i] instanceof Function) {
       if (isStateGetter(ele[i])) {
+        console.log({s : ele[i]()})
         const getter = ele[i]();
         ele[i] = text(getter.value);
         getter._subscribe(

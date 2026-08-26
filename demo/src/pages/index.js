@@ -1,4 +1,4 @@
-import { useQueryParams, watchQueryParams, useState } from "ziko/hooks";
+import { useQueryParams, watchQueryParams, useState, useDerived, isStateGetter } from "ziko/hooks";
 import { tags, Swap, Fragment, For } from 'ziko/dom'
 import { Random, accum_max, not, mapfun, complex, abs  } from "ziko/math";
 import './index.css'
@@ -42,6 +42,16 @@ globalThis.f = tags.ul(For({
 
 
 globalThis.tt = tags.h1({onClick : (e)=> console.log(e.target), onPtrDown : ()=> {}, class : 'test'}, 'Test props parsing').mount()
+
+
+const [ready, setReady] = useState(false)
+
+const content = useDerived(t => t ? 'TRUE' : 'FALSE', [ready])
+
+console.log(isStateGetter(content))
+
+tags.p(content).mount(document.body)
+console.log(content)
 // setParams({page : "2"}, true)
 // setParams({lang : 'ar'}, true)
 // console.log('index')

@@ -2,7 +2,9 @@
 
 // if (!globalThis.__Ziko__) __init__global__();
 
-export const STATE_GETTER = Symbol.for("ziko.stateGetter");
+// export const STATE_GETTER = Symbol.for("ziko.stateGetter");
+
+import {STATE_GETTER} from '../symbols/index.js'
 
 export function useState(initialValue) {
     const state = {
