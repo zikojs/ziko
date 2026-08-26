@@ -1,4 +1,4 @@
 import {tags} from "ziko/dom"
 export default function App(){
-    return tags.p('View ..')
+    return tags.p('Test ..')
 }

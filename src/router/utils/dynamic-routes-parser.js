@@ -3,9 +3,33 @@ export function dynamic_routes_parser(mask, route) {
   const routeSegments = route.split("/").filter(Boolean);
   const params = {};
   let i = 0, j = 0;
+
   while (i < maskSegments.length && j < routeSegments.length) {
     const maskSegment = maskSegments[i];
-    const routeSegment = routeSegments[j];
+
+    // Handle [[...slug]]
+    if (maskSegment.startsWith("[[...") && maskSegment.endsWith("]]")) {
+      const paramName = maskSegment.slice(5, -2);
+      const remainingMaskSegments = maskSegments.length - i - 1;
+      if (remainingMaskSegments === 0) {
+        params[paramName] = routeSegments.slice(j).join("/");
+        break;
+      }
+      let requiredSegments = 0;
+      for (let k = i + 1; k < maskSegments.length; k++) {
+        if (!maskSegments[k].endsWith("]+")) requiredSegments++;
+      }
+      const remainingRouteSegments = routeSegments.length - j;
+      const segmentsToConsume = remainingRouteSegments - requiredSegments;
+      if (segmentsToConsume >= 0) {
+        params[paramName] = routeSegments.slice(j, j + segmentsToConsume).join("/");
+        j += segmentsToConsume;
+      } else return {};
+      i++;
+      continue;
+    }
+
+    // Handle [...slug]
     if (maskSegment.startsWith("[...") && maskSegment.endsWith("]")) {
       const paramName = maskSegment.slice(4, -1);
       const remainingMaskSegments = maskSegments.length - i - 1;
@@ -20,32 +44,42 @@ export function dynamic_routes_parser(mask, route) {
       const remainingRouteSegments = routeSegments.length - j;
       const segmentsToConsume = remainingRouteSegments - requiredSegments;
       if (segmentsToConsume >= 1) {
-        params[paramName] = routeSegments
-          .slice(j, j + segmentsToConsume)
-          .join("/");
+        params[paramName] = routeSegments.slice(j, j + segmentsToConsume).join("/");
         j += segmentsToConsume;
-      } 
-      else return {};
+      } else return {};
       i++;
       continue;
     }
+
     if (maskSegment.startsWith("[") && maskSegment.endsWith("]+")) {
       const paramName = maskSegment.slice(1, -2);
-      if (routeSegment) {
-        params[paramName] = routeSegment;
+      if (routeSegments[j]) {
+        params[paramName] = routeSegments[j];
         j++;
       }
       i++;
       continue;
     }
+
     if (maskSegment.startsWith("[") && maskSegment.endsWith("]")) {
       const paramName = maskSegment.slice(1, -1);
-      params[paramName] = routeSegment;
-    } 
-    else if (maskSegment !== routeSegment) return {};
+      params[paramName] = routeSegments[j];
+    } else if (maskSegment !== routeSegments[j]) return {};
+
     i++;
     j++;
   }
+
+  // Set default empty string for remaining uncaptured optional catch-alls
+  while (i < maskSegments.length) {
+    const maskSegment = maskSegments[i];
+    if (maskSegment.startsWith("[[...") && maskSegment.endsWith("]]")) {
+      const paramName = maskSegment.slice(5, -2);
+      if (!(paramName in params)) params[paramName] = "";
+    }
+    i++;
+  }
+
   return params;
 }
 

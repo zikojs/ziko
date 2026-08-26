@@ -37,3 +37,12 @@
     - fix(state): improve derived state getter handling
         - mark derived getters with STATE_GETTER
         - add unsubscribe support to derived state subscriptions
+1.10.0
+    - File-Based Router Modernization
+        - Environment Agnostic: Decoupled the router execution engine from browser-specific APIs (globalThis.location, document.body, HTMLElement). The router can now run seamlessly in Node.js, Express, Bun, Deno, Edge Workers, SSG, and browser environments.
+        - Route Groups (group): Added support for non-rendering organizational directories wrapped in parentheses (e.g., pages/(auth)/login.js). Automatically ignored during path normalization.
+        - Optional Catch-All Routes [[...slug]]: Introduced support for optional catch-all parameters via [[...slug]]. Captures 0 to N segments and defaults to empty values when uncaptured.
+        - Flat File Routing (Dot-Delimited Paths): Enabled flat route file naming using dots (e.g., articles.[id].[lang].js =>  /articles/:id/:lang). Preserves parameter brackets using regex lookarounds.
+        - Base Path Config: Added configurable base router option (defaults to /, supports ., /app, etc.) with automatic path prefix stripping.
+        - Route Match Precedence: Introduced strict priority sorting (sort_routes) to ensure evaluation order: Static => Dynamic => Catch-All => Optional Catch-All.
+        - Bug Fixes: Fixed root calculation directory stripping in get_root and resolved double-slash URL matching issues in createSPAFileBasedRouter

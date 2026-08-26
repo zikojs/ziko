@@ -1,23 +1,50 @@
+// file-based-router/index.js
+
 import { 
     get_root,
     normalize_path,
     routes_matcher,
     is_dynamic,
     dynamic_routes_parser,
+    sort_routes,
     renderer as ziko_renderer
- } from "../utils/index.js"
-export async function createSPAFileBasedRouter({
+} from "../utils/index.js";
+
+/**
+ * Environment-independent file-based router core
+ */
+export async function createFileBasedRouter({
   pages = {},
-  target = globalThis?.document?.body,
+  url = typeof location !== 'undefined' ? location.pathname : '/',
+  target = typeof document !== 'undefined' ? document.body : null,
   extensions = ['js', 'ts'],
   renderer = ziko_renderer,
   wrapper,
+  base = '/',
 } = {}) {
-  if(!(target instanceof HTMLElement) && target?.element instanceof HTMLElement) target = target?.element;
-  if (!(target instanceof HTMLElement)) {
-    throw new Error("Invalid mount target: must be HTMLElement or UIElement");
+  // Normalize target element safely for UI frameworks/DOM wrapper objects
+  let mountTarget = target;
+  if (target && typeof target === 'object' && 'element' in target) {
+    mountTarget = target.element;
   }
-  let path = decodeURIComponent(globalThis.location.pathname.replace(/\/$/, ''));
+
+  // 1. Normalize base path
+  let cleanBase = base === '.' ? '' : base.replace(/\/$/, '');
+  if (cleanBase && !cleanBase.startsWith('/')) {
+    cleanBase = '/' + cleanBase;
+  }
+
+  // 2. Normalize and extract current URL path
+  let rawPath = decodeURIComponent(url.replace(/\/$/, '')) || '/';
+  
+  // Strip base prefix if matched
+  if (cleanBase && rawPath.startsWith(cleanBase)) {
+    rawPath = rawPath.slice(cleanBase.length) || '/';
+  }
+
+  let currentPath = rawPath.startsWith('/') ? rawPath : '/' + rawPath;
+
+  // 3. Normalize route masks
   const routes = Object.keys(pages);
   const root = get_root(routes);
 
@@ -25,21 +52,43 @@ export async function createSPAFileBasedRouter({
   for (const route of routes) {
     const module = await pages[route]();
     const modComponent = await module.default;
-    pairs[normalize_path(route, root, extensions)] = modComponent;
+    const normalizedKey = normalize_path(route, root, extensions);
+    pairs[normalizedKey] = modComponent;
   }
+
+  // 4. Sort routes by precedence (Static -> Dynamic -> Catch-All -> Optional Catch-All)
+  const sortedRouteKeys = sort_routes(Object.keys(pairs));
 
   let mask = null;
   let component = null;
 
-  for (const [routePath, comp] of Object.entries(pairs)) {
-    if (routes_matcher(routePath, `/${path}`)) {
+  for (const routePath of sortedRouteKeys) {
+    if (routes_matcher(routePath, currentPath)) {
       mask = routePath;
-      component = comp;
+      component = pairs[routePath];
       break;
     }
   }
-  if (mask === null) return; // no route matched
-  const params = is_dynamic(mask) ? dynamic_routes_parser(mask, path) : undefined;
-  renderer(target, component, params, wrapper)
+
+  if (mask === null) {
+    return { mask: null, component: null, params: {}, matched: false };
+  }
+
+  const params = is_dynamic(mask) ? dynamic_routes_parser(mask, currentPath) : {};
+
+  // Execute renderer if a valid mount target is available
+  if (mountTarget && typeof renderer === 'function') {
+    await renderer(mountTarget, component, params, wrapper);
+  }
+
+  // Return router state for SSR/static build environments
+  return {
+    mask,
+    component,
+    params,
+    matched: true
+  };
 }
 
+// Backward-compatible alias for SPA usage
+export const createSPAFileBasedRouter = createFileBasedRouter;

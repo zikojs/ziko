@@ -1,21 +1,32 @@
 export function normalize_path(inputPath, root = './src/pages', extensions = ['js', 'ts', 'jsx', 'tsx']) {
-    if(root.at(-1)==="/") root = root.slice(0, -1)
-    const normalizedPath = inputPath.replace(/\\/g, '/')
-                                    // .replace(/\[(\w+)\]/g, '$1/:$1');
-    const parts = normalizedPath.split('/');
-    const rootParts = root.split('/');
-    const rootIndex = parts.indexOf(rootParts[rootParts.length - 1]);
-    if (rootIndex !== -1) {
-        const subsequentParts = parts.slice(rootIndex + 1);
-        const lastPart = subsequentParts[subsequentParts.length - 1];
-        const isIndexFile = extensions.some(ext => lastPart === `index.${ext}`);
-        const hasValidExtension = lastPart && extensions.some(ext => lastPart === `.${ext}` || lastPart.endsWith(`.${ext}`));
-        if (isIndexFile) return '/' + (subsequentParts.length > 1 ? subsequentParts.slice(0, -1).join('/') : '');
-        // if (hasValidExtension) return '/' + subsequentParts.join('/').replace(/\.(js|ts)$/, '');
-        if (hasValidExtension) {
-            const regex = new RegExp(`\\.(${extensions.join('|')})$`);
-            return '/' + subsequentParts.join('/').replace(regex, '');
-        }
+    let cleanRoot = root.endsWith('/') ? root.slice(0, -1) : root;
+    const normalizedPath = inputPath.replace(/\\/g, '/');
+    
+    // 1. Extract path relative to root
+    let relativePath = normalizedPath;
+    if (cleanRoot && normalizedPath.includes(cleanRoot)) {
+        relativePath = normalizedPath.split(cleanRoot).pop();
     }
-    return '';
- }
+
+    // 2. Split directory parts & strip route groups like (auth)
+    const rawParts = relativePath.split('/').filter(Boolean).filter(p => !/^\([^)]+\)$/.test(p));
+    if (rawParts.length === 0) return '/';
+
+    const lastPart = rawParts[rawParts.length - 1];
+    const extRegex = new RegExp(`\\.(${extensions.join('|')})$`);
+    
+    const isIndexFile = extensions.some(ext => lastPart === `index.${ext}`);
+    const fileNameWithoutExt = lastPart.replace(extRegex, '');
+
+    // Remove original file name from directory segments
+    rawParts.pop(); 
+
+    // 3. Handle flat dot notation without breaking [..slug] or [[..slug]]
+    if (!isIndexFile) {
+        // Splits by '.' ONLY if the dot is outside of bracketed patterns like [...] or [[...]]
+        const dotSegments = fileNameWithoutExt.split(/\.(?![^\[]*\])/);
+        rawParts.push(...dotSegments);
+    }
+
+    return '/' + rawParts.join('/');
+}
