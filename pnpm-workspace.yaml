@@ -1,5 +1,5 @@
 packages:
   - "packages/*"
   - "packages/create-ziko/templates/*"
-allowBuilds:
-  esbuild: set this to true or false
+catalog:
+  vite: "^8.2.2"
