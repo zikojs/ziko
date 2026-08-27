@@ -11,6 +11,15 @@
   "publishConfig": {
     "access": "public"
   },
+  "homepage": "https://github.com/zikojs/ziko#readme",
+  "bugs": {
+    "url": "https://github.com/zikojs/ziko/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "packages/ziko-ease"
+  },
   "exports":{
     ".":{
       "import" : "./src/index.js",

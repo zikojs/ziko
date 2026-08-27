@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/zakarialaoui10/ziko.git"
   },
-  "workspaces":[
+  "workspaces": [
     "packages/*"
   ],
   "license": "MIT",
@@ -20,6 +20,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.11",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.9.1",
+    "jsdom": "26.0.0",
+    "vitest": "^4.1.11"
   }
 }

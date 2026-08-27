@@ -1,6 +1,6 @@
 {
   "name": "@zikojs/router",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "keywords": [
     "zikojs",
@@ -8,6 +8,15 @@
     "router",
     "file based router"
   ],
+  "homepage": "https://github.com/zikojs/ziko#readme",
+  "bugs": {
+    "url": "https://github.com/zikojs/ziko/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "packages/ziko-router"
+  },
   "publishConfig": {
     "access": "public"
   },
