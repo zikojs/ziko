@@ -45,6 +45,16 @@ importers:
         specifier: workspace:*
         version: link:../ziko
 
+  packages/create-ziko/templates/fbr-js:
+    dependencies:
+      ziko:
+        specifier: workspace:*
+        version: link:../../../ziko
+    devDependencies:
+      vite:
+        specifier: 'catalog:'
+        version: 8.2.2(terser@5.50.0)
+
   packages/create-ziko/templates/spa-js:
     dependencies:
       ziko:
