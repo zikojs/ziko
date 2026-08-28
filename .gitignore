@@ -1,10 +1,1 @@
 **/node_modules
-dist
-.vscode
-test
-_link 
-__html/
-preview
-preview-mod
-roadmap.md
-**/*-dep
