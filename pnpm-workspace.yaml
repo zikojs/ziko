@@ -3,3 +3,6 @@ packages:
   - "packages/create-ziko/templates/*"
 catalog:
   vite: "^8.2.2"
+minimumReleaseAge: 10080
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
