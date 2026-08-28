@@ -1,0 +1,37 @@
+{
+  "name": "create-ziko",
+  "version": "0.10.1",
+  "description": "Easily create Ziko apps without any complicated build setup.",
+  "type": "module",
+  "keywords": [
+    "ziko",
+    "zikojs",
+    "cli"
+  ],
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "LICENCE"
+  ],
+  "scripts": {},
+  "bin": {
+    "create-ziko": "./bin/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git"
+  },
+  "author": "zakaria elalaoui",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zikojs/ziko/issues"
+  },
+  "homepage": "https://github.com/zikojs/ziko#readme",
+  "dependencies": {
+    "ziko": "workspace:*",
+    "inquirer": "^14.0.2",
+    "picocolors": "^1.1.1",
+    "scafy": "^0.7.0"
+  }
+}
