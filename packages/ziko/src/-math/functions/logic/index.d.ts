@@ -1,5 +1,5 @@
-import type { Complex } from "../../complex/index.d.ts";
-import { Matrix } from '../../../../src/math/matrix/index.js'
+import type { Complex } from "../../complex/index";
+import { Matrix } from '../../matrix/index.js'
 
 export type LogicValue = 0 | 1 | Complex | Matrix;
 

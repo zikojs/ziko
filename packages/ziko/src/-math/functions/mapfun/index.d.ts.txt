@@ -1,0 +1,162 @@
+// import { Complex } from "../../../src/math/Complex/index.js";
+// import { Matrix } from "../../../src/math/matrix/index.js";
+
+// /**
+//  * Objects that behave like primitives for mapfun,
+//  * meaning fun(x) is applied directly without recursion.
+//  */
+// export interface MapfunPrimitiveLike {
+//     __mapfun__?: boolean;
+// }
+
+// export type PrimitiveLike =
+//     | number
+//     | boolean
+//     | string
+//     | bigint
+//     | undefined
+//     | null
+//     | { readonly __mapfun__: boolean };
+
+// export type Mappable =
+//     | number
+//     | string
+//     | boolean
+//     | bigint
+//     | undefined
+//     | null
+//     | Matrix
+//     | MapfunPrimitiveLike
+//     | any[]
+//     | Set<any>
+//     | Map<any, any>
+//     | object;
+
+// /**
+//  * mapfun transform rules
+//  */
+// export type MapfunResult<F extends (x: any) => any, T> =
+//     // Objects with __mapfun__ → treat as primitive (call fun(x))
+//     // T extends MapfunPrimitiveLike
+//     //     ? ReturnType<F> :
+
+//     // Matrix → always return Matrix (your JS logic rebuilds a new Matrix)
+    
+//     T extends PrimitiveLike 
+//         ? ReturnType<F> :
+//     // T extends Complex
+//     //     ? T :
+//     T extends Matrix
+//         ? T :
+
+//     // Array → deep-map
+//     T extends Array<infer U>
+//         ? Array<MapfunResult<F, U>> :
+
+//     // Set → deep-map
+//     T extends Set<infer U>
+//         ? Set<MapfunResult<F, U>> :
+
+//     // Map → deep-map values
+//     T extends Map<infer K, infer V>
+//         ? Map<K, MapfunResult<F, V>> :
+
+//     // Other objects → recursively map fields
+//     T extends object
+//         ? { [K in keyof T]: MapfunResult<F, T[K]> } :
+
+//     // Primitive
+//     ReturnType<F>;
+
+// /**
+//  * If only one argument → return mapped value
+//  * If multiple → return tuple of mapped values
+//  */
+// type UnwrapSingle<T extends unknown[]> =
+//     T extends [infer U] ? U : { [K in keyof T]: T[K] };
+
+// /**
+//  * mapfun main declaration
+//  */
+// export declare function mapfun<
+//     F extends (x: any) => any,
+//     A extends Mappable[]
+// >(
+//     fun: F,
+//     ...values: A
+// ): UnwrapSingle<{ [K in keyof A]: MapfunResult<F, A[K]> }>;
+
+
+export type Primitive =
+    string |
+    number |
+    boolean |
+    bigint |
+    symbol |
+    null |
+    undefined;
+
+export interface MapfunCompatible<T = any> {
+    __mapfun__?: boolean;
+}
+
+export interface ComplexLike {
+    isComplex(): boolean;
+}
+
+export interface MatrixLike {
+    rows: number;
+    cols: number;
+
+    isMatrix(): boolean;
+}
+
+export type Mappable<T = any> =
+    | T
+    | Primitive
+    | Mappable<T>[]
+    | ArrayLike<T>
+    | Set<Mappable<T>>
+    | Map<any, Mappable<T>>
+    | MapfunCompatible<T>
+    | ComplexLike
+    | MatrixLike
+    | Record<string, Mappable<T>>;
+
+
+/**
+ * Applies a function recursively to values inside
+ * arrays, typed arrays, sets, maps, objects,
+ * complex values and matrices.
+ *
+ * @param fun Transformation function.
+ * @param X Values to transform.
+ *
+ * @example
+ * mapfun(x => x * 2, [1,2,3])
+ * // [2,4,6]
+ */
+export declare function mapfun<T, R>(
+    fun: (value: T) => R,
+    x: Mappable<T>
+): R;
+
+export declare function mapfun<T, R>(
+    fun: (value: T) => R,
+    x: Mappable<T>,
+    ...X: Mappable<T>[]
+): R[];
+
+
+/**
+ * Applies a function to supported mathematical structures.
+ *
+ * Handles Complex and Matrix instances specially.
+ *
+ * @param x Input value.
+ * @param fn Transformation function.
+ */
+export declare function apply_fun<T, R>(
+    x: Mappable<T>,
+    fn: (value: T) => R
+): Mappable<R>;

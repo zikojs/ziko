@@ -1,7 +1,7 @@
 {
   "name": "@zikojs/router",
-  "version": "0.0.2",
-  "description": "",
+  "version": "0.0.3",
+  "description": "zikojs file based router engine",
   "keywords": [
     "zikojs",
     "ziko",

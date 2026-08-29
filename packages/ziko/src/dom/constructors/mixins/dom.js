@@ -1,6 +1,5 @@
 import { text } from "../../text/index.js";
 import { isStateGetter } from "../../../hooks/use-state.js";
-
 export function append(...ele) {
   __addItem__.call(this, "append", "push", ...ele);
   return this;
@@ -11,23 +10,17 @@ export function prepend(...ele) {
 }
 export function insertAt(index, ...ele) {
     const target = this.itemsTarget;
-
     if (index >= target.items.length) return this.append(...ele);
-
     for (let i = 0; i < ele.length; i++) {
         if (["number", "string"].includes(typeof ele[i]))
             ele[i] = text(ele[i]);
-
         target.element?.insertBefore(
             ele[i].element,
             target.items[index].element
         );
-
         target.items.splice(index, 0, ele[i]);
     }
-
     target.maintain();
-
     return this;
 }
 export function remove(...ele) {
@@ -50,7 +43,6 @@ export function clear(){
 export function replaceElementWith(new_element){
     this.cache.element.replaceWith(new_element)
     this.cache.element = new_element;
-
     // To do : Dispose Events and States 
     return this
 }
@@ -64,14 +56,9 @@ export function before(ui){
   this.itemsTarget.element?.before(ui)
   return this;
 }
-
-
-
-
 export async function __addItem__(adder, pusher, ...ele) {
   const itemsTarget_el = this.itemsTarget.element;
   const itemsTarget = this.itemsTarget
-
   if (this.cache.isFrozzen) {
     console.warn("You can't append new item to frozzen element");
     return this;
@@ -81,7 +68,6 @@ export async function __addItem__(adder, pusher, ...ele) {
         // Fix Items Latter
     if (ele[i] instanceof Function) {
       if (isStateGetter(ele[i])) {
-        console.log({s : ele[i]()})
         const getter = ele[i]();
         ele[i] = text(getter.value);
         getter._subscribe(
