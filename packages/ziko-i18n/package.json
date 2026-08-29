@@ -1,0 +1,38 @@
+{
+  "name": "@zikojs/i18n",
+  "version": "0.2.0",
+  "description": "reactive i18n provider for zikojs",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development rollup --config rollup.config.js",
+    "watch": "cross-env NODE_ENV=development rollup --config rollup.config.js -w",
+    "build": "cross-env NODE_ENV=production rollup --config rollup.config.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "packages/ziko-18n"
+  },
+  "author": "zakaria elalaoui",
+  "keywords": [
+    "zikojs",
+    "i18n",
+    "internalisation",
+    "translate"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+  },
+  "dependencies": {
+    "ziko": "workspace:*"
+  }
+}

@@ -6,3 +6,5 @@ catalog:
 minimumReleaseAge: 10080
 blockExoticSubdeps: true
 trustPolicy: no-downgrade
+minimumReleaseAgeExclude:
+  - eslint@10.9.1
