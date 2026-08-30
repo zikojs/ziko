@@ -1,7 +1,8 @@
 {
   "name": "@zikojs/math",
-  "version": "0.0.4",
-  "description": "",
+  "version": "0.0.5",
+  "description": "zikojs math module",
+  "type": "module",
   "keywords": [
     "zikojs",
     "ziko",
@@ -25,12 +26,14 @@
     ".":{
       "import" : "./src/index.js",
       "types" : "./src/index.d.ts"
+    },
+    "./*":{
+      "import" : "./src/*/index.js",
+      "types" : "./src/*/index.d.ts"
     }
   },
   "license": "MIT",
   "author": "zakaria elalaoui",
-  "type": "module",
-  "main": "src/index.js",
   "dependencies": {
     "ziko": "workspace:*"
   },
