@@ -13,11 +13,9 @@ class UIElementCore extends UINode{
       switch(type){
         case "html" : {
           element = globalThis?.document?.createElement(element);
-          // console.log('1')
         }; break;
         case "svg" : {
           element = globalThis?.document?.createElementNS("http://www.w3.org/2000/svg", element); 
-          // console.log('2')
         }; break;
         default : throw Error("Not supported")
       }
@@ -60,20 +58,13 @@ class UIElementCore extends UINode{
       : globalThis.__Ziko__.__UI__[this.cache.name]=[this];
     element && render && this?.render?.()
     globalThis.__Ziko__.__UI__.push(this)
-
-    // console.log({props})
+    
     const parsed_props = parse_props(props);
-
     this.parsed_props = parsed_props;
-
     this.style(parsed_props.style);
     this.setAttr(parsed_props.attrs);
-
     const Events = Object.entries(parsed_props.events);
-
     Events.forEach(([ev, callback]) => this[ev](callback.bind(this)))
-    
-
     if(items.length > 0) this.append(...items)
   }
   get element(){

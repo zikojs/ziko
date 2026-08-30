@@ -1,12 +1,11 @@
 {
-  "name": "@zikojs/router",
-  "version": "0.0.3",
-  "description": "zikojs file based router engine",
+  "name": "@zikojs/time",
+  "version": "0.0.1",
+  "description": "zikojs time module",
+  "type": "module",
   "keywords": [
     "zikojs",
-    "ziko",
-    "router",
-    "file based router"
+    "time"
   ],
   "homepage": "https://github.com/zikojs/ziko#readme",
   "bugs": {
@@ -15,7 +14,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zikojs/ziko.git",
-    "directory": "packages/ziko-router"
+    "directory": "packages/ziko-time"
   },
   "publishConfig": {
     "access": "public"
@@ -24,12 +23,14 @@
     ".":{
       "import" : "./src/index.js",
       "types" : "./src/index.d.ts"
+    },
+    "./*":{
+      "import" : "./src/*/index.js",
+      "types" : "./src/*/index.d.ts"
     }
   },
   "license": "MIT",
   "author": "zakaria elalaoui",
-  "type": "module",
-  "main": "src/index.js",
   "dependencies": {
     "ziko": "workspace:*"
   },

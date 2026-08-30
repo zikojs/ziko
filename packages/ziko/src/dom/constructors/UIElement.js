@@ -102,9 +102,9 @@ class UIElement extends UIElementCore{
   get text(){
     return this.element.textContent;
   }
-  get isBody(){
-    return this.element === globalThis?.document.body;
-  }
+  // get isBody(){
+  //   return this.element === globalThis?.document.body;
+  // }
   get parent(){
     return this.cache.parent;
   }

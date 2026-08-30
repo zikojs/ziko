@@ -2,9 +2,9 @@ export const __Config__ = {
     default:{
         target:null,
         render:true,
-        math:{
-            mode:"deg"
-        }
+        // math:{
+        //     mode:"deg"
+        // }
     },
     setDefault:function(pairs){
         const keys=Object.keys(pairs);

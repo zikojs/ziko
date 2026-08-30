@@ -1,5 +1,5 @@
-import { mapfun, MapFunResult } from '../mapfun/index.d.ts';
-import { complex } from '../../complex/index.d.ts';
+import { mapfun, MapFunResult } from '../mapfun/index';
+import { complex } from '../../complex/index';
 
 // --- Standard Unary / Multi-Argument Math Functions ---
 

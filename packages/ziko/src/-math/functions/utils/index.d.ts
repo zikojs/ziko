@@ -1,4 +1,4 @@
-import { Mappable } from "../mapfun/index.d.ts";
+import { Mappable } from "../mapfun/index";
 /**
  * Converts degrees to radians.
  *

@@ -1,9 +1,9 @@
-export type * from './arithmetic/index.d.ts'
-export type * from './conversions/index.d.ts'
-export type * from './logic/index.d.ts'
-export type * from './utils/index.d.ts'
-export type * from './mapfun/index.d.ts'
-export type * from './ufunc/index.d.ts'
+export type * from './arithmetic/index'
+export type * from './conversions/index'
+export type * from './logic/index'
+export type * from './utils/index'
+export type * from './mapfun/index'
+export type * from './ufunc/index'
 
 // import type { Complex } from "../complex/index.js";
 // import type { MapfunResult, Mappable } from "../utils/mapfun.js";

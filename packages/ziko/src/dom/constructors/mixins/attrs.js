@@ -1,8 +1,8 @@
 import { isStateGetter } from "../../../hooks/use-state.js";
-import { 
-  is_camelcase,
-  camel2hyphencase
- } from '../../../data/string/index.js'
+// import { 
+//   is_camelcase,
+//   camel2hyphencase
+//  } from '../../../data/string/index.js'
 
 export function setAttr(name, value) {
   if(name instanceof Object){
@@ -23,7 +23,7 @@ export function removeAttr(...names) {
   return this;
 }
 export function getAttr(name){
-  name = is_camelcase(name) ? camel2hyphencase(name) : name;
+  // name = is_camelcase(name) ? camel2hyphencase(name) : name;
   return this.element.attributes[name].value;
 }
 export function setContentEditable(bool = true) {

@@ -1,4 +1,5 @@
 **/node_modules
+**/dist
 _demo/
 _roadmap.md
 _commands.bash
