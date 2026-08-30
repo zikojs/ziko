@@ -1,0 +1,40 @@
+{
+  "name": "@zikojs/time",
+  "version": "0.0.1",
+  "description": "zikojs time module",
+  "type": "module",
+  "keywords": [
+    "zikojs",
+    "time"
+  ],
+  "homepage": "https://github.com/zikojs/ziko#readme",
+  "bugs": {
+    "url": "https://github.com/zikojs/ziko/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "packages/ziko-time"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports":{
+    ".":{
+      "import" : "./src/index.js",
+      "types" : "./src/index.d.ts"
+    },
+    "./*":{
+      "import" : "./src/*/index.js",
+      "types" : "./src/*/index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "author": "zakaria elalaoui",
+  "dependencies": {
+    "ziko": "workspace:*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
