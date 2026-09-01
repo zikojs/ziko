@@ -1,4 +1,4 @@
-import { mapfun } from '../mapfun/index.js';
+import { mapfun } from '../../mapfun/index.js';
 import { complex } from '../../complex/index.js'
 
 const PRECESION = 8

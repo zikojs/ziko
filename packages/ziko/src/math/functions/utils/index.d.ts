@@ -1,4 +1,4 @@
-import { Mappable } from "../mapfun/index
+import { Mappable } from "../../mapfun/indexx
 /**
  * Converts degrees to radians.
  *

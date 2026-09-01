@@ -1,4 +1,4 @@
-import { mapfun, MapFunResult } from '../mapfun/index
+import { mapfun, MapFunResult } from '../../mapfun/indexx
 import { complex } from '../../complex/index
 
 // --- Standard Unary / Multi-Argument Math Functions ---

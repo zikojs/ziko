@@ -8,7 +8,7 @@ import {
     dynamic_routes_parser,
     sort_routes,
     renderer as ziko_renderer
-} from "../utils/index.js";
+} from "../internal-utils/index.js";
 
 /**
  * Environment-independent file-based router core

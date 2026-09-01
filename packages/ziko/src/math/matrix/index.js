@@ -21,7 +21,7 @@ import {
     hstack,
     vstack
 } from "./helpers/index.js";
-import { mapfun } from '../functions/index.js';
+import { mapfun } from '../mapfun/index.js';
 import { Random } from '../random/index.js';
 class Matrix{
     constructor(rows, cols, element = [] ) {

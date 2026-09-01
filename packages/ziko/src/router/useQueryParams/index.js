@@ -1,4 +1,3 @@
-import { useState } from "./use-state.js";
 const parseQueryParams = queryString => Object.fromEntries(new URLSearchParams(globalThis?.location?.search))
 
 export function useQueryParams() {
