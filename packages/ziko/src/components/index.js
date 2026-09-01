@@ -5,6 +5,4 @@ export * from './Swap/index.js';
 export * from './Fragment/index.js';
 export * from './For/index.js';
 export * from './Switch/index.js';
-
 export * from './wrappers/index.js'
-export * from './graphics/index.js'

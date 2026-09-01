@@ -1,4 +1,4 @@
-import { UIElement } from "../../constructors/UIElement.js";
+import { UIElement } from "../../dom/constructors/UIElement.js";
 import { 
   set_vertical,
   set_horizontal,

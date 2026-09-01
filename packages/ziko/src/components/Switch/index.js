@@ -1,4 +1,4 @@
-import { UIElement } from "../../constructors/UIElement.js";
+import { UIElement } from "../../dom/constructors/UIElement.js";
 
 class UISwitch extends UIElement{
     constructor(key, cases){

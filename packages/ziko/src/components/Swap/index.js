@@ -1,5 +1,5 @@
-import { UIElement } from "../../constructors/UIElement.js";
-import { call_with_optional_props } from '../../utils/index.js';
+import { UIElement } from "../../dom/constructors/UIElement.js";
+import { call_with_optional_props } from '../../dom/utils/index.js';
 
 export class UISwap extends UIElement {
     #DISPLAYS_MAP = new WeakMap()

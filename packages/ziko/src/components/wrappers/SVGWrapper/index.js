@@ -1,4 +1,4 @@
-import { UIElement } from "../../../constructors/UIElement.js";
+import { UIElement } from "../../../dom/constructors/UIElement.js";
 
 class UISVGWrapper extends UIElement {
     constructor(content){
