@@ -1,0 +1,43 @@
+{
+  "name": "@zikojs/borwser",
+  "version": "0.0.1",
+  "description": "zikojs math module",
+  "type": "module",
+  "keywords": [
+    "zikojs",
+    "ziko",
+    "math",
+    "matrix",
+    "complex"
+  ],
+  "homepage": "https://github.com/zikojs/ziko#readme",
+  "bugs": {
+    "url": "https://github.com/zikojs/ziko/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "packages/ziko-browser"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports":{
+    ".":{
+      "import" : "./src/index.js",
+      "types" : "./src/index.d.ts"
+    },
+    "./*":{
+      "import" : "./src/*/index.js",
+      "types" : "./src/*/index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "author": "zakaria elalaoui",
+  "dependencies": {
+    "ziko": "workspace:*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

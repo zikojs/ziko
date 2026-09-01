@@ -1,4 +1,3 @@
-import { useSessionStorage } from '../hooks/use-storage.js'
 export var __State__ = {
     store : new Map(),
     index : 0,

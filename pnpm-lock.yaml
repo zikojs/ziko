@@ -80,6 +80,12 @@ importers:
         specifier: ^4.57.1
         version: 4.62.5
 
+  packages/ziko-browser:
+    dependencies:
+      ziko:
+        specifier: workspace:*
+        version: link:../ziko
+
   packages/ziko-ease: {}
 
   packages/ziko-i18n:
@@ -95,6 +101,12 @@ importers:
         version: link:../ziko
 
   packages/ziko-router:
+    dependencies:
+      ziko:
+        specifier: workspace:*
+        version: link:../ziko
+
+  packages/ziko-time:
     dependencies:
       ziko:
         specifier: workspace:*
