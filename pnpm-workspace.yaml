@@ -1,6 +1,7 @@
 packages:
   - "packages/*"
   - "packages/create-ziko/templates/*"
+  - "demo/"
 catalog:
   vite: "^8.2.2"
 minimumReleaseAge: 10080
@@ -8,3 +9,5 @@ blockExoticSubdeps: true
 trustPolicy: no-downgrade
 minimumReleaseAgeExclude:
   - eslint@10.9.1
+allowBuilds:
+  esbuild: false

@@ -1,3 +1,6 @@
+2.0.0
+    Make useEffect callback accept more deps ..
+    
 1.1.1 : Fix exports conflicts
 1.2.0 : 
     - Fix typo in useLocaleStorage

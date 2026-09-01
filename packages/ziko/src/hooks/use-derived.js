@@ -1,30 +1,34 @@
 import { STATE_GETTER } from '../symbols/index.js';
 
 export function useDerived(deriveFn, sources) {
-    let value = deriveFn(...sources.map(s => s().value));
+    const getValue = () => deriveFn(...sources.map(source => source().value));
+
+    let value = getValue();
     const subscribers = new Set();
 
-    // const unsubscribers = sources.map(source => {
-    //     const srcValue = source();
+    const notify = () => {
+        const newValue = getValue();
 
-    //     return srcValue._subscribe(() => {
-    //         const newVal = deriveFn(...sources.map(s => s().value));
+        if (Object.is(newValue, value)) return;
 
-    //         if (!Object.is(newVal, value)) {
-    //             value = newVal;
-    //             subscribers.forEach(fn => fn(value));
-    //         }
-    //     });
-    // });
+        value = newValue;
+        subscribers.forEach(fn => fn(value));
+    };
+
+    const unsubscribers = sources.map(source => {
+        const state = source();
+        return state._subscribe(notify);
+    });
 
     const getter = () => ({
         value,
-        _subscribe: (fn) => {
+        _subscribe(fn) {
             subscribers.add(fn);
             return () => subscribers.delete(fn);
         },
     });
 
     getter[STATE_GETTER] = true;
-    return getter
+
+    return getter;
 }
