@@ -1,4 +1,4 @@
-import { isStateGetter } from "../../../hooks/use-state.js";
+import { isStateGetter } from "../../hooks/use-state.js";
 // import { 
 //   is_camelcase,
 //   camel2hyphencase

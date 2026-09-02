@@ -1,4 +1,4 @@
-import { isStateGetter } from '../../../hooks/use-state.js'
+import { isStateGetter } from '../../hooks/use-state.js'
 export function style(styles){
     if(!this.element?.style) return this;
     for(let key in styles){

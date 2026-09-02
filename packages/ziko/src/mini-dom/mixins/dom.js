@@ -1,5 +1,5 @@
-import { text } from "../../text/index.js";
-import { isStateGetter } from "../../../hooks/use-state.js";
+import { text } from "../text/index.js";
+import { isStateGetter } from "../../hooks/use-state.js";
 export function append(...ele) {
   __addItem__.call(this, "append", "push", ...ele);
   return this;
