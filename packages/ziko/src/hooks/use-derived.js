@@ -1,4 +1,4 @@
-import { STATE_GETTER } from '../symbols/index.js';
+import { STATE_GETTER } from '../internal-utils/symbols/index.js';
 
 export function useDerived(deriveFn, sources) {
     const getValue = () => deriveFn(...sources.map(source => source().value));

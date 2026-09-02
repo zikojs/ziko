@@ -1,10 +1,4 @@
-// import { __init__global__ } from "../__ziko__/index.js";
-
-// if (!globalThis.__Ziko__) __init__global__();
-
-// export const STATE_GETTER = Symbol.for("ziko.stateGetter");
-
-import {STATE_GETTER} from '../symbols/index.js'
+import { STATE_GETTER } from '../internal-utils/symbols/index.js';
 
 export function useState(initialValue) {
     const state = {
