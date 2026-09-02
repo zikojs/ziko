@@ -1,7 +1,7 @@
 import {UINode} from "./UINode.js";
 import {__init__global__} from '../../__ziko__/index.js';
 import { UIStore } from "../../__ziko__/__ui__.js";
-import { parse_props } from "../utils/parse_props.js";
+import { parse_props } from "../internal-utils/parse_props.js";
 __init__global__()
 class UIElementCore extends UINode{
   constructor(){

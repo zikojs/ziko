@@ -1,4 +1,4 @@
-import { is_primitive } from "./checkers.js";
+import { is_primitive } from "../../internal-utils/checkers/index.js";
 export const call_with_optional_props = (Component) => {
     return (...args) => {
         const first = args[0];
