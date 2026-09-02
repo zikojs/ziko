@@ -1,5 +1,6 @@
 2.0.0
     Make useEffect callback accept more deps ..
+    Replace `ziko/helpers` by `ziko/internal-utils`
     
 1.1.1 : Fix exports conflicts
 1.2.0 : 

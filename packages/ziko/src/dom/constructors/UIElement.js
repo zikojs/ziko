@@ -1,5 +1,5 @@
 import { UIElementCore } from "./UIElementCore.js";
-import { register_to_class } from "../../helpers/register/register-to-class.js";
+import { register_to_class } from "../../internal-utils/register/register-to-class.js";
 import { 
   LifecycleMethods,
   AttrsMethods,

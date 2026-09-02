@@ -1,4 +1,4 @@
-import { is_primitive } from "../../helpers/checkers/index.js";
+import { is_primitive } from "../../internal-utils/checkers/index.js";
 export const mapfun=(fun,...X)=>{
     const Y=X.map(x=>{
         if(is_primitive(x) || x?.__mapfun__) return fun(x)
