@@ -1,4 +1,4 @@
-import { throttle } from "../../time/decorators/index.js";
+import { throttle } from "../../time/index.js";
 class ViewEvent extends CustomEvent {
     constructor(type, detail, { bubbles = true, cancelable = true } = {}) {
         super(type, { detail, bubbles, cancelable });

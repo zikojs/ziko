@@ -1,4 +1,4 @@
-import { Tick } from "./tick.js";
+import { Tick } from "../tick/index.js";
 
 class Clock extends Tick {
   constructor(tickMs = 1000 / 60) {

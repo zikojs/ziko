@@ -1,4 +1,4 @@
-import { Tick } from "./tick.js";
+import { Tick } from "../tick/index.js";
 
 export interface ClockTickEvent {
     elapsed: number;

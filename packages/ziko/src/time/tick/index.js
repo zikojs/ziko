@@ -1,4 +1,4 @@
-class Tick {
+export class Tick {
   constructor(fn, ms, count = Infinity, start) {
     this.ms = ms;
     this.fn = fn;
@@ -40,9 +40,4 @@ class Tick {
 }
 
 // Helper factory
-const tick = (fn, ms, count = Infinity, start = true) => new Tick(fn, ms, count, start);
-
-export {
-  Tick,
-  tick
-};
+export const tick = (fn, ms, count = Infinity, start = true) => new Tick(fn, ms, count, start);
