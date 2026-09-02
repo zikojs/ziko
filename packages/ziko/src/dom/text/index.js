@@ -1,5 +1,5 @@
 import {UINode} from "../constructors/UINode.js";
-class ZikoUIText extends UINode {
+class UIText extends UINode {
     constructor(...value) {
       super("span", "text", false, ...value);
       this.element = globalThis?.document?.createTextNode(...value)
@@ -8,8 +8,8 @@ class ZikoUIText extends UINode {
       return true
     }
 }
-const text = (...str) => new ZikoUIText(...str);
+const text = (...str) => new UIText(...str);
 export{
-  ZikoUIText,
+  UIText,
   text
 }
