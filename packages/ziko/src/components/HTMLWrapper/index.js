@@ -1,6 +1,6 @@
-import { UIElement } from "../../../constructors/UIElement.js";
+import { UIElement } from "../../dom/UIElement/index.js";
 
-class UIHTMLWrapper extends UIElement {
+export class UIHTMLWrapper extends UIElement {
     constructor(content){
         super({element : 'div', name : 'html_wrappper'})
         this.element.append(html2dom(content))
@@ -19,8 +19,4 @@ function html2dom(htmlString) {
     }
 }
 
-const HTMLWrapper = (content) => new UIHTMLWrapper(content)
-export{
-    UIHTMLWrapper,
-    HTMLWrapper
-}
+export const HTMLWrapper = (content) => new UIHTMLWrapper(content)

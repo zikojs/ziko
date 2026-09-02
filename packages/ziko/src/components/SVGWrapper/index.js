@@ -1,6 +1,5 @@
-import { UIElement } from "../../../dom/constructors/UIElement.js";
-
-class UISVGWrapper extends UIElement {
+import { UIElement } from "../../dom/UIElement/index.js";
+export class UISVGWrapper extends UIElement {
     constructor(content){
         super({element : 'div', name : 'html_wrappper'})
         this.element.append(svg2dom(content));
@@ -27,20 +26,9 @@ function svg2dom(svgString) {
       element.setAttribute(name, value)
     }
     element.append(...children)
-
-    globalThis.svg = svg
-    globalThis.children = children 
-    globalThis.attributes = attributes
-    globalThis.element = element
     return element;
   }
   throw new Error("DOMParser is not available in this environment");
 }
 
-
-
-const SVGWrapper = (content) => new UISVGWrapper(content)
-export{
-    UISVGWrapper,
-    SVGWrapper
-}
+export const SVGWrapper = (content) => new UISVGWrapper(content)

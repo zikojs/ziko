@@ -1,4 +1,6 @@
-import { UIElement } from "../../constructors/UIElement.js";
+import { UIElement } from "../../dom/UIElement/index.js";
+import { call_with_optional_props } from '../../dom/internal-utils/call_with_optional_props.js';
+
 export class UIView extends UIElement{
     constructor(...items){
         super({element : 'div', name : 'view'})
@@ -6,4 +8,4 @@ export class UIView extends UIElement{
     }
 }
 
-export const View = (...items) => new UIView(...items);
+export const View = (...items) => call_with_optional_props(UIElement);

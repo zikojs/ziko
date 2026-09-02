@@ -1,4 +1,4 @@
-import { UIElement } from "../../dom/constructors/UIElement.js";
+import { UIElement } from "../../dom/UIElement/index.js";
 
 export class UIFragment extends UIElement{
     constructor(...items){
