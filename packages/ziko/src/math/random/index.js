@@ -1,5 +1,5 @@
 import { base2base } from "../functions/conversions/index.js";
-import { accum_sum } from "../stats/index.js";
+import { accum_sum } from "../--stats/index.js";
 
 export class Random {
     static int(a, b){
@@ -109,17 +109,3 @@ export class Random {
         return pool[this.int(pool.length)];
     }
 }
-
-
-globalThis.Random = Random
-
-// // (upperCase) => upperCase ? : String.fromCharCode(rand_int(97,120))
-// class Random {
-//     static string(length,upperCase){
-//         return length instanceof Array?
-//             new Array(this.int(...length)).fill(0).map(() => this.char(upperCase)).join(""):
-//             new Array(length).fill(0).map(() => this.char(upperCase)).join("");
-//     }
-
-// }
-// export{Random}

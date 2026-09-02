@@ -4,13 +4,13 @@ import {
     mul, 
     div,
     modulo
-} from '../functions/arithmetic/index.js'
+} from '../arithmetic/index.js'
 import {
     map,
     lerp, 
     clamp, 
     norm 
-} from '../functions/utils/index.js'
+} from '../utils/index.js'
 import { Complex } from "../complex/index.js";
 // import { arr2str } from "../../data/index.js";
 import { 

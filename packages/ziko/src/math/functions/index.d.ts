@@ -1,9 +1,9 @@
-export type * from './arithmetic/index
+export type * from '../arithmetic/indexx
 export type * from './conversions/index
 export type * from './logic/index
-export type * from './utils/index
+export type * from '../utils/indexx
 export type * from '../mapfun/indexx
-export type * from './ufunc/index
+export type * from '../ufunc/indexx
 
 // import type { Complex } from "../complex/index.js";
 // import type { MapfunResult, Mappable } from "../utils/mapfun.js";

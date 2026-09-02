@@ -1,4 +1,4 @@
-import { add, sub, mul } from "../../functions/arithmetic/index.js";
+import { add, sub, mul } from "../../arithmetic/index.js";
 import { pow } from "../../functions/index.js";
 export function matrix_det(M) {
     if (!M.isSquare) return new Error("is not square matrix");
