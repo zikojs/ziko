@@ -10,6 +10,16 @@ The ZikoJS ecosystem also includes additional packages that are maintained indep
 ![NPM Version](https://img.shields.io/npm/v/@zikojs/vite-plugin-jsx?label=@zikojs/vite-plugin-jsx)
 ![NPM Version](https://img.shields.io/npm/v/@zikojs/html?label=@zikojs/html)
 
+## install 
+```bash
+npm i ziko
+```
+
+## Quick start
+```
+nox create-ziko
+```
+
 ## ziko anatomy
 The `ziko` package is the core of ZikoJS. It is organized into a set of focused modules, each providing a fundamental part of the framework.
 
@@ -39,20 +49,14 @@ treeView-beta
 
 The modules are designed to be focused and composable, allowing applications to use only the functionality they need.
 
+
 ## Ecosystem
 Several official projects are maintained outside of this repository. These projects extend the ZikoJS ecosystem with integrations, authoring tools, and additional functionality.
 
 ### Addons
 
 - [Integrations](https://github.com/zikojs/integrations) : 
-
-![NPM Version](https://img.shields.io/npm/v/@zikojs/astro?label=@zikojs/astro)
-![NPM Version](https://img.shields.io/npm/v/@zikojs/react?label=@zikojs/react)
-![NPM Version](https://img.shields.io/npm/v/@zikojs/solid?label=@zikojs/solid)
-![NPM Version](https://img.shields.io/npm/v/@zikojs/preact?label=@zikojs/preact)
-![NPM Version](https://img.shields.io/npm/v/@zikojs/svelte?label=@zikojs/svelte)
-![NPM Version](https://img.shields.io/npm/v/@zikojs/vue?label=@zikojs/vue)
-
+`@zikojs/astro`, `@zikojs/react`, `@zikojs/svelte`, `@zikojs/solid`, `@zikojs/preact`, `@zikojs/vue`
 - [Zextra]() : 
     `zextra`, `zikojs/atropos`, `zikojs/lottie`
 - [Mdx]() : 
@@ -69,4 +73,5 @@ Several official projects are maintained outside of this repository. These proje
 
 - [Numz](https://github.com/zakarialaoui10/numz)
 - [Ufbr](https://github.com/zakarialaoui10/ufbr)
+
 
