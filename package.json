@@ -26,5 +26,8 @@
     "eslint": "^10.9.1",
     "jsdom": "26.0.0",
     "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "acorn": "catalog:"
   }
 }

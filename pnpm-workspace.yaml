@@ -4,6 +4,7 @@ packages:
   - "demo/"
 catalog:
   vite: "^8.2.2"
+  acorn: ^8.18.0
 minimumReleaseAge: 10080
 blockExoticSubdeps: true
 trustPolicy: no-downgrade

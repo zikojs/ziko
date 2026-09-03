@@ -1,0 +1,45 @@
+{
+  "name": "@zikojs/html",
+  "version": "0.4.2",
+  "description": "",
+  "keywords": [
+    "zikojs",
+    "ziko",
+    "html",
+    "preprocessor",
+    "transpiler"
+  ],
+  "homepage": "https://github.com/zikojs/transpilers#readme",
+  "bugs": {
+    "url": "https://github.com/zikojs/transpilers/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/transpilers.git",
+    "directory": "packages/html"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./src/index.d.ts"
+    },
+    "./*": {
+      "import": "./src/*/index.js",
+      "types": "./src/*/index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "author": "zakaria elalaoui",
+  "type": "module",
+  "dependencies": {
+    "htmlparser2": "^12.0.0",
+    "ziko": "workspace:*",
+    "acorn": "catalog:"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
