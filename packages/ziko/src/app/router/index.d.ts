@@ -1,2 +1,2 @@
-export type * from './file-based-router'
-export type * from './useQueryParams'
+export type * from './file-based-router/index.js'
+export type * from './useQueryParams/index.js'

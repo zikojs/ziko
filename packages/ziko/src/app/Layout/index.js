@@ -1,5 +1,5 @@
 import { tags } from '../../dom/tags/index.js'
-import { call_with_optional_props } from '../../dom/internal-utils'
+import { call_with_optional_props } from '../../dom/internal-utils/call_with_optional_props.js'
 
 const { meta, link, script } = tags;
 

@@ -1,4 +1,4 @@
-import { UILayout } from "../../app";
+import { UILayout } from "../../Layout/index.js";
 
 export const renderer = async (target, component, props, wrapper) =>{
     if(!component) return;
