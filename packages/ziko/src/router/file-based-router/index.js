@@ -1,5 +1,3 @@
-// file-based-router/index.js
-
 import { 
     get_root,
     normalize_path,
@@ -10,17 +8,21 @@ import {
     renderer as ziko_renderer
 } from "../internal-utils/index.js";
 
-/**
- * Environment-independent file-based router core
- */
 export async function createFileBasedRouter({
   pages = {},
   url = typeof location !== 'undefined' ? location.pathname : '/',
   target = typeof document !== 'undefined' ? document.body : null,
   extensions = ['js', 'ts'],
+  base = '/',
   renderer = ziko_renderer,
   wrapper,
-  base = '/',
+  namedExportHandler = {
+    Get: async (exportedFn, context) => {
+      if (typeof exportedFn === 'function') {
+        return await exportedFn(context);
+      }
+    }
+  }
 } = {}) {
   // Normalize target element safely for UI frameworks/DOM wrapper objects
   let mountTarget = target;
@@ -44,16 +46,20 @@ export async function createFileBasedRouter({
 
   let currentPath = rawPath.startsWith('/') ? rawPath : '/' + rawPath;
 
-  // 3. Normalize route masks
+  // 3. Normalize route masks and collect modules
   const routes = Object.keys(pages);
   const root = get_root(routes);
 
   const pairs = {};
+  const modules = {};
+
   for (const route of routes) {
     const module = await pages[route]();
     const modComponent = await module.default;
     const normalizedKey = normalize_path(route, root, extensions);
+    
     pairs[normalizedKey] = modComponent;
+    modules[normalizedKey] = { module, rawRoute: route };
   }
 
   // 4. Sort routes by precedence (Static -> Dynamic -> Catch-All -> Optional Catch-All)
@@ -76,7 +82,21 @@ export async function createFileBasedRouter({
 
   const params = is_dynamic(mask) ? dynamic_routes_parser(mask, currentPath) : {};
 
-  // Execute renderer if a valid mount target is available
+  if (mask in modules) {
+    const { module, rawRoute } = modules[mask];
+    for (const exportName in namedExportHandler) {
+      if (exportName in module && typeof namedExportHandler[exportName] === 'function') {
+        await namedExportHandler[exportName](module[exportName], {
+          route: rawRoute,
+          mask,
+          module,
+          currentPath,
+          params
+        });
+      }
+    }
+  }
+
   if (mountTarget && typeof renderer === 'function') {
     await renderer(mountTarget, component, params, wrapper);
   }

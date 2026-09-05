@@ -1,5 +1,6 @@
 2.0.0
     Add `Layout` and `Page`
+    Add `NamedExportHanlder` in router
     Make useEffect callback accept more deps ..
     Replace `ziko/helpers` by `ziko/internal-utils`
     
