@@ -37,3 +37,6 @@ export declare const UIELEMENT: unique symbol;
  * importing the state implementation.
  */
 export declare const STATE_GETTER: unique symbol;
+
+export declare const LAYOUT: unique symbol;
+export declare const PAGE: unique symbol;

@@ -1,5 +1,5 @@
 import { isStateGetter } from '../../hooks/use-state.js'
-import { UIElement } from '../constructors/UIElement.js'
+import { UIElement } from '../UIElement/index.js'
 
 export const is_ui_item = item => {
     return (
