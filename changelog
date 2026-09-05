@@ -1,4 +1,5 @@
 2.0.0
+    Add `Layout` and `Page`
     Make useEffect callback accept more deps ..
     Replace `ziko/helpers` by `ziko/internal-utils`
     
