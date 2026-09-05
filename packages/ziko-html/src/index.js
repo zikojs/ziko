@@ -34,15 +34,24 @@ const Alpine = `
  } = HTML.Props
  const isOpen = true
 </script>
+<template>
 <div x-data="{ open: {isOpen} }">
     <button @click="open = true">Expand</button>
  
     <span x-show="open">
         Content...
     </span>
+    <div>Other </div>
 </div>
+</template>
+
+<style>
+ div{
+  color : red;
+ }
+</style>
 `
 
-const z = HtmlToZikoJsIR(Alpine)
+const z = await HtmlToZikoJsIR(Alpine)
 // console.log(v)
 console.log(z)

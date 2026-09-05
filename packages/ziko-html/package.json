@@ -35,9 +35,10 @@
   "author": "zakaria elalaoui",
   "type": "module",
   "dependencies": {
+    "acorn": "catalog:",
     "htmlparser2": "^12.0.0",
-    "ziko": "workspace:*",
-    "acorn": "catalog:"
+    "postcss": "^8.5.26",
+    "ziko": "workspace:*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,6 +1,6 @@
 {
   "name": "ziko",
-  "version": "2.0.0-alpha.0",
+  "version": "2.0.0-beta.0",
   "description": "A versatile JavaScript library offering a rich set of Hyperscript Based UI components, advanced mathematical utilities, interactivity ,animations, client side routing and more ...",
   "keywords": [
     "front-end",
@@ -25,20 +25,12 @@
   ],
   "exports": {
     "./*": {
-      "import": "./src/*/index.js"
+      "import": "./src/*/index.js",
+      "types": "./src/*/index.d.ts"
     },
     ".": {
       "import": "./dist/ziko.mjs",
       "require": "./dist/ziko.cjs"
-    },
-    "./helpers": {
-      "import": "./src/__helpers__.js"
-    },
-    "./events": {
-      "import": "./src/events/index.js"
-    },
-    "./hooks": {
-      "import": "./src/hooks/index.js"
     }
   },
   "sideEffects": true,
@@ -62,9 +54,9 @@
   },
   "homepage": "https://github.com/zikojs/ziko#readme",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^29.0.0",
-    "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "rollup": "^4.57.1"
+    "@rollup/plugin-commonjs": "catalog:",
+    "@rollup/plugin-node-resolve": "catalog:",
+    "@rollup/plugin-terser": "catalog:",
+    "rollup": "catalog:"
   }
 }

@@ -28,6 +28,10 @@
     "vitest": "^4.1.11"
   },
   "dependencies": {
-    "acorn": "catalog:"
+    "@rollup/plugin-commonjs": "catalog:",
+    "@rollup/plugin-node-resolve": "catalog:",
+    "@rollup/plugin-terser": "catalog:",
+    "acorn": "catalog:",
+    "rollup": "catalog:"
   }
 }

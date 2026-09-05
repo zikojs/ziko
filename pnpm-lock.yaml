@@ -6,9 +6,21 @@ settings:
 
 catalogs:
   default:
+    '@rollup/plugin-commonjs':
+      specifier: ^29.0.3
+      version: 29.0.3
+    '@rollup/plugin-node-resolve':
+      specifier: ^16.0.3
+      version: 16.0.3
+    '@rollup/plugin-terser':
+      specifier: ^0.4.4
+      version: 0.4.4
     acorn:
       specifier: ^8.18.0
       version: 8.18.0
+    rollup:
+      specifier: ^4.63.0
+      version: 4.63.0
     vite:
       specifier: ^8.2.2
       version: 8.2.2
@@ -17,9 +29,21 @@ importers:
 
   .:
     dependencies:
+      '@rollup/plugin-commonjs':
+        specifier: 'catalog:'
+        version: 29.0.3(rollup@4.63.0)
+      '@rollup/plugin-node-resolve':
+        specifier: 'catalog:'
+        version: 16.0.3(rollup@4.63.0)
+      '@rollup/plugin-terser':
+        specifier: 'catalog:'
+        version: 0.4.4(rollup@4.63.0)
       acorn:
         specifier: 'catalog:'
         version: 8.18.0
+      rollup:
+        specifier: 'catalog:'
+        version: 4.63.0
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^4.1.11
@@ -85,16 +109,16 @@ importers:
   packages/ziko:
     devDependencies:
       '@rollup/plugin-commonjs':
-        specifier: ^29.0.0
+        specifier: 'catalog:'
         version: 29.0.3(rollup@4.63.0)
       '@rollup/plugin-node-resolve':
-        specifier: ^16.0.3
+        specifier: 'catalog:'
         version: 16.0.3(rollup@4.63.0)
       '@rollup/plugin-terser':
-        specifier: ^0.4.4
+        specifier: 'catalog:'
         version: 0.4.4(rollup@4.63.0)
       rollup:
-        specifier: ^4.57.1
+        specifier: 'catalog:'
         version: 4.63.0
 
   packages/ziko-browser:
@@ -104,6 +128,21 @@ importers:
         version: link:../ziko
 
   packages/ziko-ease: {}
+
+  packages/ziko-html:
+    dependencies:
+      acorn:
+        specifier: 'catalog:'
+        version: 8.18.0
+      htmlparser2:
+        specifier: ^12.0.0
+        version: 12.0.0
+      postcss:
+        specifier: ^8.5.26
+        version: 8.5.26
+      ziko:
+        specifier: workspace:*
+        version: link:../ziko
 
   packages/ziko-i18n:
     dependencies:

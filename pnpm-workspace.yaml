@@ -5,6 +5,10 @@ packages:
 catalog:
   vite: "^8.2.2"
   acorn: ^8.18.0
+  "@rollup/plugin-commonjs": "^29.0.3"
+  "@rollup/plugin-node-resolve": "^16.0.3"
+  "@rollup/plugin-terser": "^0.4.4"
+  "rollup": "^4.63.0"
 minimumReleaseAge: 10080
 blockExoticSubdeps: true
 trustPolicy: no-downgrade
