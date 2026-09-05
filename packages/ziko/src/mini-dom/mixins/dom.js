@@ -1,11 +1,11 @@
 import { text } from "../text/index.js";
 import { isStateGetter } from "../../hooks/use-state.js";
 export function append(...ele) {
-  __addItem__.call(this, "append", "push", ...ele);
+  __addItems__.call(this, "append", "push", ...ele);
   return this;
 }
 export function prepend(...ele) {
-  this.__addItem__.call(this, "prepend", "unshift", ...ele);
+  this.__addItems__.call(this, "prepend", "unshift", ...ele);
   return this;
 }
 export function insertAt(index, ...ele) {
@@ -47,58 +47,46 @@ export function replaceElementWith(new_element){
     return this
 }
 export function after(ui){
-  if(ui?.isUIElement) ui=ui.element;
+  if(ui?.isUIElement) ui = ui.element;
   this.itemsTarget.element?.after(ui)
   return this;
 }
 export function before(ui){
-  if(ui?.isUIElement) ui=ui.element;
+  if(ui?.isUIElement) ui = ui.element;
   this.itemsTarget.element?.before(ui)
   return this;
 }
-export async function __addItem__(adder, pusher, ...ele) {
-  const itemsTarget_el = this.itemsTarget.element;
-  const itemsTarget = this.itemsTarget
-  if (this.cache.isFrozzen) {
-    console.warn("You can't append new item to frozzen element");
-    return this;
+
+export async function __addItem__(adder, pusher, item, referenceNode = null, index = null) {
+  const { element: itemsTargetEl, items } = this.itemsTarget;
+  if (["number", "string"].includes(typeof item)) item = text(item);
+  if (typeof item === "function" && isStateGetter(item)) {
+    const getter = item();
+    item = text(getter.value);
+    getter._subscribe(
+      (newValue) => { item.element.textContent = newValue; },
+      item
+    );
   }
-  for (let i = 0; i < ele.length; i++) {
-    if (["number", "string"].includes(typeof ele[i])) ele[i] = text(ele[i]);
-        // Fix Items Latter
-    if (ele[i] instanceof Function) {
-      if (isStateGetter(ele[i])) {
-        const getter = ele[i]();
-        ele[i] = text(getter.value);
-        getter._subscribe(
-            (newValue) => (ele[i].element.textContent = newValue),
-            ele[i] 
-        );
-        // this.itemsTarget.element.appendChild(textNode);
-      }
-    }
-    if (typeof globalThis?.Node === "function" && ele[i] instanceof globalThis?.Node) ele[i] = new this.constructor(ele[i]);
-    if (ele[i]?.isUINode) {
-        ele[i].cache.parent = this;
-        itemsTarget_el?.[adder](ele[i].element);
-        ele[i].target = this.itemsTarget.element;
-        itemsTarget.items[pusher](ele[i]);
-    } 
-    else if(ele[i] instanceof Promise){
-      const UIEle = await ele[i]
-      UIEle.cache.parent = this;
-      itemsTarget_el?.[adder](UIEle.element);
-      UIEle.target = this.itemsTarget.element;
-      itemsTarget.items[pusher](UIEle)
-    }
-    else if (ele[i] instanceof Object) {
-      if (ele[i]?.style) this.style(ele[i]?.style);
-      if (ele[i]?.attr) {
-        Object.entries(ele[i].attr).forEach((n) =>
-          this.setAttr("" + n[0], n[1]),
-        );
-      }
-    }
+  if (typeof globalThis?.Node === "function" && item instanceof globalThis.Node)
+    item = new this.constructor(item);
+  if (item instanceof Promise) item = await item;
+  if (item?.isUINode) {
+    item.cache.parent = this;
+    item.target = itemsTargetEl;
+    if (adder === "insertBefore" && itemsTargetEl) 
+      itemsTargetEl.insertBefore(item.element, referenceNode);
+    else if (typeof itemsTargetEl?.[adder] === "function") 
+      itemsTargetEl[adder](item.element);
+    if (pusher === "splice" && index !== null) items.splice(index, 0, item);
+    else if (typeof items?.[pusher] === "function") items[pusher](item);
+    return;
+  }
+}
+
+export async function __addItems__(adder, pusher, ...elements) {
+  for (const item of elements) {
+    await this.__addItem__(adder, pusher, item);
   }
   this.maintain();
   return this;
