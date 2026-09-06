@@ -67,6 +67,9 @@ importers:
         specifier: workspace:*
         version: link:../packages/ziko
     devDependencies:
+      '@zikojs/vite-plugin-jsx':
+        specifier: workspace:*
+        version: link:../packages/ziko-vite-plugin-jsx
       vite:
         specifier: ^7.0.4
         version: 7.3.6(lightningcss@1.33.0)(terser@5.51.2)
@@ -191,6 +194,9 @@ importers:
       '@zikojs/jsx':
         specifier: workspace:*
         version: link:../ziko-jsx
+      vite:
+        specifier: 'catalog:'
+        version: 8.2.2(esbuild@0.28.2)(terser@5.51.2)
       ziko:
         specifier: workspace:*
         version: link:../ziko

@@ -225,20 +225,20 @@ export function compile(code) {
   return escodegen.generate(ast);
 }
 
-// // --- Test ---
-const code = `
-export default function Hello(){
-    return <h1> Hello world </h1>
-}
-// const App = ({ text = "world" } = {}) => (
-//   <div class="box">
-//     <Comp a="kk" />
-//     Hello
-//     <h1>Hello   {text}</h1>
-//     <span>hello {text}</span>
-//     <custom-el></custom-el>
-//   </div>
-// )
-`;
+// // // --- Test ---
+// const code = `
+// export default function Hello(){
+//     return <h1> Hello world </h1>
+// }
+// // const App = ({ text = "world" } = {}) => (
+// //   <div class="box">
+// //     <Comp a="kk" />
+// //     Hello
+// //     <h1>Hello   {text}</h1>
+// //     <span>hello {text}</span>
+// //     <custom-el></custom-el>
+// //   </div>
+// // )
+// `;
 
-console.log(compile(code));
+// console.log(compile(code));

@@ -1,8 +1,8 @@
 {
   "name": "@zikojs/vite-plugin-jsx",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Vite plugin for transforming and compiling ZikoJS JSX syntax.",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -32,11 +32,14 @@
   "publishConfig": {
     "access": "public"
   },
+  "exports":{
+    "import" : "./src/index.js"
+  },
   "author": "zakaria elalaoui",
   "license": "MIT",
-  "type": "module",
   "dependencies": {
     "ziko":"workspace:*",
-    "@zikojs/jsx":"workspace:*"
+    "@zikojs/jsx":"workspace:*",
+    "vite" : "catalog:"
   }
 }
