@@ -14,6 +14,7 @@ export async function createFileBasedRouter({
   target = typeof document !== 'undefined' ? document.body : null,
   extensions = ['js', 'ts'],
   base = '/',
+  lazy = true,
   renderer = ziko_renderer,
   wrapper,
   namedExportHandler = {
@@ -46,66 +47,118 @@ export async function createFileBasedRouter({
 
   let currentPath = rawPath.startsWith('/') ? rawPath : '/' + rawPath;
 
-  // 3. Normalize route masks and collect modules
-  const routes = Object.keys(pages);
-  const root = get_root(routes);
-
-  const pairs = {};
-  const modules = {};
-
-  for (const route of routes) {
-    const module = await pages[route]();
-    const modComponent = await module.default;
-    const normalizedKey = normalize_path(route, root, extensions);
-    
-    pairs[normalizedKey] = modComponent;
-    modules[normalizedKey] = { module, rawRoute: route };
-  }
-
-  // 4. Sort routes by precedence (Static -> Dynamic -> Catch-All -> Optional Catch-All)
-  const sortedRouteKeys = sort_routes(Object.keys(pairs));
+  const rawRoutes = Object.keys(pages);
+  const root = get_root(rawRoutes);
 
   let mask = null;
   let component = null;
+  let module = null;
+  let rawRoute = null;
+  let namedExports = {};
 
-  for (const routePath of sortedRouteKeys) {
-    if (routes_matcher(routePath, currentPath)) {
-      mask = routePath;
-      component = pairs[routePath];
-      break;
+  if (lazy) {
+    // --- LAZY MODE ---
+    // 3a. Map normalized masks to raw routes without executing module imports
+    const maskToRawRouteMap = {};
+    for (const route of rawRoutes) {
+      const maskKey = normalize_path(route, root, extensions);
+      maskToRawRouteMap[maskKey] = route;
     }
-  }
 
-  if (mask === null) {
-    return { mask: null, component: null, params: {}, matched: false };
-  }
+    // 4a. Sort route masks by precedence
+    const sortedMasks = sort_routes(Object.keys(maskToRawRouteMap));
 
-  const params = is_dynamic(mask) ? dynamic_routes_parser(mask, currentPath) : {};
-
-  if (mask in modules) {
-    const { module, rawRoute } = modules[mask];
-    for (const exportName in namedExportHandler) {
-      if (exportName in module && typeof namedExportHandler[exportName] === 'function') {
-        await namedExportHandler[exportName](module[exportName], {
-          route: rawRoute,
-          mask,
-          module,
-          currentPath,
-          params
-        });
+    // 5a. Match current path against route masks first
+    for (const routeMask of sortedMasks) {
+      if (routes_matcher(routeMask, currentPath)) {
+        mask = routeMask;
+        break;
       }
     }
+
+    // Early exit if no route matches (0 dynamic imports loaded)
+    if (mask === null) {
+      return { mask: null, component: null, params: {}, matched: false };
+    }
+
+    // 6a. Import ONLY the matched module
+    rawRoute = maskToRawRouteMap[mask];
+    try {
+      module = await pages[rawRoute]();
+      const { default: cmp, ...restExports } = module;
+      component = cmp;
+      namedExports = restExports;
+    } catch (error) {
+      console.error(`[Router] Failed to load module for route: ${rawRoute}`, error);
+      return { mask: null, component: null, params: {}, matched: false, error };
+    }
+
+  } else {
+    // --- EAGER MODE ---
+    // 3b. Load all modules and map normalized keys upfront
+    const pairs = {};
+    const modules = {};
+
+    for (const route of rawRoutes) {
+      const loadedModule = await pages[route]();
+      const { default: cmp } = loadedModule;
+      const normalizedKey = normalize_path(route, root, extensions);
+      
+      pairs[normalizedKey] = cmp;
+      modules[normalizedKey] = { module: loadedModule, rawRoute: route };
+    }
+
+    // 4b. Sort route keys by precedence
+    const sortedRouteKeys = sort_routes(Object.keys(pairs));
+
+    // 5b. Match route
+    for (const routePath of sortedRouteKeys) {
+      if (routes_matcher(routePath, currentPath)) {
+        mask = routePath;
+        component = pairs[routePath];
+        break;
+      }
+    }
+
+    if (mask === null) {
+      return { mask: null, component: null, params: {}, matched: false };
+    }
+
+    if (mask in modules) {
+      module = modules[mask].module;
+      rawRoute = modules[mask].rawRoute;
+      const { default: _, ...restExports } = module;
+      namedExports = restExports;
+    }
   }
 
+  // 7. Parse dynamic parameters
+  const params = is_dynamic(mask) ? dynamic_routes_parser(mask, currentPath) : {};
+
+  // 8. Execute named exports handler for matched module
+  for (const exportName in namedExportHandler) {
+    if (exportName in namedExports && typeof namedExportHandler[exportName] === 'function') {
+      await namedExportHandler[exportName](namedExports[exportName], {
+        route: rawRoute,
+        mask,
+        module,
+        currentPath,
+        params
+      });
+    }
+  }
+
+  // 9. Render component
   if (mountTarget && typeof renderer === 'function') {
     await renderer(mountTarget, component, params, wrapper);
   }
 
-  // Return router state for SSR/static build environments
+  // Return router state
   return {
     mask,
     component,
     params,
+    namedExports,
     matched: true
   };
 }
