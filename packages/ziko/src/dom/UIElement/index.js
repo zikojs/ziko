@@ -1,11 +1,11 @@
 import { UIElement as UIElementCore } from "../../mini-dom/UIElement/index.js";
 import { register_to_class } from "../../internal-utils/register/register-to-class.js";
 import { 
-  LifecycleMethods,
+  // LifecycleMethods,
   AttrsMethods,
   DomMethods,
-  IndexingMethods,
-  StyleMethods,
+  // IndexingMethods,
+  // StyleMethods,
 } from "../../mini-dom/mixins/index.js";
 
 import {
@@ -15,6 +15,7 @@ import {
   KeyListeners,
   ViewListeners,
 } from '../../events/index.js'
+import { isStateGetter } from "../../hooks/use-state.js";
 class UIElement extends UIElementCore{
   constructor({element, name ='', type = 'html', render = __Ziko__.__Config__.default.render, props}={}){
     super()
@@ -25,11 +26,11 @@ class UIElement extends UIElementCore{
     }
     register_to_class(
       this, 
-      LifecycleMethods,
+      // LifecycleMethods,
       AttrsMethods, 
       DomMethods, 
-      StyleMethods,
-      IndexingMethods,
+      // StyleMethods,
+      // IndexingMethods,
       PtrListeners,
       ClickListeners,
       KeyListeners,
@@ -57,7 +58,7 @@ class UIElement extends UIElementCore{
     });
     return this;
   }
-  _off(event, category = 'global'){
+  off(event, category = 'global'){
     this.exp.events[category].removeListener(event);
     return this
   }
@@ -108,24 +109,92 @@ class UIElement extends UIElementCore{
   get parent(){
     return this.cache.parent;
   }
-  get width(){
-    return this.element.getBoundingClientRect().width;
+  get rect(){
+    return this.element.getBoundingClientRect()
   }
-  get height(){
-    return this.element.getBoundingClientRect().height;
+  // get width(){
+  //   return this.element.getBoundingClientRect().width;
+  // }
+  // get height(){
+  //   return this.element.getBoundingClientRect().height;
+  // }
+  // get top(){
+  //   return this.element.getBoundingClientRect().top;
+  // }
+  // get right(){
+  //   return this.element.getBoundingClientRect().right;
+  // }
+  // get bottom(){
+  //   return this.element.getBoundingClientRect().bottom;
+  // }
+  // get left(){
+  //   return this.element.getBoundingClientRect().left;
+  // }
+
+  // Lifecycle
+
+  mount(target = this.target, delay = 0) {
+    if (this.isBody) return this;
+    if (target?.isUIElement) target = target.element;
+    this.target = target;
+    this.target?.appendChild(this.element);
+    return this;
   }
-  get top(){
-    return this.element.getBoundingClientRect().top;
+  unmount() {
+    if (this.cache.parent) {
+        this.cache.parent.remove(this);
+    } 
+    else if (
+        this.target?.children?.length &&
+        [...this.target.children].includes(this.element)
+    )this.target.removeChild(this.element);
+    return this;
   }
-  get right(){
-    return this.element.getBoundingClientRect().right;
+
+  // Indexing
+
+  at(index) {
+  return this.items.at(index);
   }
-  get bottom(){
-    return this.element.getBoundingClientRect().bottom;
+  forEach(callback) {
+    this.items.forEach(callback);
+    return this;
   }
-  get left(){
-    return this.element.getBoundingClientRect().left;
+  map(callback) {
+    return this.items.map(callback);
   }
+  find(condition) {
+    return this.items.filter(condition);
+  }
+  // Styling  
+  style(styles){
+    if(!this.element?.style) return this;
+    for(let key in styles){
+      const value = styles[key];
+      if(isStateGetter(value)){
+        const getter = value()
+        Object.assign(this.element.style, {[key] : getter.value})
+        getter._subscribe(
+          (newValue) => {
+            Object.assign(this.element.style, {[key] : newValue})
+          },
+          // this 
+        );
+      }
+      else Object.assign(this.element.style, {[key] : value})
+    }
+    return this;
+  }
+  size(width, height){
+    return this.style({width, height})
+  }
+  hide(){
+
+  }
+  show(){
+
+  }
+
 
 }
 export { UIElement }
