@@ -3,10 +3,10 @@ export const camel2snakecase = (text = '') => text.replace(/[A-Z]/g, match => '_
 export const camel2pascalcase = (text = '') => text.charAt(0).toUpperCase() + text.slice(1);
 export const camel2constantcase = (text = '') => text.replace(/[A-Z]/g, match => '_' + match).toUpperCase();
 
-export const pascal2snakecase = (text = '') => text.replace(/([A-Z])/g, (match, offset) => offset ? '_' + match.toLowerCase() : match.toLowerCase());
-export const pascal2hyphencase = (text = '') => text.replace(/([A-Z])/g, (match, offset) => offset ? '-' + match.toLowerCase() : match.toLowerCase());
+export const pascal2snakecase = (text = '') => text.replace(/([A-Z])/g, (match, _, offset) => offset ? '_' + match.toLowerCase() : match.toLowerCase());
+export const pascal2hyphencase = (text = '') => text.replace(/([A-Z])/g, (match, _, offset) => offset ? '-' + match.toLowerCase() : match.toLowerCase());
+export const pascal2constantcase = (text = '') => text.replace(/([A-Z])/g, (match, _, offset) => offset ? '_' + match : match).toUpperCase();
 export const pascal2camelcase = (text = '') => text.charAt(0).toLowerCase() + text.slice(1);
-export const pascal2constantcase = (text = '') => text.replace(/([A-Z])/g, (match, offset) => offset ? '_' + match : match).toUpperCase();
 
 export const snake2camelcase = (text = '') => text.replace(/(_\w)/g, match => match[1].toUpperCase());
 export const snake2hyphencase = (text = '') => text.replace(/_/g, "-");
