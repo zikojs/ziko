@@ -28,6 +28,6 @@ export const apply_fun = (x, fn) => {
         x.cols,
         x.arr.flat(1).map(fn)
     )
-    if (x instanceof Array) mapfun(fn, ...x)
+    if (x instanceof Array) return mapfun(fn, ...x)
     return fn(x)
 }
