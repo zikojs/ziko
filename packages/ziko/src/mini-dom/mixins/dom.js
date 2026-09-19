@@ -60,19 +60,6 @@ export function before(ui){
 export async function __addItem__(adder, pusher, item, referenceNode = null, index = null) {
   const { element: itemsTargetEl, items } = this.itemsTarget;
   if (["number", "string"].includes(typeof item)) item = text(item);
-  // if (typeof item === "function" && isStateGetter(item)) {
-  //   const getter = item();
-  //   const { value } = getter
-  //   item = value;
-  //   getter._subscribe(
-  //     (newValue) => {
-  //       if(value.isUIElement?.()){
-  //         item.element.replaceWith(newValue.element)
-  //       }
-  //       else item.element.textContent = newValue; 
-  //     }
-  //   );
-  // }
   if (typeof item === "function" && isStateGetter(item)) {
     const getter = item();
     item = getter.value;
