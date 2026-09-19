@@ -60,14 +60,32 @@ export function before(ui){
 export async function __addItem__(adder, pusher, item, referenceNode = null, index = null) {
   const { element: itemsTargetEl, items } = this.itemsTarget;
   if (["number", "string"].includes(typeof item)) item = text(item);
+  // if (typeof item === "function" && isStateGetter(item)) {
+  //   const getter = item();
+  //   const { value } = getter
+  //   item = value;
+  //   getter._subscribe(
+  //     (newValue) => {
+  //       if(value.isUIElement?.()){
+  //         item.element.replaceWith(newValue.element)
+  //       }
+  //       else item.element.textContent = newValue; 
+  //     }
+  //   );
+  // }
   if (typeof item === "function" && isStateGetter(item)) {
     const getter = item();
-    item = text(getter.value);
-    getter._subscribe(
-      (newValue) => { item.element.textContent = newValue; },
-      item
-    );
-  }
+    item = getter.value;
+
+    getter._subscribe((newValue) => {
+        if (newValue?.isUIElement?.()) {
+            item.element.replaceWith(newValue.element);
+            item = newValue;
+        } else {
+            item.element.textContent = newValue;
+        }
+    });
+}
   if (typeof globalThis?.Node === "function" && item instanceof globalThis.Node)
     item = new this.constructor(item);
   if (item instanceof Promise) item = await item;
