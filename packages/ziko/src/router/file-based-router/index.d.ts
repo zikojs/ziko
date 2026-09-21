@@ -1,24 +1,84 @@
-// createSPAFileBasedRouter.d.ts
-
 import { UIElement } from '../../dom/UIElement'
+import type { UILayout } from '../../Layout'
 
-/**
- * Creates a SPA (Single Page Application) file-based router.
- * Automatically loads and mounts the component corresponding to the current path.
- * Supports dynamic routes and parameter extraction.
- *
- * @param pages - An object mapping route paths to async module functions that return a component.
- *                Example: { "/user/[id]": () => import("./pages/user/[id].js") }
- * @param target - Optional DOM element to mount the component. Defaults to `document.body`.
- */
-export function createSPAFileBasedRouter(
-  options : {
-    pages: Record<
-      string, 
-      () => Promise<{ default: (param? : Record<string, string>) => UIElement | UIElement[]}>
-    >,
-    target?: HTMLElement | UIElement
-    extensions : string[],
-    wrapper : Function
-  },
-): Promise<void>;
+export type Component<T = unknown> =
+  | ((params?: Record<string, string>) => T)
+  | T
+  | T[]
+
+export type Renderer<TComponent = unknown, TTarget = unknown> = (
+  target: TTarget,
+  component: TComponent | TComponent[] | null,
+  params: Record<string, string>,
+  wrapper?: unknown
+) => void | Promise<void>
+
+export interface CreateFileBasedRouterOptions<
+  TComponent = unknown,
+  TTarget = unknown
+> {
+  pages?: Record<
+    string,
+    () => Promise<{
+      default: (params?: Record<string, string>) => TComponent
+      [key: string]: unknown
+    }>
+  >
+
+  target?: TTarget | null
+
+  extensions?: string[]
+
+  renderer?: Renderer<TComponent, TTarget>
+
+  wrapper?: unknown
+
+  lazy?: boolean
+
+  base?: string
+
+  url?: string
+
+  namedExportHandler?: Record<
+    string,
+    (
+      exportedFn: unknown,
+      context: {
+        route: string | null
+        mask: string | null
+        module: unknown
+        currentPath: string
+        params: Record<string, string>
+      }
+    ) => unknown | Promise<unknown>
+  >
+}
+
+export interface FileBasedRouterResult<TComponent = unknown> {
+  mask: string | null
+  component: TComponent | null
+  params: Record<string, string>
+  namedExports?: Record<string, unknown>
+  matched: boolean
+  error?: unknown
+}
+
+export declare function _createFileBasedRouter<
+  TComponent = unknown,
+  TTarget = unknown
+>(
+  options?: CreateFileBasedRouterOptions<TComponent, TTarget>
+): Promise<FileBasedRouterResult<TComponent>>
+
+
+export type ZikoComponent =
+  | UIElement
+  | UIElement[]
+  | UILayout
+
+export declare function createFileBasedRouter(
+  options?: CreateFileBasedRouterOptions<
+    ZikoComponent,
+    HTMLElement | UIElement
+  >
+): Promise<FileBasedRouterResult<ZikoComponent>>

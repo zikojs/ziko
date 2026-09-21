@@ -162,6 +162,3 @@ export async function createFileBasedRouter({
     matched: true
   };
 }
-
-// Backward-compatible alias for SPA usage
-export const createSPAFileBasedRouter = createFileBasedRouter;
