@@ -1,5 +1,5 @@
 {
-  "name": "pnpm-temaplets-sync",
+  "name": "pnpm-templates-sync",
   "version": "0.1.0",
   "description": "",
   "type": "module",
@@ -15,7 +15,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zikojs/ziko.git",
-    "directory": "dev-tools/pnpm-temaplets-sync"
+    "directory": "dev-tools/pnpm-templates-sync"
   },
   "publishConfig": {
     "access": "public"

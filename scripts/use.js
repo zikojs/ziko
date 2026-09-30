@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 
 import {
   createTemplateSync,
-} from "pnpm-temaplets-sync";
+} from "pnpm-templates-sync";
 
 const root = path.resolve(
   import.meta.dirname,
