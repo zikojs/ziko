@@ -3,6 +3,7 @@ packages:
   - "packages/*/test"
   - "packages/create-ziko/templates/*"
   - "demo/"
+  - "dev-tools/*"
 catalog:
   vite: "^8.2.2"
   acorn: ^8.18.0

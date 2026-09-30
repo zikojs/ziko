@@ -1,0 +1,41 @@
+{
+  "name": "pnpm-temaplets-sync",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "keywords": [
+    "pnpm",
+    "templates",
+    "sync"
+  ],
+  "homepage": "https://github.com/zikojs/ziko#readme",
+  "bugs": {
+    "url": "https://github.com/zikojs/ziko/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "dev-utils"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports":{
+    ".":{
+      "import" : "./src/index.js",
+      "types" : "./src/index.d.ts"
+    },
+    "./*":{
+      "import" : "./src/*/index.js",
+      "types" : "./src/*/index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "author": "zakaria elalaoui",
+  "dependencies": {
+    "ziko": "workspace:*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "create-ziko",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Easily create Ziko apps without any complicated build setup.",
   "type": "module",
   "keywords": [
