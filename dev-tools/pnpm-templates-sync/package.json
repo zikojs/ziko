@@ -15,24 +15,25 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zikojs/ziko.git",
-    "directory": "dev-utils"
+    "directory": "dev-tools/pnpm-temaplets-sync"
   },
   "publishConfig": {
     "access": "public"
   },
-  "exports":{
-    ".":{
-      "import" : "./src/index.js",
-      "types" : "./src/index.d.ts"
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "types": "./src/index.d.ts"
     },
-    "./*":{
-      "import" : "./src/*/index.js",
-      "types" : "./src/*/index.d.ts"
+    "./*": {
+      "import": "./src/*/index.js",
+      "types": "./src/*/index.d.ts"
     }
   },
   "license": "MIT",
   "author": "zakaria elalaoui",
   "dependencies": {
+    "@b9g/termdom": "^0.1.8",
     "ziko": "workspace:*"
   },
   "scripts": {

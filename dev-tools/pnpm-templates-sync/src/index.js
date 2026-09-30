@@ -1,6 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { TermDOM } from "@b9g/termdom";
+
+import {
+  PrepreLog,
+  RestoreLog
+} from "./components/Log.js";
+
+const term = new TermDOM();
+term.attach();
+const { document, window } = term;
+globalThis.document = document;
+globalThis.window = window;
+
 const DEPENDENCY_SECTIONS = [
   "dependencies",
   "devDependencies",
@@ -227,12 +240,12 @@ function preparePackage(packageFile, resolver, root) {
     JSON.stringify(pkg, null, 2) + "\n"
   );
 
-  console.log(
-    `✓ Prepared ${path.relative(
+  PrepreLog(
+    path.relative(
       root,
       packageFile
-    )}`
-  );
+    )
+  ).mount(document.body);
 }
 
 export function prepareTemplates({
@@ -286,12 +299,12 @@ function restorePackage(packageFile, restoreMap, root) {
     JSON.stringify(pkg, null, 2) + "\n"
   );
 
-  console.log(
-    `✓ Restored ${path.relative(
+  RestoreLog(
+    path.relative(
       root,
       packageFile
-    )}`
-  );
+    )
+  ).mount(document.body);
 }
 
 export function restoreTemplates({
