@@ -210,12 +210,6 @@ importers:
         specifier: workspace:*
         version: link:../ziko
 
-  scripts:
-    dependencies:
-      pnpm-temaplets-sync:
-        specifier: workspace:*
-        version: link:../dev-tools/pnpm-templates-sync
-
 packages:
 
   '@asamuzakjp/css-color@3.2.0':

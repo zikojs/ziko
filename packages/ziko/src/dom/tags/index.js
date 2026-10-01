@@ -13,15 +13,17 @@ export const tags = new Proxy({}, {
     if(SVGTags.includes(tag)) type = 'svg';
     if(MathMLTags.includes(tag)) type = 'mathml';
     return (...args) => {
+      const ui = new UIElement({element : tag, name : tag, type});
+      const first = args[0]
       if(args.length === 0) {
-        return new UIElement({element : tag, name : tag, type})
+        return ui
       }
       if(
-        ['string', 'number'].includes(typeof args[0]) 
-        || args[0] instanceof UIElement 
-        || isStateGetter(args[0])
-        || args[0] instanceof HTMLElement
-      ) return new UIElement({element : tag, name : tag, type}).append(...args);
+        ['string', 'number'].includes(typeof first) 
+        || first instanceof UIElement 
+        || isStateGetter(first)
+        || first instanceof HTMLElement
+      ) return ui.append(...args);
       return new UIElement({element : tag, type, props : args.shift()}).append(...args)
     }
   }
