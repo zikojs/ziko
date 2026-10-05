@@ -18,9 +18,13 @@
   "author": "zakaria elalaoui",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.3",
     "@vitest/coverage-v8": "^4.1.11",
     "cross-env": "^10.1.0",
     "eslint": "^10.9.1",

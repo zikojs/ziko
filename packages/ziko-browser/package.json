@@ -1,5 +1,5 @@
 {
-  "name": "@zikojs/borwser",
+  "name": "@zikojs/browser",
   "version": "0.0.1",
   "description": "zikojs math module",
   "type": "module",
