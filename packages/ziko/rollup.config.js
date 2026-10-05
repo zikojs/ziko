@@ -5,11 +5,11 @@ import terser from '@rollup/plugin-terser';
 
 const banner= `
 /*
-  Project: ziko.js
+  Project: ziko
   Author: Zakaria Elalaoui
-  Date : ${new Date()}
-  Git-Repo : https://github.com/zakarialaoui10/ziko.js
-  Git-Wiki : https://github.com/zakarialaoui10/ziko.js/wiki
+  Date: ${new Date().toISOString().slice(0, 10)}
+  Git-Repo : https://github.com/zikojs/ziko
+  Git-Wiki : https://github.com/zikojs/ziko/wiki
   Released under MIT License
 */
 `
@@ -20,15 +20,15 @@ const output = [
     file: 'dist/ziko.mjs',
     format: 'es',
     banner,
-    exports: "named",
+    exports: 'named',
     inlineDynamicImports: true,
   },
   {
     file: 'dist/ziko.js',
     format: 'umd',
-    name:"Ziko",
+    name:'Ziko',
     banner,
-    exports: "named",
+    exports: 'named',
     inlineDynamicImports: true,
   },
 ]
@@ -37,19 +37,20 @@ isProduction && output.push(
     file: 'dist/ziko.cjs',
     format: 'cjs',
     banner,
-    exports: "named",
+    exports: 'named',
     inlineDynamicImports: true,
   },
   {
     file: 'dist/ziko.min.js',
     format: 'umd',
-    name:"Ziko",
+    name:'Ziko',
     banner,
-    exports: "named",
+    exports: 'named',
     inlineDynamicImports: true,
+    sourcemap: true,
     plugins:[terser({
       output: {
-        comments: (node, { type, value }) => type === 'comment2' && value.includes('Author'),
+        comments: (_, { type, value }) => type === 'comment2' && /Project:|Author:|MIT License/.test(value)
       },
     })]
   }
@@ -60,6 +61,6 @@ export default {
   output,
    plugins: [
     resolve(), 
-    //commonjs(),
+    commonjs(),
   ],
 }

@@ -1,5 +1,5 @@
 export * from './View/index.js';
-export * from './Flex/index.js';
+// export * from './Flex/index.js';
 export * from './Suspense/index.js';
 export * from './Swap/index.js';
 export * from './Fragment/index.js';

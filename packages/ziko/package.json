@@ -1,7 +1,7 @@
 {
   "name": "ziko",
-  "version": "2.0.0-beta.16.0",
-  "description": "A versatile JavaScript library offering a rich set of Hyperscript Based UI components, advanced mathematical utilities, interactivity ,animations, client side routing and more ...",
+  "version": "2.0.0-beta.16.1",
+  "description": "A versatile JavaScript library offering a rich set of Hyperscript Based UI components, advanced mathematical utilities, interactivity, animations, client-side routing and more ...",
   "keywords": [
     "front-end",
     "framework",
@@ -15,24 +15,30 @@
     "file based routing"
   ],
   "type": "module",
-  "main": "dist/ziko.mjs",
-  "module": "dist/ziko.mjs",
-  "unpkg": "dist/ziko.min.js",
-  "files": [
-    "src",
-    "dist",
-    "LICENCE"
-  ],
+  "main": "./dist/ziko.cjs",
+  "module": "./dist/ziko.mjs",
+  "types": "./src/index.d.ts",
+  "unpkg": "./dist/ziko.min.js",
+  "jsdelivr": "./dist/ziko.min.js",
   "exports": {
-    "./*": {
-      "import": "./src/*/index.js",
-      "types": "./src/*/index.d.ts"
-    },
     ".": {
+      "types": "./src/index.d.ts",
       "import": "./dist/ziko.mjs",
-      "require": "./dist/ziko.cjs"
+      "require": "./dist/ziko.cjs",
+      "default": "./dist/ziko.mjs"
+    },
+    "./*": {
+      "types": "./src/*/index.d.ts",
+      "import": "./src/*/index.js"
     }
   },
+  "files": [
+    "src/**/*.js",
+    "src/**/*.d.ts",
+    "dist",
+    "LICENCE",
+    "README.md"
+  ],
   "sideEffects": true,
   "scripts": {
     "test": "npx vitest",
