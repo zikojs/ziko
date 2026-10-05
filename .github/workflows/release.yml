@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   release:
+    name: Release packages
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +25,7 @@ jobs:
         with:
           version: 10
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -34,26 +35,55 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check for changesets
+        id: changesets
+        shell: bash
+        run: |
+          if find .changeset \
+            -maxdepth 1 \
+            -type f \
+            -name '*.md' \
+            ! -name 'README.md' \
+            | grep -q .; then
+
+            echo "has_changesets=true" >> "$GITHUB_OUTPUT"
+            echo "Changesets found."
+
+          else
+
+            echo "has_changesets=false" >> "$GITHUB_OUTPUT"
+            echo "No changesets found."
+
+          fi
+
       - name: Version packages
+        if: steps.changesets.outputs.has_changesets == 'true'
         run: pnpm changeset version
 
-      - name: Install updated lockfile
+      - name: Update lockfile
+        if: steps.changesets.outputs.has_changesets == 'true'
         run: pnpm install --lockfile-only
 
-      - name: Build
+      - name: Build packages
+        if: steps.changesets.outputs.has_changesets == 'true'
         run: pnpm -r --if-present build
 
       - name: Publish packages
+        if: steps.changesets.outputs.has_changesets == 'true'
         run: pnpm changeset publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
-      - name: Push release changes
+      - name: Commit release changes
+        if: steps.changesets.outputs.has_changesets == 'true'
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add .
-          git commit -m "chore: release packages" || true
+
+          git commit -m "chore: release packages"
+
           git push
