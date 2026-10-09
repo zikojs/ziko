@@ -22,7 +22,7 @@ export class UIElement extends UIElementCore {
     element,
     name = "",
     type = "html",
-    render = __Ziko__.__Config__.default.render,
+    autoMount = __Ziko__.__Config__.default.autoMount,
     props,
   } = {}) {
     super();
@@ -42,7 +42,7 @@ export class UIElement extends UIElementCore {
       ViewListeners,
     );
 
-    if (element) this.init({ element, name, type, render, props });
+    if (element) this.init({ element, name, type, autoMount, props });
   }
   on(
     event_name,

@@ -7,7 +7,7 @@ class UIElement extends UINode{
   constructor(){
     super()
   }
-  init({element, name, type, mount, props = {}, items = []} = {}){
+  init({element, name, type, autoMount, props = {}, items = []} = {}){
     this.target = globalThis.__Ziko__.__Config__.default.target||globalThis?.document?.body;
     if(typeof element === "string") {
       switch(type){
@@ -52,7 +52,7 @@ class UIElement extends UINode{
     globalThis.__Ziko__.__UI__[this.cache.name]
       ? globalThis.__Ziko__.__UI__[this.cache.name]?.push(this)
       : globalThis.__Ziko__.__UI__[this.cache.name]=[this];
-    element && mount && this?.mount?.()
+    element && autoMount && this?.mount?.()
     globalThis.__Ziko__.__UI__.push(this)
     
     const parsed_props = parse_props(props);
