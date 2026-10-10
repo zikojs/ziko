@@ -1,11 +1,7 @@
 import { UIElement as UIElementCore } from "../../mini-dom/UIElement/index.js";
 import { register_to_class } from "../../internal-utils/register/register-to-class.js";
 import {
-  // LifecycleMethods,
   AttrsMethods,
-  // DomMethods,
-  // IndexingMethods,
-  // StyleMethods,
 } from "../../mini-dom/mixins/index.js";
 
 import {
@@ -31,11 +27,7 @@ export class UIElement extends UIElementCore {
     };
     register_to_class(
       this,
-      // LifecycleMethods,
       AttrsMethods,
-      // DomMethods,
-      // StyleMethods,
-      // IndexingMethods,
       PtrListeners,
       ClickListeners,
       KeyListeners,
@@ -218,11 +210,11 @@ export class UIElement extends UIElementCore {
   // Dom
 
   append(...ele) {
-    this.__addItems__("append", "push", ...ele);
+    this.#__addItems__("append", "push", ...ele);
     return this;
   }
   prepend(...ele) {
-    this.this.__addItems__("prepend", "unshift", ...ele);
+    this.this.#__addItems__("prepend", "unshift", ...ele);
     return this;
   }
   insertAt(index, ...ele) {
@@ -249,29 +241,36 @@ export class UIElement extends UIElementCore {
     return this;
   }
 
-  async __addItem__(adder, pusher, item, referenceNode = null, index = null) {
+  async #__addItem__(adder, pusher, item, referenceNode = null, index = null) {
     const { element: itemsTargetEl, items } = this.itemsTarget;
-    if (["number", "string"].includes(typeof item)) item = text(item);
-    if (typeof item === "function" && isStateGetter(item)) {
+    if(["number", "string"].includes(typeof item)) item = text(item);
+    if(typeof item === "function" && isStateGetter(item)) {
       const getter = item();
-      item = getter.value;
-
-      getter._subscribe((newValue) => {
-        if (newValue?.isUIElement?.()) {
-          item.element.replaceWith(newValue.element);
-          item = newValue;
-        } else {
-          item.element.textContent = newValue;
+      let currentItem = normalize(getter.value);
+      item = currentItem;
+      getter._subscribe((value) => {
+        const nextItem = normalize(value);
+        if (nextItem === currentItem) return;
+        const currentIndex = items.indexOf(currentItem);
+        if (currentIndex !== -1) {
+          currentItem.element.replaceWith(nextItem.element);
+          items[currentIndex] = nextItem;
+        } 
+        else if (currentItem.element.parentNode) {
+          currentItem.element.replaceWith(nextItem.element);
+        } 
+        else {
+          return;
         }
+        nextItem.cache.parent = this;
+        nextItem.target = itemsTargetEl;
+        currentItem = nextItem;
       });
     }
-    if (
-      typeof globalThis?.Node === "function" &&
-      item instanceof globalThis.Node
-    )
-      item = new UIElement({element : item});
-    if (item instanceof Promise) item = await item;
-    if (item?.isUINode) {
+    if( typeof globalThis?.Node === "function" && item instanceof globalThis.Node)
+      item = new UIElement({ element: item });
+    if(item instanceof Promise) item = await item;
+    if(item?.isUINode) {
       item.cache.parent = this;
       item.target = itemsTargetEl;
       if (adder === "insertBefore" && itemsTargetEl)
@@ -283,12 +282,22 @@ export class UIElement extends UIElementCore {
       return;
     }
   }
-
-  async __addItems__(adder, pusher, ...elements) {
+  async #__addItems__(adder, pusher, ...elements) {
     for (const item of elements) {
-      await this.__addItem__(adder, pusher, item);
+      await this.#__addItem__(adder, pusher, item);
     }
     this.maintain();
     return this;
   }
 }
+
+const normalize = (value) => {
+  if (value?.isUINode) return value;
+  if (
+    typeof globalThis.Node === "function" &&
+    value instanceof globalThis.Node
+  ) {
+    return new UIElement({ element: value });
+  }
+  return text(value ?? "");
+};
