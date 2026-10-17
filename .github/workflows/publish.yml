@@ -8,6 +8,7 @@ on:
         required: false
         default: "latest"
         type: string
+
   push:
     tags:
       - "ziko-v*"
@@ -16,8 +17,13 @@ permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: publish-ziko
+  cancel-in-progress: false
+
 jobs:
   publish:
+    name: Stage ziko on npm
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -33,14 +39,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22.14.0"
+          node-version: "24"
           cache: pnpm
           registry-url: "https://registry.npmjs.org"
 
       - name: Setup npm CLI
         run: npm install --global npm@latest
 
-      - name: Install dependencies
+      - name: Install monorepo dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Determine npm dist-tag
@@ -51,16 +57,54 @@ jobs:
           REF_NAME: ${{ github.ref_name }}
           EVENT_NAME: ${{ github.event_name }}
         run: |
+          set -euo pipefail
+
           if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             TAG="${INPUT_TAG:-latest}"
-          elif [[ "$REF_NAME" == *-* ]]; then
-            TAG="beta"
           else
-            TAG="latest"
+            VERSION="${REF_NAME#ziko-v}"
+
+            if [[ "$VERSION" == *-* ]]; then
+              TAG="beta"
+            else
+              TAG="latest"
+            fi
           fi
 
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Selected npm dist-tag: $TAG"
+
+      - name: Check release version
+        if: github.event_name == 'push'
+        working-directory: packages/ziko
+        shell: bash
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          TAG_VERSION="${REF_NAME#ziko-v}"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+
+          if [[ "$TAG_VERSION" != "$PACKAGE_VERSION" ]]; then
+            echo "::error::Git tag version ($TAG_VERSION) does not match packages/ziko/package.json ($PACKAGE_VERSION)."
+            exit 1
+          fi
+
+      # Add your monorepo's build command here if needed.
+      # For example, if ziko has a build script and no workspace
+      # dependencies need to be built first:
+      #
+      # - name: Build ziko
+      #   working-directory: packages/ziko
+      #   run: pnpm run build
+
+      - name: Preview package contents
+        working-directory: packages/ziko
+        run: npm pack --dry-run
 
       - name: Stage package on npm
         working-directory: packages/ziko
-        run: npm stage publish --tag "${{ steps.dist-tag.outputs.tag }}"
+        env:
+          NPM_DIST_TAG: ${{ steps.dist-tag.outputs.tag }}
+        run: npm stage publish --tag "$NPM_DIST_TAG"
