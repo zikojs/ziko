@@ -1,4 +1,3 @@
-
 name: Publish ziko
 
 on:
@@ -34,9 +33,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "pnpm"
+          node-version: "22.14.0"
+          cache: pnpm
           registry-url: "https://registry.npmjs.org"
+
+      - name: Setup npm CLI
+        run: npm install --global npm@latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -59,8 +61,6 @@ jobs:
 
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
-      - name: Publish to npm
+      - name: Stage package on npm
         working-directory: packages/ziko
-        run: pnpm publish --provenance --access public --no-git-checks --tag "${{ steps.dist-tag.outputs.tag }}"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm stage publish --tag "${{ steps.dist-tag.outputs.tag }}"
