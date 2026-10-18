@@ -1,1 +1,0 @@
-export declare function routes_matcher(mask: string, route: string): boolean;

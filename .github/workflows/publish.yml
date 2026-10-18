@@ -1,29 +1,44 @@
-name: Publish ziko
+
+name: Publish package
 
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: "npm dist-tag (latest, next, beta, ...)"
-        required: false
-        default: "latest"
+      package:
+        description: "Package directory under packages/"
+        required: true
+        default: "ziko"
         type: string
+      tag:
+        description: "npm dist-tag"
+        required: true
+        default: "latest"
+        type: choice
+        options:
+          - latest
+          - next
+          - beta
 
   push:
     tags:
       - "ziko-v*"
+      - "create-ziko-v*"
+      - "jsx-v*"
+      - "html-v*"
+      - "vite-plugin-jsx-v*"
+      - "vite-plugin-html-v*"
 
 permissions:
   contents: read
   id-token: write
 
 concurrency:
-  group: publish-ziko
+  group: publish-${{ github.event_name == 'push' && github.ref_name || inputs.package }}
   cancel-in-progress: false
 
 jobs:
   publish:
-    name: Stage ziko on npm
+    name: Stage package on npm
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -46,65 +61,96 @@ jobs:
       - name: Setup npm CLI
         run: npm install --global npm@latest
 
-      - name: Install monorepo dependencies
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Determine npm dist-tag
-        id: dist-tag
+      - name: Determine package and dist-tag
+        id: release
         shell: bash
         env:
-          INPUT_TAG: ${{ inputs.tag }}
-          REF_NAME: ${{ github.ref_name }}
           EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_PACKAGE: ${{ inputs.package }}
+          INPUT_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
 
-          if [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            TAG="${INPUT_TAG:-latest}"
-          else
-            VERSION="${REF_NAME#ziko-v}"
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            if [[ "$REF_NAME" =~ ^ziko-v(.+)$ ]]; then
+              PACKAGE="ziko"
+              VERSION="${BASH_REMATCH[1]}"
+            elif [[ "$REF_NAME" =~ ^console-v(.+)$ ]]; then
+              PACKAGE="console"
+              VERSION="${BASH_REMATCH[1]}"
+            elif [[ "$REF_NAME" =~ ^notebook-v(.+)$ ]]; then
+              PACKAGE="notebook"
+              VERSION="${BASH_REMATCH[1]}"
+            else
+              echo "::error::Unsupported release tag: $REF_NAME"
+              exit 1
+            fi
 
             if [[ "$VERSION" == *-* ]]; then
               TAG="beta"
             else
               TAG="latest"
             fi
+          else
+            PACKAGE="$INPUT_PACKAGE"
+            TAG="${INPUT_TAG:-latest}"
           fi
 
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "Selected npm dist-tag: $TAG"
+          # Only allow known package directories.
+          case "$PACKAGE" in
+            ziko|console|notebook) ;;
+            *)
+              echo "::error::Unsupported package: $PACKAGE"
+              exit 1
+              ;;
+          esac
 
-      - name: Check release version
-        if: github.event_name == 'push'
-        working-directory: packages/ziko
-        shell: bash
-        env:
-          REF_NAME: ${{ github.ref_name }}
-        run: |
-          set -euo pipefail
-
-          TAG_VERSION="${REF_NAME#ziko-v}"
-          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
-
-          if [[ "$TAG_VERSION" != "$PACKAGE_VERSION" ]]; then
-            echo "::error::Git tag version ($TAG_VERSION) does not match packages/ziko/package.json ($PACKAGE_VERSION)."
+          if [[ ! -f "packages/$PACKAGE/package.json" ]]; then
+            echo "::error::Missing packages/$PACKAGE/package.json"
             exit 1
           fi
 
-      # Add your monorepo's build command here if needed.
-      # For example, if ziko has a build script and no workspace
-      # dependencies need to be built first:
-      #
-      # - name: Build ziko
-      #   working-directory: packages/ziko
-      #   run: pnpm run build
+          case "$TAG" in
+            latest|next|beta) ;;
+            *)
+              echo "::error::Unsupported npm dist-tag: $TAG"
+              exit 1
+              ;;
+          esac
+
+          echo "package=$PACKAGE" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION:-}" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+          echo "Package: $PACKAGE"
+          echo "Dist-tag: $TAG"
+
+      - name: Check release version
+        if: github.event_name == 'push'
+        working-directory: packages/${{ steps.release.outputs.package }}
+        shell: bash
+        env:
+          TAG_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+
+          if [[ "$TAG_VERSION" != "$PACKAGE_VERSION" ]]; then
+            echo "::error::Git tag version ($TAG_VERSION) does not match package version ($PACKAGE_VERSION)."
+            exit 1
+          fi
 
       - name: Preview package contents
-        working-directory: packages/ziko
+        working-directory: packages/${{ steps.release.outputs.package }}
         run: npm pack --dry-run
 
       - name: Stage package on npm
-        working-directory: packages/ziko
+        working-directory: packages/${{ steps.release.outputs.package }}
         env:
-          NPM_DIST_TAG: ${{ steps.dist-tag.outputs.tag }}
+          NPM_DIST_TAG: ${{ steps.release.outputs.tag }}
         run: npm stage publish --tag "$NPM_DIST_TAG"
