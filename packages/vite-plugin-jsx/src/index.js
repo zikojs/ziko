@@ -1,6 +1,6 @@
 import path from "node:path";
 import { createFilter } from "vite";
-import { compile } from "../../jsx/src";
+import { compile } from "@zikojs/jsx";
 
 export default function ZikoJSX({
   marker = "",
