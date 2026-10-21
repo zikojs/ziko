@@ -12,6 +12,6 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "pnpm-temaplets-sync": "workspace:*"
+    "pnpm-templates-sync": "^0.1.0"
   }
 }
