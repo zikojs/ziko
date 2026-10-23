@@ -154,7 +154,7 @@ importers:
         specifier: workspace:*
         version: link:../../ziko
 
-  packages/vite/hml:
+  packages/vite/html:
     dependencies:
       '@zikojs/html':
         specifier: workspace:*
