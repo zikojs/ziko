@@ -1,0 +1,43 @@
+{
+  "name": "@zikojs/vite-html",
+  "version": "0.1.0",
+  "description": "Vite plugin for transforming and compiling ZikoJS JSX syntax.",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+      "zikojs",
+      "vite",
+      "vite-plugin",
+      "html",
+      "html-transform",
+      "html-runtime",
+      "javascript",
+      "frontend",
+      "ui",
+      "compiler"
+  ],
+  "homepage": "https://github.com/zikojs/ziko#readme",
+  "bugs": {
+    "url": "https://github.com/zikojs/ziko/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "packages/ziko-vite-plugin-html"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports":{
+    "import" : "./src/index.js"
+  },
+  "author": "zakaria elalaoui",
+  "license": "MIT",
+  "dependencies": {
+    "ziko":"workspace:*",
+    "@zikojs/html":"workspace:*",
+    "vite" : "catalog:"
+  }
+}

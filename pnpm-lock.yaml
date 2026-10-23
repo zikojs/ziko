@@ -72,7 +72,7 @@ importers:
     devDependencies:
       '@zikojs/vite-jsx':
         specifier: workspace:*
-        version: link:../packages/vite-plugin-jsx
+        version: link:../packages/vite/jsx
       vite:
         specifier: ^7.0.4
         version: 7.3.6(lightningcss@1.33.0)(terser@5.51.2)(yaml@2.9.1)
@@ -121,7 +121,7 @@ importers:
         specifier: 'catalog:'
         version: 8.3.0(esbuild@0.28.2)(terser@5.51.2)(yaml@2.9.1)
 
-  packages/html:
+  packages/transpilers/html:
     dependencies:
       acorn:
         specifier: 'catalog:'
@@ -134,9 +134,9 @@ importers:
         version: 8.5.28
       ziko:
         specifier: workspace:*
-        version: link:../ziko
+        version: link:../../ziko
 
-  packages/jsx:
+  packages/transpilers/jsx:
     dependencies:
       acorn:
         specifier: ^8.18.0
@@ -152,19 +152,31 @@ importers:
         version: 2.1.0
       ziko:
         specifier: workspace:*
-        version: link:../ziko
+        version: link:../../ziko
 
-  packages/vite-plugin-jsx:
+  packages/vite/hml:
     dependencies:
-      '@zikojs/jsx':
+      '@zikojs/html':
         specifier: workspace:*
-        version: link:../jsx
+        version: link:../../transpilers/html
       vite:
         specifier: 'catalog:'
         version: 8.3.0(esbuild@0.28.2)(terser@5.51.2)(yaml@2.9.1)
       ziko:
         specifier: workspace:*
-        version: link:../ziko
+        version: link:../../ziko
+
+  packages/vite/jsx:
+    dependencies:
+      '@zikojs/jsx':
+        specifier: workspace:*
+        version: link:../../transpilers/jsx
+      vite:
+        specifier: 'catalog:'
+        version: 8.3.0(esbuild@0.28.2)(terser@5.51.2)(yaml@2.9.1)
+      ziko:
+        specifier: workspace:*
+        version: link:../../ziko
 
   packages/ziko:
     devDependencies:
@@ -180,32 +192,6 @@ importers:
       rollup:
         specifier: 'catalog:'
         version: 4.63.4
-
-  packages/ziko-browser:
-    dependencies:
-      ziko:
-        specifier: workspace:*
-        version: link:../ziko
-
-  packages/ziko-ease: {}
-
-  packages/ziko-i18n:
-    dependencies:
-      ziko:
-        specifier: workspace:*
-        version: link:../ziko
-
-  packages/ziko-math:
-    dependencies:
-      ziko:
-        specifier: workspace:*
-        version: link:../ziko
-
-  packages/ziko-time:
-    dependencies:
-      ziko:
-        specifier: workspace:*
-        version: link:../ziko
 
 packages:
 

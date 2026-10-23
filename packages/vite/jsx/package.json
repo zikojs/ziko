@@ -1,6 +1,6 @@
 {
   "name": "@zikojs/vite-jsx",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Vite plugin for transforming and compiling ZikoJS JSX syntax.",
   "type": "module",
   "scripts": {
@@ -8,10 +8,8 @@
   },
   "keywords": [
       "zikojs",
-      "ziko",
       "vite",
       "vite-plugin",
-      "vite-plugin-jsx",
       "jsx",
       "jsx-transform",
       "jsx-runtime",
