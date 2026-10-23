@@ -1,6 +1,6 @@
 {
   "name": "create-ziko",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Easily create Ziko apps without any complicated build setup.",
   "type": "module",
   "keywords": [
@@ -29,9 +29,9 @@
   },
   "homepage": "https://github.com/zikojs/ziko#readme",
   "dependencies": {
-    "ziko": "workspace:*",
     "inquirer": "^14.0.2",
     "picocolors": "^1.1.1",
-    "scafy": "^0.7.0"
+    "scafy": "^0.7.0",
+    "ziko": "workspace:*"
   }
 }

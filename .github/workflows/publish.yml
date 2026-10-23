@@ -1,5 +1,4 @@
-
-name: Publish Notebook
+name: Publish Zikojs packages
 
 on:
   workflow_dispatch:
@@ -9,11 +8,7 @@ on:
         required: true
         default: latest
         type: choice
-        options:
-          - latest
-          - next
-          - beta
-
+        options: [latest, next, beta]
   push:
     tags:
       - "ziko-v*"
@@ -27,67 +22,16 @@ concurrency:
 
 jobs:
   publish:
-    name: Build and publish packages
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     permissions:
       contents: read
       id-token: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: zikojs/workflow@v1
         with:
-          node-version: 24
-          cache: pnpm
-          registry-url: https://registry.npmjs.org
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Determine npm dist-tag
-        id: release
-        shell: bash
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          REF_NAME: ${{ github.ref_name }}
-          INPUT_TAG: ${{ inputs.tag }}
-        run: |
-          set -euo pipefail
-
-          if [[ "$EVENT_NAME" == "push" ]]; then
-            VERSION="${REF_NAME#ziko-v}"
-
-            if [[ "$VERSION" == *-* ]]; then
-              TAG="beta"
-            else
-              TAG="latest"
-            fi
-          else
-            TAG="${INPUT_TAG:-latest}"
-          fi
-
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "Publishing with npm dist-tag: $TAG"
-
-      - name: Build packages when possible
-        continue-on-error: true
-        run: pnpm --filter "./packages/**" -r --if-present run build
-
-      - name: Preview packages
-        working-directory: packages
-        run: pnpm publish -r --dry-run
-
-      - name: Publish packages to npm
-        working-directory: packages
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_DIST_TAG: ${{ steps.release.outputs.tag }}
-        run: pnpm publish -r --tag "$NPM_DIST_TAG"
+          tag-prefix: ziko-v
+          dist-tag: ${{ inputs.tag }}   # empty on tag push, so auto-detected
+          npm-token: ${{ secrets.NPM_TOKEN }}
