@@ -37,5 +37,13 @@
     "@rollup/plugin-terser": "catalog:",
     "acorn": "catalog:",
     "rollup": "catalog:"
-  }
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.14.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.14.0"
 }
