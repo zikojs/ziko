@@ -9,14 +9,14 @@
     "preprocessor",
     "transpiler"
   ],
-  "homepage": "https://github.com/zikojs/transpilers#readme",
+  "homepage": "https://github.com/zikojs/ziko#readme",
   "bugs": {
-    "url": "https://github.com/zikojs/transpilers/issues"
+    "url": "https://github.com/zikojs/ziko/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zikojs/transpilers.git",
-    "directory": "packages/html"
+    "url": "git+https://github.com/zikojs/ziko.git",
+    "directory": "packages/transpilers/html"
   },
   "publishConfig": {
     "access": "public"

@@ -21,7 +21,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zikojs/ziko.git",
-    "directory": "packages/ziko-jsx"
+    "directory": "packages/transpilers/jsx"
   },
   "license": "MIT",
   "author": "zakaria elalaoui",
