@@ -2,7 +2,7 @@
   "name": "ziko-root",
   "version": "1.0.0",
   "description": "",
-  "private": "true",
+  "private": true,
   "homepage": "https://github.com/zakarialaoui10/ziko#readme",
   "bugs": {
     "url": "https://github.com/zakarialaoui10/ziko/issues"

@@ -70,7 +70,7 @@ importers:
         specifier: workspace:*
         version: link:../packages/ziko
     devDependencies:
-      '@zikojs/vite-plugin-jsx':
+      '@zikojs/vite-jsx':
         specifier: workspace:*
         version: link:../packages/vite-plugin-jsx
       vite:

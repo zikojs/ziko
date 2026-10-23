@@ -1,5 +1,5 @@
 {
-  "name": "@zikojs/vite-plugin-jsx",
+  "name": "@zikojs/vite-jsx",
   "version": "0.2.0",
   "description": "Vite plugin for transforming and compiling ZikoJS JSX syntax.",
   "type": "module",

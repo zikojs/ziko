@@ -7,7 +7,7 @@ The ZikoJS ecosystem also includes additional packages that are maintained indep
 ![NPM Version](https://img.shields.io/npm/v/ziko?label=ziko)
 ![NPM Version](https://img.shields.io/npm/v/create-ziko?label=create-ziko)
 ![NPM Version](https://img.shields.io/npm/v/@zikojs/jsx?label=@zikojs/jsx)
-![NPM Version](https://img.shields.io/npm/v/@zikojs/vite-plugin-jsx?label=@zikojs/vite-plugin-jsx)
+![NPM Version](https://img.shields.io/npm/v/@zikojs/vite-jsx?label=@zikojs/vite-jsx)
 ![NPM Version](https://img.shields.io/npm/v/@zikojs/html?label=@zikojs/html)
 
 ## install 
