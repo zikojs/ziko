@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@zikojs/workflow':
-        specifier: 0.1.0
-        version: 0.1.0
+        specifier: 0.2.0
+        version: 0.2.0
       pnpm-templates-sync:
         specifier: ^0.1.0
         version: 0.1.0
@@ -21,8 +21,8 @@ packages:
     resolution: {integrity: sha512-ZSY7IFBqtkFcJVtRhprpy5t7XtCln7BRsIa6MZvUDY5s7+yTzsju5ccjK/xEZiL/yEE46Ahj4QnxPEtMOivozA==}
     engines: {node: '>=20.19.0'}
 
-  '@zikojs/workflow@0.1.0':
-    resolution: {integrity: sha512-8bmD/UKSoUnCaHHZV4lKQhM+NkT3V+dsA3igepahBXHe1k/dQsgi0HxoA+LqRIxDI6a1esC99Bh+4CPq3VhCkA==}
+  '@zikojs/workflow@0.2.0':
+    resolution: {integrity: sha512-7jl2TUZpwqpuZPU8gkcCGM+Vs7a9RPkgkauOhcSPWK/+cFWnMULnflyH2Q5Xc5tnkNGgAf/jGVnAjLo1LybNxg==}
 
   arabic-persian-reshaper@1.0.1:
     resolution: {integrity: sha512-VYBjkhz6o4W1Xt4mD2LAReljJpLSw5CUZMqSBDIQRvFgUSlTKEYghapgBWvkeMWF4W+KF3Fm+/z8EywJU4PBeg==}
@@ -87,7 +87,7 @@ snapshots:
       linebreak: 1.1.0
       parse5: 8.0.1
 
-  '@zikojs/workflow@0.1.0':
+  '@zikojs/workflow@0.2.0':
     dependencies:
       ziko: 2.0.0-beta.17.2
 

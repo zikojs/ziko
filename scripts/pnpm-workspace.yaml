@@ -1,2 +1,2 @@
 minimumReleaseAgeExclude:
-  - '@zikojs/workflow@0.1.0'
+  - '@zikojs/workflow@0.1.0 || 0.2.0'

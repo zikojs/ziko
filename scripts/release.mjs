@@ -3,7 +3,13 @@
 import { execFileSync } from "node:child_process";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { createTemplateSync } from "@zikojs/workflow";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(__dirname, "..");
 
 const SCAFFOLDERS = [
   "create-ziko/templates/*",
@@ -19,7 +25,7 @@ export async function release({
     throw new Error("Release name is required.");
   }
 
-  const sync = createTemplateSync(SCAFFOLDERS);
+  const sync = createTemplateSync(root, SCAFFOLDERS);
   const rl = createInterface({ input: stdin, output: stdout });
 
   function git(...args) {
