@@ -4,18 +4,13 @@ packages:
   - "packages/*/test"
   - "packages/create-ziko/templates/*"
   - "demo/"
-  - "dev-tools/*"
+  # - "dev-tools/*"
+allowBuilds:
+  esbuild: false
 catalog:
   vite: "^8.2.2"
-  acorn: ^8.18.0
+  acorn: ^8.19.0
   "@rollup/plugin-commonjs": "^29.0.3"
   "@rollup/plugin-node-resolve": "^16.0.3"
   "@rollup/plugin-terser": "^0.4.4"
-  "rollup": "^4.63.0"
-minimumReleaseAge: 10080
-blockExoticSubdeps: true
-trustPolicy: no-downgrade
-minimumReleaseAgeExclude:
-  - eslint@10.9.1
-allowBuilds:
-  esbuild: false
+  "rollup": ^4.65.0
