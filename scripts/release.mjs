@@ -78,4 +78,4 @@ export async function release({
   }
 }
 
-release({ name: "workflow" });
+release({ name: "ziko" });
