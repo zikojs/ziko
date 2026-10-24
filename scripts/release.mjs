@@ -1,6 +1,13 @@
+#!/usr/bin/env node
+
 import { execFileSync } from "node:child_process";
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
+import { createTemplateSync } from "@zikojs/workflow";
+
+const SCAFFOLDERS = [
+  "create-ziko/templates/*",
+];
 
 export async function release({
   name,
@@ -12,6 +19,7 @@ export async function release({
     throw new Error("Release name is required.");
   }
 
+  const sync = createTemplateSync(SCAFFOLDERS);
   const rl = createInterface({ input: stdin, output: stdout });
 
   function git(...args) {
@@ -21,10 +29,12 @@ export async function release({
     }).trim();
   }
 
+  let prepared = false;
+
   try {
-    const version = await rl.question(
-      "Enter release version (e.g. 1.0.0 or 1.0.0.1): "
-    );
+    const version = (
+      await rl.question("Enter release version (e.g. 1.0.0): ")
+    ).trim();
 
     if (!/^[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9.-]+)?$/.test(version)) {
       throw new Error(`Invalid version: ${version}`);
@@ -32,11 +42,22 @@ export async function release({
 
     const tag = `${prefix}${version}`;
 
-    if (!git("status", "--porcelain")) {
-      console.log("No changes to commit.");
-    } else {
+    if (git("status", "--porcelain")) {
       git("add", ".");
-      git("commit", "-m", commitMessage(version));
+      if (git("diff", "--cached", "--name-only")) {
+        git("commit", "-m", commitMessage(version));
+      }
+    } else {
+      console.log("No changes to commit.");
+    }
+
+    sync.prepare();
+    prepared = true;
+
+    git("add", ".");
+
+    if (git("diff", "--cached", "--name-only")) {
+      git("commit", "-m", `chore: prepare templates for ${version}`);
     }
 
     git("tag", tag);
@@ -47,8 +68,14 @@ export async function release({
 
     return tag;
   } finally {
-    rl.close();
+    try {
+      if (prepared) {
+        sync.restore();
+      }
+    } finally {
+      rl.close();
+    }
   }
 }
 
-release({ name : 'ziko'})
+release({ name: "workflow" });
