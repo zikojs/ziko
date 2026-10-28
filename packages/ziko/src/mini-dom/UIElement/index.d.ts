@@ -1,4 +1,4 @@
-import { UINode } from "../UINode";
+import { UINode } from "../../dom/UINode/index.js";
 import { UIStore } from "../../__ziko__/__ui__.js";
 
 export declare class UIElementCore extends UINode {

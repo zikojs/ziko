@@ -1,4 +1,3 @@
-import { UIElement as UIElementCore } from "../../mini-dom/UIElement/index.js";
 import { register_to_class } from "../../internal-utils/register/register-to-class.js";
 import {
   AttrsMethods,
@@ -12,8 +11,14 @@ import {
   ViewListeners,
 } from "../../events/index.js";
 import { isStateGetter } from "../../hooks/use-state.js";
-import { text } from "../../mini-dom/text/index.js";
-export class UIElement extends UIElementCore {
+import { text } from "../text/index.js";
+import { UINode } from "../UINode/index.js";
+import {__init__global__} from '../../__ziko__/index.js';
+import { UIStore } from "../../__ziko__/__ui__.js";
+import { parse_props } from "../internal-utils/parse_props.js";
+
+__init__global__();
+export class UIElement extends UINode {
   constructor({
     element,
     name = "",
@@ -35,6 +40,72 @@ export class UIElement extends UIElementCore {
     );
 
     if (element) this.init({ element, name, type, autoMount, props });
+  }
+  init({element, name, type, autoMount, props = {}, items = []} = {}){
+      this.target = globalThis.__Ziko__.__Config__.default.target||globalThis?.document?.body;
+      if(typeof element === "string") {
+        switch(type){
+          case "html" : element = globalThis?.document?.createElement(element); break;
+          case "svg" : element = globalThis?.document?.createElementNS("http://www.w3.org/2000/svg", element); break;
+          default : throw Error("Not supported")
+        }
+      }
+      else this.target = element?.parentElement;
+      Object.assign(this.cache, {
+        name,
+        itemsTarget : this,
+        isInteractive : false,
+        parent:null,
+        // isBody:false,
+        // isRoot:false,
+        // isHidden: false,
+        // isFrozzen:false,
+        // attributes: {},
+        // filters: {},
+        // temp:{}
+      })
+      // this.events = {
+      //   ptr:null,
+      //   mouse:null,
+      //   wheel:null,
+      //   key:null,
+      //   drag:null,
+      //   drop:null,
+      //   click:null,
+      //   clipboard:null,
+      //   focus:null,
+      //   swipe:null,
+      //   custom:null,
+      // }
+      // this.observer={
+      //   resize:null,
+      //   intersection:null
+      // }
+      if(element) Object.assign(this.cache,{element});
+      this.items = new UIStore();
+      globalThis.__Ziko__.__UI__[this.cache.name]
+        ? globalThis.__Ziko__.__UI__[this.cache.name]?.push(this)
+        : globalThis.__Ziko__.__UI__[this.cache.name]=[this];
+      element && autoMount && this?.mount?.()
+      globalThis.__Ziko__.__UI__.push(this)
+      
+      const parsed_props = parse_props(props);
+      this.parsed_props = parsed_props;
+      this.style(parsed_props.style);
+      this.setAttr(parsed_props.attrs);
+      const Events = Object.entries(parsed_props.events);
+      Events.forEach(([ev, callback]) => this[ev](callback.bind(this)))
+      if(items.length > 0) this.append(...items)
+    }
+  maintain() {
+    for (let i = 0; i < this.items.length; i++) {
+      Object.defineProperty(this, i, {
+        value: this.items[i],
+        writable: true,
+        configurable: true,
+        enumerable: false 
+        });
+    }
   }
   on(
     event_name,

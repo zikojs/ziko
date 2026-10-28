@@ -1,50 +1,13 @@
 2.0.0
+    - Add `sx`
     - Add `Layout` and `Page`
     - Add `NamedExportHanlder` in router
     - Make useEffect callback accept more deps ..
     - Replace `ziko/helpers` by `ziko/internal-utils`
     - State-driven children can now use UIElement values in addition to primitive values.
     - use `autoMount` instead of `render` in `__Ziko__.__Config__.default`
-    
-1.1.1 : Fix exports conflicts
-1.2.0 : 
-    - Fix typo in useLocaleStorage
-    - Fix useSession storage persistance
-    - Remove HMR persistance in useState
-1.3.0 : 
-    Add `Swap` built in component
-1.4.0 : 
-    Add `Fragment` built in component
-1.5.0 : 
-    Support binding multiple events with one callback
-    Add `For` built in component
-    Improve Intellisence in : 
-        - `math/random`
-        - `math/stats`
-        - `math/complex`
-1.6.0 : 
-    Separate item target from component element by : 
-        - introduce `.itemsTarget` for child item operations
-        - keep `.element` dedicated to component root and mounting lifecycle
-1.6.1
-    - Preserve CSS-defined display values when swapping items in `Swap` component by : 
-        - Use getComputedStyle() instead of inline style lookup to detect initial display values
-        - Defer initial render with requestAnimationFrame to ensure CSS is applied before measuring
-    - Improve `data/string` and `data/parser` Intellisence
-1.7.0
-    - Add props Parser
-    - Improve state checker
-    - Refactor UIElement init
-1.8.0
-    - Add `useEffect` hook
-    - Move `Flex` `View` `Suspense` `HTMLWrapper` `SVGWrapper` `Canvas` `SVG` `Switch` to `./src/dom/components`
-    - Remove `src/watch`, `src/events-dep`
-    
-1.9.0 
-    - Setup Symbol-based Nominal Branding by using unique symbols as runtime brands to identify objects without importing their classes.
-    - fix(state): improve derived state getter handling
-        - mark derived getters with STATE_GETTER
-        - add unsubscribe support to derived state subscriptions
+    - add `Comment` component
+    - move `/ufunc`, `/matrix`, `/typed-matrix`, `/complex`, `/stats`, `/discret`, `/signal` Math submodules to `numz` package 
 1.10.0
     - File-Based Router Modernization
         - Environment Agnostic: Decoupled the router execution engine from browser-specific APIs (globalThis.location, document.body, HTMLElement). The router can now run seamlessly in Node.js, Express, Bun, Deno, Edge Workers, SSG, and browser environments.
@@ -53,4 +16,52 @@
         - Flat File Routing (Dot-Delimited Paths): Enabled flat route file naming using dots (e.g., articles.[id].[lang].js =>  /articles/:id/:lang). Preserves parameter brackets using regex lookarounds.
         - Base Path Config: Added configurable base router option (defaults to /, supports ., /app, etc.) with automatic path prefix stripping.
         - Route Match Precedence: Introduced strict priority sorting (sort_routes) to ensure evaluation order: Static => Dynamic => Catch-All => Optional Catch-All.
-        - Bug Fixes: Fixed root calculation directory stripping in get_root and resolved double-slash URL matching issues in createSPAFileBasedRouter
+        - Bug Fixes: Fixed root calculation directory stripping in get_root and resolved double-slash URL matching issues in createSPAFileBasedRouter  
+1.9.0 
+    - Setup Symbol-based Nominal Branding by using unique symbols as runtime brands to identify objects without importing their classes.
+    - fix(state): improve derived state getter handling
+        - mark derived getters with `STATE_GETTER`
+        - add unsubscribe support to derived state subscriptions 
+1.8.0
+    - Add `useEffect` hook
+    - Move `Flex` `View` `Suspense` `HTMLWrapper` `SVGWrapper` `Canvas` `SVG` `Switch` to `./src/dom/components`
+    - Remove `src/watch`, `src/events-dep`
+1.7.0
+    - Add props Parser
+    - Improve state checker
+    - Refactor UIElement init
+1.6.1
+    - Preserve CSS-defined display values when swapping items in `Swap` component by : 
+        - Use getComputedStyle() instead of inline style lookup to detect initial display values
+        - Defer initial render with requestAnimationFrame to ensure CSS is applied before measuring
+    - Improve `data/string` and `data/parser` Intellisence
+1.6.0 : 
+    Separate item target from component element by : 
+        - introduce `.itemsTarget` for child item operations
+        - keep `.element` dedicated to component root and mounting lifecycle
+1.5.0 : 
+    Support binding multiple events with one callback
+    Add `For` built in component
+    Improve Intellisence in : 
+        - `math/random`
+        - `math/stats`
+        - `math/complex`
+1.4.0 : 
+    Add `Fragment` built in component
+1.3.0 : 
+    Add `Swap` built in component
+1.2.0 : 
+    - Fix typo in useLocaleStorage
+    - Fix useSession storage persistance
+    - Remove HMR persistance in useState
+1.1.1 : Fix exports conflicts
+
+
+
+
+
+
+
+
+    
+

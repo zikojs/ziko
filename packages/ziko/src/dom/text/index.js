@@ -1,4 +1,4 @@
-import {UINode} from "../UINode/index.js";
+import {UINode} from "../../dom/UINode/index.js";
 class UIText extends UINode {
     constructor(...value) {
       super("span", "text", false, ...value);

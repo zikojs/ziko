@@ -1,4 +1,4 @@
-import { UINode } from "../../mini-dom/UINode";
+import { UINode } from "../../dom/UINode";
 
 class UIComment extends UINode{
     constructor(text){
