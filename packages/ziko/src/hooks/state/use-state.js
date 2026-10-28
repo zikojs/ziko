@@ -1,4 +1,4 @@
-import { STATE_GETTER } from '../internal-utils/symbols/index.js';
+import { STATE_GETTER } from '../../internal-utils/symbols/index.js';
 
 export function useState(initialValue) {
     const state = {

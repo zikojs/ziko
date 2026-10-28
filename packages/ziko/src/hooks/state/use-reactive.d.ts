@@ -1,4 +1,4 @@
-import { mapfun, MapfunResult } from "../math/mapfun/index.d.ts";
+import { mapfun, MapfunResult } from "../../math/mapfun/index";
 import { useState } from "./use-state.d.ts";
 
 export function useReactive<
