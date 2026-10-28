@@ -32,19 +32,19 @@ export const remove_class =(UIElement, name) => UIElement.element.className = UI
 //   return ele.length===1?ele[0]:ele;
 // }
 
-const style = (el, styles) => {if(el)Object.assign(el.style, styles)};
+// const style = (el, styles) => {if(el)Object.assign(el.style, styles)};
 
-function script(src) {
-  const Script = document?.createElement("script");
-  Script.setAttribute("src", src);
-  document.head.appendChild(Script);
-}
-function linkStyle(href) {
-  const link = document?.createElement("link");
-  link.setAttribute("rel", "stylesheet");
-  link.setAttribute("href", href);
-  document.head.appendChild(link);
-}
+// function script(src) {
+//   const Script = document?.createElement("script");
+//   Script.setAttribute("src", src);
+//   document.head.appendChild(Script);
+// }
+// function linkStyle(href) {
+//   const link = document?.createElement("link");
+//   link.setAttribute("rel", "stylesheet");
+//   link.setAttribute("href", href);
+//   document.head.appendChild(link);
+// }
 const CloneElement = (UIElement) => {
   var clone = new UIElement.__proto__.constructor()
   //waitForUIElm(UIElement).then(e=>console.log(e)).then(()=>clone = new UIElement.__proto__.constructor())
@@ -77,9 +77,9 @@ const waitElm=(UIElement)=>{
 export{
   // Id,
   // Class,
-  style,
-  script,
-  linkStyle,
+  // style,
+  // script,
+  // linkStyle,
   CloneElement,
   cloneUI,
   // isPrimitive,
