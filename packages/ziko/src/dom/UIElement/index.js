@@ -10,7 +10,7 @@ import {
   KeyListeners,
   ViewListeners,
 } from "../../events/index.js";
-import { isStateGetter } from "../../hooks/state/use-state.js";
+import { isStateGetter } from "../../hooks/state/use-state/index.js";
 import { text } from "../text/index.js";
 import { UINode } from "../UINode/index.js";
 import {__init__global__} from '../../__ziko__/index.js';

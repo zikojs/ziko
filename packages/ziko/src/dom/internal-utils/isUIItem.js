@@ -1,4 +1,4 @@
-import { isStateGetter } from '../../hooks/state/use-state.js'
+import { isStateGetter } from '../../hooks/state/use-state/index.js'
 import { UIElement } from '../UIElement/index.js'
 export const isUIItem = item => {
     return (

@@ -1,5 +1,5 @@
-import { mapfun } from '../../math/mapfun/index.js'
-import { useState } from './use-state.js'
+import { mapfun } from '../../../math/mapfun/index.js'
+import { useState } from '../use-state/index.js'
 
 const useReactive = (nested_value) => mapfun(
     n => {

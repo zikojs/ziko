@@ -1,4 +1,4 @@
-import type { StateGetter } from "./use-state.d.ts";
+import type { StateGetter } from "../use-state";
 
 
 /**

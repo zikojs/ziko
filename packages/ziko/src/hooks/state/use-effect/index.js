@@ -1,4 +1,4 @@
-import { isStateGetter } from "./use-state.js";
+import { isStateGetter } from "../use-state/index.js";
 
 export const useEffect = (callback, deps = []) => {
     const states = deps.filter(isStateGetter);
