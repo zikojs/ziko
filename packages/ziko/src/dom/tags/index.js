@@ -2,7 +2,7 @@ import {UIElement} from "../UIElement/index.js";
 import { HTMLTags, SVGTags, MathMLTags } from "./tags-list.js";
 import { isStateGetter } from "../../hooks/use-state.js";
 import { call_with_optional_props } from "../internal-utils/call_with_optional_props.js";
-import { is_ui_item } from "../internal-utils/is_ui_item.js";
+import { isUIItem } from "../internal-utils/isUIItem.js";
 
 export const tags = new Proxy({}, {
   get(target, prop) {
