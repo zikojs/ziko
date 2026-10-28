@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^8.2.2"
+    "vite": "catalog:"
   },
   "dependencies": {
-    "ziko": "^2.0.0-beta.18.0"
+    "ziko": "workspace:*"
   }
 }
