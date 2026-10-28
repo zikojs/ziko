@@ -7,3 +7,4 @@ export * from './For/index.js';
 export * from './Switch/index.js';
 export * from './HTMLWrapper/index.js'
 export * from './SVGWrapper/index.js'
+export * from './Comment/index.js'
