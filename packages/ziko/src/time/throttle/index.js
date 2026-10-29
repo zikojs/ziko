@@ -1,9 +1,12 @@
-export const throttle=(fn,delay)=>{
-    let lastTime=0;
+export const throttle = (fn, delay) => {
+    let lastTime = 0;
+
     return (...args) => {
-        const now = new Date().getTime()
-        if(now-lastTime < delay) return;
+        const now = performance.now();
+
+        if (now - lastTime < delay) return;
+
         lastTime = now;
-        fn(...args); 
-    }
-}
+        fn(...args);
+    };
+};
