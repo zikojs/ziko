@@ -3,7 +3,7 @@ import {
     useEffect
 } from '../../state/index.js';
 
-import { useEventEmitter } from '../../use-event-emitter.js';
+import { useEventEmitter } from '../../communication/event-emitter/index.js';
 
 export const useFavicon = (
     href,
