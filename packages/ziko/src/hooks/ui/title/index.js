@@ -9,7 +9,7 @@ import { useEventEmitter } from '../../use-event-emitter.js';
 export const useTitle = (title = document.title, withEmitter = true) =>{
     const [_title, setTitle] = useState(title);
     let emiter;
-    const EVENT = 'ziko:title-changed';
+    const EVENT = Symbol.for('ziko:title-changed');
     if(withEmitter){
         emiter = useEventEmitter()
     }

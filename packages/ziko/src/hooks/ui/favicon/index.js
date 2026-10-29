@@ -21,7 +21,7 @@ export const useFavIcon = (
     const [_href, setHref] = useState(href ?? link.href ?? '');
     const emitter = withEmitter ? useEventEmitter() : undefined;
 
-    const EVENT = 'ziko:favicon-changed';
+    const EVENT = Symbol.for('ziko:favicon-changed');
 
     useEffect(
         ([newHref]) => {
