@@ -1,6 +1,4 @@
 export type * from './state/index.d.ts'
-export type * from './use-event-emitter.d.ts'
-export type * from './ipc/index.js'
-export type * from './thread/index.js'
+export type * from './communication/index.d.ts'
 export type * from './document/index.ts'
 export type * from './viewport/index.d.ts'

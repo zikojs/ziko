@@ -1,6 +1,4 @@
 export * from './state/index.js'
-export * from './use-event-emitter.js'
-export * from './ipc/index.js'
-export * from './thread/index.js'
+export * from './communication/index.js'
 export * from './ui/index.js'
 export * from './viewport/index.js'
