@@ -5,7 +5,7 @@ import {
 
 import { useEventEmitter } from '../../use-event-emitter.js';
 
-export const useFavIcon = (
+export const useFavicon = (
     href,
     withEmitter = true
 ) => {
