@@ -29,6 +29,62 @@ function ValidateCssPropsFn(PropsMap) {
     }
 }
 
+
+export function validateSchema(data, schema) {
+    for (const [key, rule] of Object.entries(schema)) {
+        const value = data[key];
+
+        // Required unless explicitly marked optional.
+        if (value === undefined) {
+            if (rule?.optional) continue;
+            throw new Error(`Missing required property: "${key}"`);
+        }
+
+        if (typeof rule === "string") {
+            if (typeof value !== rule) {
+                throw new TypeError(
+                    `"${key}" must be of type ${rule}`
+                );
+            }
+
+            continue;
+        }
+
+        if (typeof rule === "function") {
+            if (!rule(value, data)) {
+                throw new TypeError(
+                    `Invalid value for "${key}"`
+                );
+            }
+
+            continue;
+        }
+
+        if (typeof rule === "object" && rule !== null) {
+            if (
+                rule.type &&
+                typeof value !== rule.type
+            ) {
+                throw new TypeError(
+                    `"${key}" must be of type ${rule.type}`
+                );
+            }
+
+            if (
+                rule.validate &&
+                !rule.validate(value, data)
+            ) {
+                throw new TypeError(
+                    `Invalid value for "${key}"`
+                );
+            }
+        }
+    }
+
+    return data;
+}
+
+
 export class CssVars {
     #data = {};
     #style;
