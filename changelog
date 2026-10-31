@@ -8,6 +8,7 @@
     - use `autoMount` instead of `render` in `__Ziko__.__Config__.default`
     - add `Comment` component
     - Add `useWindowScroll` and `useWindowSize` hooks
+    - Add `validateSchema` in `ziko/utils`
     - move `/ufunc`, `/matrix`, `/typed-matrix`, `/complex`, `/stats`, `/discret`, `/signal` Math submodules to `numz` package 
 1.10.0
     - File-Based Router Modernization
