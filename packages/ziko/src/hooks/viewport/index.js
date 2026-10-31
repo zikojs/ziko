@@ -1,3 +1,4 @@
 export * from './scroll/index.js'
 export * from './window-scroll/index.js'
 export * from './window-size/index.js'
+export * from './media-query/index.js'
