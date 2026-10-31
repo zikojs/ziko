@@ -1,5 +1,5 @@
 import { useIPC } from '../communication/ipc/index.js';
-import { validateSchema } from '../../utils/validate-schema/index.js';
+import { validateSchema } from '../../utils/schema/index.js';
 import { isObject } from '../../utils/data/checkers/index.js'
 
 const STORAGE_EVENT = 'Ziko-Storage-Updated';
