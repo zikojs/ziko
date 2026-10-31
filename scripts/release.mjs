@@ -22,7 +22,7 @@ try {
     console.error(`Invalid version: ${VERSION}`);
     process.exitCode = 1;
   } else {
-    const TAG = `notebook-v${VERSION}`;
+    const TAG = `ziko-v${VERSION}`;
 
     // Ensure there are changes to commit
     if (!git("status", "--porcelain")) {
