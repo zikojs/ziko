@@ -63,6 +63,9 @@
     "@rollup/plugin-commonjs": "catalog:",
     "@rollup/plugin-node-resolve": "catalog:",
     "@rollup/plugin-terser": "catalog:",
-    "rollup": "catalog:"
+    "happy-dom": "^21.0.4",
+    "jsdom": "catalog:",
+    "rollup": "catalog:",
+    "vitest": "^5.0.5"
   }
 }

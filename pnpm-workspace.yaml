@@ -1,7 +1,7 @@
 packages:
   - "packages/*"
   - "packages/*/*"
-  - "packages/*/test"
+  - "packages/ziko/test"
   - "packages/create-ziko/templates/*"
   - "demo/"
   # - "dev-tools/*"
@@ -14,3 +14,4 @@ catalog:
   "@rollup/plugin-node-resolve": "^16.0.3"
   "@rollup/plugin-terser": "^0.4.4"
   "rollup": ^4.65.0
+  jsdom : latest
