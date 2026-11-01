@@ -1,4 +1,4 @@
-export function useNavigationHistory() {
+export function useHistory() {
     const undo = () => {
         globalThis.history.back();
     };

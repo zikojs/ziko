@@ -1,7 +1,7 @@
 /**
  * Browser navigation history controls.
  */
-export interface NavigationHistory {
+export interface History {
     /** Navigate to the previous history entry. */
     undo: () => void;
 
@@ -20,7 +20,7 @@ export interface NavigationHistory {
  *
  * @example
  * ```js
- * const { undo, redo, go } = useNavigationHistory();
+ * const { undo, redo, go } = useHistory();
  *
  * undo();  // Go to the previous page
  * redo();  // Go to the next page
@@ -28,4 +28,4 @@ export interface NavigationHistory {
  * go(3);   // Go forward three entries
  * ```
  */
-export declare function useNavigationHistory(): NavigationHistory;
+export declare function useHistory(): History;
