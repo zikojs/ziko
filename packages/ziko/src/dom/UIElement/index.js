@@ -1,7 +1,5 @@
 import { register_to_class } from "../../internal-utils/register/register-to-class.js";
-import {
-  AttrsMethods,
-} from "../../mini-dom/mixins/index.js";
+import * as AttrsMethods from "../mixins/attrs.js";
 
 import {
   EventController,
