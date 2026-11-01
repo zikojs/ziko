@@ -1,33 +1,13 @@
-
 const EVENT = "ziko:hashchange";
 const PATCHED = Symbol.for("ziko/hash/patched");
 
 const normalizeHash = value => {
     if (value == null) return "";
-
-    if (typeof value === "string") {
-        return value.replace(/^#/, "");
-    }
-
-    if (typeof value === "object") {
-        return JSON.stringify(value);
-    }
+    if (typeof value === "string") return value.replace(/^#/, "");
 
     throw new TypeError(
-        "initialValue must be a string, object, null or undefined"
+        "Hash value must be a string, null or undefined"
     );
-};
-
-const parseHash = hash => {
-    const value = hash.replace(/^#/, "");
-
-    if (!value) return "";
-
-    try {
-        return JSON.parse(value);
-    } catch {
-        return value;
-    }
 };
 
 function patchHistory() {
@@ -56,7 +36,7 @@ function patchHistory() {
 export function useHash(initialValue) {
     const initialHash = normalizeHash(initialValue);
 
-    const getHash = () => parseHash(location.hash);
+    const getHash = () => location.hash.replace(/^#/, "");
 
     const setHash = value => {
         const next = normalizeHash(
@@ -98,7 +78,6 @@ export function useHash(initialValue) {
         addEventListener("popstate", notify);
         addEventListener(EVENT, notify);
 
-        // Initial execution.
         callback(getHash());
 
         return () => {
@@ -108,7 +87,6 @@ export function useHash(initialValue) {
         };
     };
 
-    // Apply initial value only when the URL has no hash.
     if (!location.hash && initialHash) {
         setHash(initialHash);
     }

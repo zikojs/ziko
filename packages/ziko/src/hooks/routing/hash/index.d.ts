@@ -1,53 +1,80 @@
-export type HashValue =
-    | string
-    | Record<string, unknown>
-    | null
-    | undefined;
+
+export type HashValue = string | null | undefined;
 
 export type HashUpdater = (
-    current: string | Record<string, unknown>
+    current: string
 ) => HashValue;
 
 export type HashListener = (
-    hash: string | Record<string, unknown>
+    hash: string
 ) => void;
 
 /**
  * Creates a utility for reading, updating and observing the URL hash.
  *
- * Objects are serialized as JSON and automatically parsed when reading.
+ * @param initialValue - Initial hash value. Sets the URL hash only if it is empty.
  *
- * @param initialValue - Initial hash value (string, object, null or undefined).
- *
- * @returns A tuple containing setHash and watchHash.
+ * @returns A tuple containing `setHash` and `watchHash`.
  *
  * @example
+ * Basic usage:
  * ```js
  * const [setHash, watchHash] = useHash("home");
  *
  * setHash("about");
  *
- * watchHash(hash => {
- *     console.log(hash);
- * });
+ * console.log(location.hash); // "#about"
  * ```
  *
  * @example
+ * Initialize without a hash:
  * ```js
- * const [setHash, watchHash] = useHash({
- *     page: "home",
- *     tab: "profile"
- * });
+ * const [setHash] = useHash();
  *
- * setHash({
- *     page: "dashboard",
- *     tab: "settings"
- * });
+ * setHash("dashboard");
  * ```
  *
  * @example
+ * Functional updates:
  * ```js
+ * const [setHash] = useHash("home");
+ *
+ * setHash(current => `${current}/settings`);
+ * ```
+ *
+ * @example
+ * Clear the hash:
+ * ```js
+ * const [setHash] = useHash("home");
+ *
+ * setHash(null);
+ * // or
+ * setHash(undefined);
+ * ```
+ *
+ * @example
+ * Observe hash changes:
+ * ```js
+ * const [setHash, watchHash] = useHash("home");
+ *
  * const unsubscribe = watchHash(hash => {
+ *     console.log("Current hash:", hash);
+ * });
+ *
+ * setHash("about");
+ *
+ * unsubscribe();
+ * ```
+ *
+ * @example
+ * TypeScript:
+ * ```ts
+ * const [setHash, watchHash] = useHash("home");
+ *
+ * setHash("profile");
+ * setHash(current => `${current}/settings`);
+ *
+ * const unsubscribe = watchHash((hash: string) => {
  *     console.log(hash);
  * });
  *
@@ -57,6 +84,6 @@ export type HashListener = (
 export declare function useHash(
     initialValue?: HashValue
 ): [
-    setHash: (value: HashUpdater) => string | Record<string, unknown>,
+    setHash: (value: HashValue | HashUpdater) => string,
     watchHash: (callback: HashListener) => () => void
 ];

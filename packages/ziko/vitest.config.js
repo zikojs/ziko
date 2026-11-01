@@ -4,7 +4,7 @@ export default defineConfig({
         globals : true,
         include : [ 'test/**/*.test.js'],
         snapshotFormat : { escapeString : false },
-        environment: 'happy-dom',
+        environment: 'jsdom',
         // reporters: ['default', 'junit'], 
         // outputFile: './reports/junit.xml', 
     },
