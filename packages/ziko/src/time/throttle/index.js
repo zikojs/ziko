@@ -1,5 +1,5 @@
 export const throttle = (fn, delay) => {
-    let lastTime = 0;
+    let lastTime = -Infinity;
 
     return (...args) => {
         const now = performance.now();
