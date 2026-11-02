@@ -1,59 +1,46 @@
-import type {
-    StateGetter,
-} from '../../state/index.js';
+export type ClipboardChangeCallback = (text: string) => void;
+
+export type ClipboardChangeListener = (
+    callback: ClipboardChangeCallback
+) => void;
+
+export type ClipboardCopy = (value: string) => Promise<true>;
+
+export type ClipboardUnsubscribe = () => void;
+
+export type UseClipboardResult = [
+    copy: ClipboardCopy,
+    watch: ClipboardChangeListener,
+    unsubscribe: ClipboardUnsubscribe
+];
 
 /**
- * Provides reactive access to the system clipboard.
+ * Provides clipboard writing functionality with a listener mechanism
+ * for tracking successful copy operations.
  *
- * Uses the Clipboard API to read and write text.
- *
- * @param withEmitter - Whether to enable clipboard change subscriptions. Defaults to true.
- *
- * @returns A tuple containing:
- * - `text`: Reactive state containing the clipboard text.
- * - `copy`: Writes text to the clipboard.
- * - `read`: Reads text from the clipboard.
- * - `onChange`: Event subscription function (only available when `withEmitter` is true).
+ * @returns A tuple containing the copy function, listener registration
+ * function, and unsubscribe function.
  *
  * @example
- * ```ts
- * const [text, copy, read, onChange] = useClipboard();
+ * ```js
+ * const [copy, watch, unsubscribe] = useClipboard();
  *
- * await copy('Hello ZikoJS!');
- *
- * console.log(text().value);
- *
- * onChange(value => {
- *     console.log('Clipboard updated:', value);
+ * watch((text) => {
+ *     console.log("Copied:", text);
  * });
+ *
+ * await copy("Hello ZikoJS");
  * ```
  *
- * @example
- * ```ts
- * const [text, copy, read] = useClipboard(false);
+ * @example Unsubscribe all listeners
+ * ```js
+ * const [copy, watch, unsubscribe] = useClipboard();
  *
- * await copy('Hello World');
+ * watch(console.log);
  *
- * const value = await read();
- * console.log(value);
+ * await copy("ZikoJS");
+ *
+ * unsubscribe();
  * ```
  */
-export declare function useClipboard(
-    withEmitter?: true
-): [
-    text: StateGetter<string>,
-    copy: (value: string) => Promise<true>,
-    read: () => Promise<string>,
-    onChange: (callback: (value: string) => void) => void
-];
-
-/**
- * @see useClipboard
- */
-export declare function useClipboard(
-    withEmitter: false
-): [
-    text: StateGetter<string>,
-    copy: (value: string) => Promise<true>,
-    read: () => Promise<string>
-];
+export declare function useClipboard(): UseClipboardResult;

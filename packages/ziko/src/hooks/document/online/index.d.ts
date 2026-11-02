@@ -1,52 +1,46 @@
-import type {
-    StateGetter,
-} from '../../state/index.js';
+export type OnlineChangeCallback = (isOnline: boolean) => void;
+
+export type OnlineChangeListener = (
+    callback: OnlineChangeCallback
+) => void;
+
+export type OnlineUnsubscribe = () => void;
+
+export type UseOnlineResult = [
+    watch: OnlineChangeListener,
+    unsubscribe: OnlineUnsubscribe
+];
+
 /**
- * Subscribes to browser network connectivity changes.
+ * Observes the browser's online/offline status.
  *
- * Tracks the browser's online status using `navigator.onLine`
- * and listens to the `online` and `offline` window events.
+ * Registers callbacks that receive the current online status immediately,
+ * then receive updates whenever the browser fires an online or offline event.
  *
- * @param withEmitter - Whether to enable change event subscriptions. Defaults to true.
- *
- * @returns A tuple containing:
- * - `isOnline`: Reactive boolean state representing the connection status.
- * - `refresh`: Function to manually refresh the connection status.
- * - `onChange`: Event subscription function (only available when `withEmitter` is true).
+ * @returns A tuple containing the listener registration function
+ * and the unsubscribe function.
  *
  * @example
- * ```ts
- * const [isOnline, refresh, onChange] = useOnline();
+ * ```js
+ * const [watch, unsubscribe] = useOnline();
  *
- * console.log(isOnline().value);
- *
- * onChange(online => {
- *     console.log(online ? 'Online' : 'Offline');
+ * watch((isOnline) => {
+ *     console.log(isOnline ? "Online" : "Offline");
  * });
  * ```
  *
  * @example
- * ```ts
- * const [isOnline, refresh] = useOnline(false);
+ * ```js
+ * const [watch, unsubscribe] = useOnline();
  *
- * console.log(isOnline().value);
- * refresh();
+ * const callback = (isOnline) => {
+ *     console.log("Connection status:", isOnline);
+ * };
+ *
+ * watch(callback);
+ *
+ * // Removes all listeners and stops observing connection changes.
+ * unsubscribe();
  * ```
  */
-export declare function useOnline(
-    withEmitter?: true
-): [
-    isOnline: StateGetter<boolean>,
-    refresh: () => void,
-    onChange: (callback: (online: boolean) => void) => void
-];
-
-/**
- * @see useOnline
- */
-export declare function useOnline(
-    withEmitter: false
-): [
-    isOnline: StateGetter<boolean>,
-    refresh: () => void
-];
+export declare function useOnline(): UseOnlineResult;

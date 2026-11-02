@@ -1,49 +1,46 @@
-import type {
-    StateGetter,
-} from '../../state/index.js';
+export type DocumentVisibilityCallback = (isVisible: boolean) => void;
+
+export type DocumentVisibilityListener = (
+    callback: DocumentVisibilityCallback
+) => void;
+
+export type DocumentVisibilityUnsubscribe = () => void;
+
+export type UseDocumentVisibilityResult = [
+    watchDV: DocumentVisibilityListener,
+    unsubscribe: DocumentVisibilityUnsubscribe
+];
 
 /**
- * Subscribes to document visibility changes.
+ * Observes document visibility changes.
  *
- * Tracks whether the document is visible using `document.visibilityState`
- * and listens to the `visibilitychange` event.
+ * Registers callbacks that receive the current visibility state immediately,
+ * then receive updates whenever the document visibility changes.
  *
- * @param withEmitter - Whether to enable change event subscriptions. Defaults to true.
- *
- * @returns A tuple containing:
- * - `isVisible`: Reactive boolean state representing document visibility.
- * - `onChange`: Event subscription function (only available when `withEmitter` is true).
+ * @returns A tuple containing the listener registration function
+ * and the unsubscribe function.
  *
  * @example
- * ```ts
- * const [isVisible, onChange] = useDocumentVisibility();
+ * ```js
+ * const [watchDV, unsubscribe] = useDocumentVisibility();
  *
- * console.log(isVisible().value);
- *
- * onChange(visible => {
- *     console.log(visible ? 'Document visible' : 'Document hidden');
+ * watchDV((isVisible) => {
+ *     console.log(isVisible ? "Tab visible" : "Tab hidden");
  * });
  * ```
  *
  * @example
- * ```ts
- * const [isVisible] = useDocumentVisibility(false);
+ * ```js
+ * const [watchDV, unsubscribe] = useDocumentVisibility();
  *
- * console.log(isVisible().value);
+ * const callback = (isVisible) => {
+ *     console.log(isVisible);
+ * };
+ *
+ * watchDV(callback);
+ *
+ * // Removes all listeners and stops observing visibility changes.
+ * unsubscribe();
  * ```
  */
-export declare function useDocumentVisibility(
-    withEmitter?: true
-): [
-    isVisible: StateGetter<boolean>,
-    onChange: (callback: (visible: boolean) => void) => void
-];
-
-/**
- * @see useDocumentVisibility
- */
-export declare function useDocumentVisibility(
-    withEmitter: false
-): [
-    isVisible: StateGetter<boolean>
-];
+export declare function useDocumentVisibility(): UseDocumentVisibilityResult;
