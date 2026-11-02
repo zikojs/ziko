@@ -310,54 +310,104 @@ export class UIElement extends UINode {
     return this;
   }
 
-  async #__addItem__(adder, pusher, item, referenceNode = null, index = null) {
+  #__addItem__(adder, pusher, item, referenceNode = null, index = null) {
     const { element: itemsTargetEl, items } = this.itemsTarget;
-    if(["number", "string"].includes(typeof item)) item = text(item);
-    if(typeof item === "function" && isStateGetter(item)) {
-      const getter = item();
-      let currentItem = normalize(getter.value);
-      item = currentItem;
-      getter._subscribe((value) => {
-        const nextItem = normalize(value);
-        if (nextItem === currentItem) return;
-        const currentIndex = items.indexOf(currentItem);
-        if (currentIndex !== -1) {
-          currentItem.element.replaceWith(nextItem.element);
-          items[currentIndex] = nextItem;
-        } 
-        else if (currentItem.element.parentNode) {
-          currentItem.element.replaceWith(nextItem.element);
-        } 
-        else {
-          return;
+
+    if (["number", "string"].includes(typeof item)) {
+        item = text(item);
+    }
+
+    if (typeof item === "function" && isStateGetter(item)) {
+        const getter = item();
+        let currentItem = normalize(getter.value);
+
+        item = currentItem;
+
+        getter._subscribe((value) => {
+            const nextItem = normalize(value);
+
+            if (nextItem === currentItem) return;
+
+            const currentIndex = items.indexOf(currentItem);
+
+            if (currentIndex !== -1) {
+                currentItem.element.replaceWith(nextItem.element);
+                items[currentIndex] = nextItem;
+            } else if (currentItem.element.parentNode) {
+                currentItem.element.replaceWith(nextItem.element);
+            } else {
+                return;
+            }
+
+            nextItem.cache.parent = this;
+            nextItem.target = itemsTargetEl;
+            currentItem = nextItem;
+        });
+    }
+
+    if (typeof globalThis?.Node === "function" && item instanceof globalThis.Node) {
+        item = new UIElement({ element: item });
+    }
+
+    if (item instanceof Promise) {
+        return item.then(resolved =>
+            this.#__addItem__(adder, pusher, resolved, referenceNode, index)
+        );
+    }
+
+    if (item?.isUINode) {
+        item.cache.parent = this;
+        item.target = itemsTargetEl;
+
+        if (adder === "insertBefore" && itemsTargetEl) {
+            itemsTargetEl.insertBefore(item.element, referenceNode);
+        } else if (typeof itemsTargetEl?.[adder] === "function") {
+            itemsTargetEl[adder](item.element);
         }
-        nextItem.cache.parent = this;
-        nextItem.target = itemsTargetEl;
-        currentItem = nextItem;
-      });
+
+        if (pusher === "splice" && index !== null) {
+            items.splice(index, 0, item);
+        } else if (typeof items?.[pusher] === "function") {
+            items[pusher](item);
+        }
     }
-    if( typeof globalThis?.Node === "function" && item instanceof globalThis.Node)
-      item = new UIElement({ element: item });
-    if(item instanceof Promise) item = await item;
-    if(item?.isUINode) {
-      item.cache.parent = this;
-      item.target = itemsTargetEl;
-      if (adder === "insertBefore" && itemsTargetEl)
-        itemsTargetEl.insertBefore(item.element, referenceNode);
-      else if (typeof itemsTargetEl?.[adder] === "function")
-        itemsTargetEl[adder](item.element);
-      if (pusher === "splice" && index !== null) items.splice(index, 0, item);
-      else if (typeof items?.[pusher] === "function") items[pusher](item);
-      return;
-    }
-  }
-  async #__addItems__(adder, pusher, ...elements) {
+}
+
+#__addItems__(adder, pusher, ...elements) {
+    let pending = null;
+
     for (const item of elements) {
-      await this.#__addItem__(adder, pusher, item);
+        if (pending) {
+            pending = pending.then(() =>
+                this.#__addItem__(adder, pusher, item)
+            );
+            continue;
+        }
+
+        const result = this.#__addItem__(adder, pusher, item);
+
+        if (result instanceof Promise) {
+            pending = result;
+        }
     }
+
+    if (pending) {
+        return pending.then(() => {
+            this.maintain();
+            return this;
+        });
+    }
+
     this.maintain();
     return this;
-  }
+}
+  // async #__addItems__(adder, pusher, ...elements) {
+  //   for (const item of elements) {
+  //     await this.#__addItem__(adder, pusher, item);
+  //   }
+  //   this.maintain();
+  //   return this;
+  // }
 }
 
 const normalize = (value) => {

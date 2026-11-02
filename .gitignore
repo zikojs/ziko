@@ -3,3 +3,4 @@
 demo/
 _roadmap.md
 _commands.bash
+.vitest/
