@@ -1,41 +1,41 @@
-import {
-    useState,
-    useEffect
-} from '../../state/index.js';
-
-import { useEventEmitter } from '../../communication/event-emitter/index.js';
-
-export const useFavicon = (
-    href,
-    withEmitter = true
-) => {
-    // Resolve the favicon element once
+export const useFavicon = (initialHref) => {
     let link = document.querySelector('link[rel~="icon"]');
 
     if (!link) {
-        link = document.createElement('link');
-        link.rel = 'icon';
+        link = document.createElement("link");
+        link.rel = "icon";
         document.head.appendChild(link);
     }
 
-    const [_href, setHref] = useState(href ?? link.href ?? '');
-    const emitter = withEmitter ? useEventEmitter() : undefined;
+    let href = initialHref ?? link.href ?? "";
+    const subscribers = new Set();
 
-    const EVENT = Symbol.for('ziko:favicon-changed');
+    link.href = href;
 
-    useEffect(
-        ([newHref]) => {
-            link.href = newHref;
-            emitter?.emit(EVENT, newHref);
-        },
-        [_href]
-    );
+    const setIcon = (newHref) => {
+        if (typeof newHref === "function") {
+            newHref = newHref(href);
+        }
 
-    const onChange = (callback) => emitter.on(EVENT, callback);
+        if (Object.is(href, newHref)) return;
 
-    const res = [_href, setHref];
+        href = newHref;
+        link.href = href;
 
-    if (withEmitter) res.push(onChange);
+        subscribers.forEach(callback => callback(href));
+    };
 
-    return res;
+    const watchIcon = (callback) => {
+        if (typeof callback !== "function") {
+            throw new TypeError("Callback must be a function");
+        }
+
+        subscribers.add(callback);
+    };
+
+    const unsubscribe = () => {
+        subscribers.clear();
+    };
+
+    return [setIcon, watchIcon, unsubscribe];
 };

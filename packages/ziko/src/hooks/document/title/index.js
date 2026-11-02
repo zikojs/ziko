@@ -1,34 +1,33 @@
-import { 
-    useState,
-    useEffect
-} from '../../state/index.js';
+export const useTitle = (initialTitle = document.title) => {
+    let title = initialTitle;
+    const subscribers = new Set();
 
-import { useEventEmitter } from '../../communication/event-emitter/index.js';
+    document.title = title;
 
+    const setTitle = (newTitle) => {
+        if (typeof newTitle === "function") {
+            newTitle = newTitle(title);
+        }
 
-export const useTitle = (title = document.title, withEmitter = true) =>{
-    const [_title, setTitle] = useState(title);
-    let emiter;
-    const EVENT = Symbol.for('ziko:title-changed');
-    if(withEmitter){
-        emiter = useEventEmitter()
-    }
-    useEffect(
-        ([newTitle]) => {
-            document.title = newTitle;
-            emiter?.emit(EVENT, newTitle)
-        },
-        [_title]
-    )
+        if (Object.is(title, newTitle)) return;
 
-    const onChange = (callback) => emiter.on(EVENT, callback);
+        title = newTitle;
+        document.title = title;
 
-    const res = [
-        _title,
-        setTitle
-    ]
+        subscribers.forEach(callback => callback(title));
+    };
 
-    if(withEmitter) res.push(onChange)
-    
-    return res
-}
+    const watchTitle = (callback) => {
+        if (typeof callback !== "function") {
+            throw new TypeError("Callback must be a function");
+        }
+
+        subscribers.add(callback);
+    };
+
+    const unsubscribe = () => {
+        subscribers.clear();
+    };
+
+    return [setTitle, watchTitle, unsubscribe];
+};

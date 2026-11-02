@@ -1,8 +1,3 @@
-import type {
-    StateGetter,
-    SetStateAction
-} from '../../state/index.js';
-
 export type FavIconChangeCallback = (href: string) => void;
 
 export type FavIconChangeListener = (
@@ -10,31 +5,57 @@ export type FavIconChangeListener = (
 ) => void;
 
 export type FavIconStateSetter = (
-    newValue: SetStateAction<string>
+    newHref: string | ((currentHref: string) => string)
 ) => void;
 
+export type FavIconUnsubscribe = () => void;
+
 export type UseFavIconResult = [
-    href: StateGetter<string>,
-    setHref: FavIconStateSetter
+    setIcon: FavIconStateSetter,
+    watchIcon: FavIconChangeListener,
+    unsubscribe: FavIconUnsubscribe
 ];
 
-export type UseFavIconResultWithEmitter = [
-    href: StateGetter<string>,
-    setHref: FavIconStateSetter,
-    onChange: FavIconChangeListener
-];
-
-export declare function useFavIcon(
-    href?: string,
-    withEmitter?: true
-): UseFavIconResultWithEmitter;
-
-export declare function useFavIcon(
-    href: string | undefined,
-    withEmitter: false
+/**
+ * Manages the document favicon and provides a listener mechanism
+ * for tracking favicon changes.
+ *
+ * @param initialHref - Initial favicon URL. Defaults to the current favicon.
+ * @returns A tuple containing the setter, listener registration function,
+ * and unsubscribe function.
+ *
+ * @example
+ * ```js
+ * const [setIcon, watchIcon, unsubscribe] = useFavicon("/favicon.png");
+ *
+ * watchIcon((href) => {
+ *     console.log("Favicon changed:", href);
+ * });
+ *
+ * setIcon("/dark-favicon.png");
+ * ```
+ *
+ * @example Functional update
+ * ```js
+ * const [setIcon] = useFavicon("/favicon.png");
+ *
+ * setIcon((currentHref) =>
+ *     currentHref.replace("light", "dark")
+ * );
+ * ```
+ *
+ * @example Unsubscribe all listeners
+ * ```js
+ * const [setIcon, watchIcon, unsubscribe] = useFavicon();
+ *
+ * watchIcon((href) => console.log(href));
+ *
+ * unsubscribe();
+ *
+ * // Updates the favicon without notifying listeners.
+ * setIcon("/new-favicon.png");
+ * ```
+ */
+export declare function useFavicon(
+    initialHref?: string
 ): UseFavIconResult;
-
-export declare function useFavIcon(
-    href?: string,
-    withEmitter?: boolean
-): UseFavIconResult | UseFavIconResultWithEmitter;
