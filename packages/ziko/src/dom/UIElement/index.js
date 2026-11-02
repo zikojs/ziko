@@ -95,16 +95,7 @@ export class UIElement extends UINode {
       Events.forEach(([ev, callback]) => this[ev](callback.bind(this)))
       if(items.length > 0) this.append(...items)
     }
-  maintain() {
-    for (let i = 0; i < this.items.length; i++) {
-      Object.defineProperty(this, i, {
-        value: this.items[i],
-        writable: true,
-        configurable: true,
-        enumerable: false 
-        });
-    }
-  }
+  
   on(
     event_name,
     callback,
@@ -279,11 +270,11 @@ export class UIElement extends UINode {
   // Dom
 
   append(...ele) {
-    this.#__addItems__("append", "push", ...ele);
+    __addItems__(this, "append", "push", ...ele);
     return this;
   }
   prepend(...ele) {
-    this.this.#__addItems__("prepend", "unshift", ...ele);
+    __addItems__(this, "prepend", "unshift", ...ele);
     return this;
   }
   insertAt(index, ...ele) {
@@ -294,7 +285,7 @@ export class UIElement extends UINode {
       target.element?.insertBefore(ele[i].element, target.items[index].element);
       target.items.splice(index, 0, ele[i]);
     }
-    target.maintain();
+    maintain(ctx);
     return this;
   }
   remove(...ele) {
@@ -310,104 +301,6 @@ export class UIElement extends UINode {
     return this;
   }
 
-  #__addItem__(adder, pusher, item, referenceNode = null, index = null) {
-    const { element: itemsTargetEl, items } = this.itemsTarget;
-
-    if (["number", "string"].includes(typeof item)) {
-        item = text(item);
-    }
-
-    if (typeof item === "function" && isStateGetter(item)) {
-        const getter = item();
-        let currentItem = normalize(getter.value);
-
-        item = currentItem;
-
-        getter._subscribe((value) => {
-            const nextItem = normalize(value);
-
-            if (nextItem === currentItem) return;
-
-            const currentIndex = items.indexOf(currentItem);
-
-            if (currentIndex !== -1) {
-                currentItem.element.replaceWith(nextItem.element);
-                items[currentIndex] = nextItem;
-            } else if (currentItem.element.parentNode) {
-                currentItem.element.replaceWith(nextItem.element);
-            } else {
-                return;
-            }
-
-            nextItem.cache.parent = this;
-            nextItem.target = itemsTargetEl;
-            currentItem = nextItem;
-        });
-    }
-
-    if (typeof globalThis?.Node === "function" && item instanceof globalThis.Node) {
-        item = new UIElement({ element: item });
-    }
-
-    if (item instanceof Promise) {
-        return item.then(resolved =>
-            this.#__addItem__(adder, pusher, resolved, referenceNode, index)
-        );
-    }
-
-    if (item?.isUINode) {
-        item.cache.parent = this;
-        item.target = itemsTargetEl;
-
-        if (adder === "insertBefore" && itemsTargetEl) {
-            itemsTargetEl.insertBefore(item.element, referenceNode);
-        } else if (typeof itemsTargetEl?.[adder] === "function") {
-            itemsTargetEl[adder](item.element);
-        }
-
-        if (pusher === "splice" && index !== null) {
-            items.splice(index, 0, item);
-        } else if (typeof items?.[pusher] === "function") {
-            items[pusher](item);
-        }
-    }
-}
-
-#__addItems__(adder, pusher, ...elements) {
-    let pending = null;
-
-    for (const item of elements) {
-        if (pending) {
-            pending = pending.then(() =>
-                this.#__addItem__(adder, pusher, item)
-            );
-            continue;
-        }
-
-        const result = this.#__addItem__(adder, pusher, item);
-
-        if (result instanceof Promise) {
-            pending = result;
-        }
-    }
-
-    if (pending) {
-        return pending.then(() => {
-            this.maintain();
-            return this;
-        });
-    }
-
-    this.maintain();
-    return this;
-}
-  // async #__addItems__(adder, pusher, ...elements) {
-  //   for (const item of elements) {
-  //     await this.#__addItem__(adder, pusher, item);
-  //   }
-  //   this.maintain();
-  //   return this;
-  // }
 }
 
 const normalize = (value) => {
@@ -420,3 +313,75 @@ const normalize = (value) => {
   }
   return text(value ?? "");
 };
+
+
+const __addItem__ = (ctx, adder, pusher, item, referenceNode = null, index = null) => {
+    const { element: itemsTargetEl, items } = ctx.itemsTarget;
+    if (["number", "string"].includes(typeof item)) item = text(item);
+    if (typeof item === "function" && isStateGetter(item)) {
+        const getter = item();
+        let currentItem = normalize(getter.value);
+        item = currentItem;
+        getter._subscribe((value) => {
+            const nextItem = normalize(value);
+            if (nextItem === currentItem) return;
+            const currentIndex = items.indexOf(currentItem);
+            if (currentIndex !== -1) {
+                currentItem.element.replaceWith(nextItem.element);
+                items[currentIndex] = nextItem;
+            } 
+            else if (currentItem.element.parentNode) currentItem.element.replaceWith(nextItem.element);
+            else return;
+            nextItem.cache.parent = ctx;
+            nextItem.target = itemsTargetEl;
+            currentItem = nextItem;
+        });
+    }
+    if (typeof globalThis?.Node === "function" && item instanceof globalThis.Node) item = new UIElement({ element: item });
+    if (item instanceof Promise) {
+        return item.then(resolved => __addItem__(ctx, adder, pusher, resolved, referenceNode, index));
+    }
+    if (item?.isUINode) {
+        item.cache.parent = ctx;
+        item.target = itemsTargetEl;
+        if(adder === "insertBefore" && itemsTargetEl) 
+          itemsTargetEl.insertBefore(item.element, referenceNode);
+        else if (typeof itemsTargetEl?.[adder] === "function") 
+          itemsTargetEl[adder](item.element);
+        if (pusher === "splice" && index !== null) 
+          items.splice(index, 0, item);
+        else if (typeof items?.[pusher] === "function") 
+          items[pusher](item);
+    }
+}
+
+const __addItems__=(ctx, adder, pusher, ...elements)=>{
+    let pending = null;
+    for (const item of elements) {
+        if (pending) {
+            pending = pending.then(() =>__addItem__(ctx, adder, pusher, item));
+            continue;
+        }
+        const result = __addItem__(ctx, adder, pusher, item);
+        if (result instanceof Promise) pending = result;
+    }
+    if (pending) {
+        return pending.then(() => {
+            maintain(ctx);
+            return ctx;
+        });
+    }
+    maintain(ctx);
+    return ctx;
+}
+
+const maintain = (ctx) => {
+    for (let i = 0; i < ctx.items.length; i++) {
+      Object.defineProperty(ctx, i, {
+        value: ctx.items[i],
+        writable: true,
+        configurable: true,
+        enumerable: false 
+        });
+    }
+  }
