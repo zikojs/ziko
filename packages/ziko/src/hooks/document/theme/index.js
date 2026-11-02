@@ -3,7 +3,6 @@ import { useCssVars } from '../css-vars/index.js';
 export function useTheme(themes, {
     defaultTheme = Object.keys(themes ?? {})[0],
     namespace = 'ziko',
-    validCssProps = false,
     target = globalThis.document
 } = {}) {
     if (!themes || typeof themes !== 'object' || Array.isArray(themes) || Object.keys(themes).length === 0) {
@@ -15,7 +14,7 @@ export function useTheme(themes, {
             throw new TypeError(`Theme '${name}' must be an object`);
         }
     }
-    const [vars, setVars] = useCssVars(themes[defaultTheme], { namespace, validCssProps, target });
+    const [vars, setVars] = useCssVars(themes[defaultTheme], { namespace, target });
     let activeTheme = defaultTheme;
     const setTheme = name => {
         if (!Object.hasOwn(themes, name)) throw new Error(`Unknown theme: '${name}'`);

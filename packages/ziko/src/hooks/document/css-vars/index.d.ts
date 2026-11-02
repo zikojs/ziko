@@ -1,118 +1,75 @@
+import type { UIElement } from '../../../dom/UIElement/index.js';
 
-export type CssVarsData = Record<string, string | number | boolean>;
+export type CssVarsData = Record<string, string | number>;
 
-export type CssVarsUpdater = (
-    previous: CssVarsData
-) => Partial<CssVarsData>;
+export type CssVarsTarget =
+    | Document
+    | HTMLElement
+    | SVGElement
+    | UIElement;
 
-export interface CssVarsOptions {
+export type CssVarsSetter = (
+    updates: CssVarsData | ((current: CssVarsData) => CssVarsData)
+) => Record<string, string>;
+
+export type UseCssVarsResult = [
+    vars: Record<string, string>,
+    setVars: CssVarsSetter
+];
+
+export interface UseCssVarsOptions {
     /**
-     * Prefix used for CSS custom properties.
-     *
+     * CSS custom property namespace.
      * @default "ziko"
-     *
-     * @example
-     * namespace: "app" // --app-color
      */
     namespace?: string;
 
     /**
-     * Validates property names against CSSStyleDeclaration.
-     *
-     * @default false
-     */
-    validCssProps?: boolean;
-
-    /**
-     * Document or Element on which CSS variables are defined.
-     *
-     * Defaults to the global document.
-     *
+     * Element where CSS variables will be applied.
+     * Accepts a Document, native Element, or ZikoJS UIElement.
      * @default document
      */
-    target?: Document | Element;
+    target?: CssVarsTarget;
 }
 
 /**
- * Creates and manages CSS custom properties.
+ * Creates reactive CSS custom properties.
  *
  * @param initialData Initial CSS variable values.
  * @param options Configuration options.
- *
- * @returns A tuple containing a CSS variable reference object
- * and a setter that updates the variables.
+ * @returns A tuple containing CSS variable references and an update function.
  *
  * @example
+ * ```js
  * const [vars, setVars] = useCssVars({
- *     color: "darkblue",
- *     padding: "10px",
- *     opacity: 1
+ *     primary: "#3498db",
+ *     spacing: "1rem"
  * });
  *
- * element.style({
- *     color: vars.color,
- *     padding: vars.padding
- * });
+ * element.style.color = vars.primary;
  *
  * setVars({
- *     color: "red"
+ *     primary: "#e74c3c"
  * });
  *
- * @example
- * const container = document.querySelector("#app")!;
+ * setVars(current => ({
+ *     ...current,
+ *     spacing: "2rem"
+ * }));
+ * ```
  *
+ * @example
+ * ```js
  * const [vars, setVars] = useCssVars(
- *     { color: "blue" },
+ *     { primary: "blue" },
  *     {
  *         namespace: "app",
- *         target: container
+ *         target: document.querySelector("#app")
  *     }
  * );
- *
- * // Defines --app-color on the container.
- */
-export declare class CssVars {
-    constructor(
-        initialData: CssVarsData,
-        options?: CssVarsOptions
-    );
-}
-
-/**
- * Creates CSS variables and returns a tuple:
- * [vars, setVars].
- *
- * Accessing vars.color returns "var(--ziko-color)".
- *
- * @example
- * const [vars, setVars] = useCssVars({
- *     background: "white",
- *     color: "black",
- *     border: "1px solid gray"
- * });
- *
- * console.log(vars.border); // "var(--ziko-border)"
- *
- * setVars({
- *     color: "blue",
- *     padding: "12px"
- * });
- *
- * @example
- * // Use unprefixed CSS custom properties.
- * const [vars, setVars] = useCssVars(
- *     { color: "red" },
- *     { namespace: "" }
- * );
- *
- * // vars.color === "var(--color)"
+ * ```
  */
 export declare function useCssVars(
     initialData: CssVarsData,
-    options?: CssVarsOptions
-): [
-    vars: Record<string, string>,
-    setVars: (
-        nextData: Partial<CssVarsData> | CssVarsUpdater
-    ) => Record<string, string>
-];
+    options?: UseCssVarsOptions
+): UseCssVarsResult;
