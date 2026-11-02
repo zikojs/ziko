@@ -1,26 +1,26 @@
-import { register_to_class } from "../../internal-utils/register/register-to-class.js";
-import * as AttrsMethods from "../mixins/attrs.js";
-
+import { register_to_class } from '../../internal-utils/register/register-to-class.js';
+import * as AttrsMethods from '../mixins/attrs.js';
 import {
   EventController,
   PtrListeners,
   ClickListeners,
   KeyListeners,
   ViewListeners,
-} from "../../events/index.js";
-import { isStateGetter } from "../../hooks/state/use-state/index.js";
-import { text } from "../text/index.js";
-import { UINode } from "../UINode/index.js";
+} from '../../events/index.js';
+import { isStateGetter } from '../../hooks/state/use-state/index.js';
+import { text } from '../text/index.js';
+import { UINode } from '../UINode/index.js';
 import {__init__global__} from '../../__ziko__/index.js';
-import { UIStore } from "../../__ziko__/__ui__.js";
-import { parse_props } from "../internal-utils/parse_props.js";
+import { UIStore } from '../../__ziko__/__ui__.js';
+import { parse_props } from '../internal-utils/parse_props.js';
 
 __init__global__();
+
 export class UIElement extends UINode {
   constructor({
     element,
-    name = "",
-    type = "html",
+    name = '',
+    type = 'html',
     autoMount = __Ziko__.__Config__.default.autoMount,
     props,
   } = {}) {
@@ -41,11 +41,11 @@ export class UIElement extends UINode {
   }
   init({element, name, type, autoMount, props = {}, items = []} = {}){
       this.target = globalThis.__Ziko__.__Config__.default.target||globalThis?.document?.body;
-      if(typeof element === "string") {
+      if(typeof element === 'string') {
         switch(type){
-          case "html" : element = globalThis?.document?.createElement(element); break;
-          case "svg" : element = globalThis?.document?.createElementNS("http://www.w3.org/2000/svg", element); break;
-          default : throw Error("Not supported")
+          case 'html' : element = globalThis?.document?.createElement(element); break;
+          case 'svg' : element = globalThis?.document?.createElementNS('http://www.w3.org/2000/svg', element); break;
+          default : throw Error('Not supported')
         }
       }
       else this.target = element?.parentElement;
@@ -101,7 +101,7 @@ export class UIElement extends UINode {
     callback,
     {
       details_setter,
-      category = "global",
+      category = 'global',
       isCustom = false,
       preventDefault = false,
     } = {},
@@ -131,7 +131,7 @@ export class UIElement extends UINode {
     );
     return this;
   }
-  off(event, category = "global") {
+  off(event, category = 'global') {
     this.exp.events[category].removeListener(event);
     return this;
   }
@@ -155,14 +155,14 @@ export class UIElement extends UINode {
   useClient(directive) {
     if (!this.cache.isInteractive) {
       this.element.setAttribute(
-        "data-hydration-index",
+        'data-hydration-index',
         globalThis.__Ziko__.__HYDRATION__.index,
       );
       globalThis.__Ziko__.__HYDRATION__.register(() => this.constructor);
       this.cache.isInteractive = true;
     }
     if (directive)
-      this.element.setAttribute("data-hydration-directive", directive);
+      this.element.setAttribute('data-hydration-directive', directive);
     return this;
   }
   // get st(){
@@ -270,18 +270,18 @@ export class UIElement extends UINode {
   // Dom
 
   append(...ele) {
-    __addItems__(this, "append", "push", ...ele);
+    __addItems__(this, 'append', 'push', ...ele);
     return this;
   }
   prepend(...ele) {
-    __addItems__(this, "prepend", "unshift", ...ele);
+    __addItems__(this, 'prepend', 'unshift', ...ele);
     return this;
   }
   insertAt(index, ...ele) {
     const target = this.itemsTarget;
     if (index >= target.items.length) return this.append(...ele);
     for (let i = 0; i < ele.length; i++) {
-      if (["number", "string"].includes(typeof ele[i])) ele[i] = text(ele[i]);
+      if (['number', 'string'].includes(typeof ele[i])) ele[i] = text(ele[i]);
       target.element?.insertBefore(ele[i].element, target.items[index].element);
       target.items.splice(index, 0, ele[i]);
     }
@@ -290,7 +290,7 @@ export class UIElement extends UINode {
   }
   remove(...ele) {
     const remove = (ele) => {
-      if (typeof ele === "number") ele = this.items[ele];
+      if (typeof ele === 'number') ele = this.items[ele];
       if (ele?.isUIElement) this.itemsTarget.element?.removeChild(ele.element);
       this.items = this.items.filter((n) => n !== ele);
     };
@@ -305,20 +305,17 @@ export class UIElement extends UINode {
 
 const normalize = (value) => {
   if (value?.isUINode) return value;
-  if (
-    typeof globalThis.Node === "function" &&
-    value instanceof globalThis.Node
-  ) {
+  if (typeof globalThis.Node === 'function' && value instanceof globalThis.Node) {
     return new UIElement({ element: value });
   }
-  return text(value ?? "");
+  return text(value ?? '');
 };
 
 
 const __addItem__ = (ctx, adder, pusher, item, referenceNode = null, index = null) => {
     const { element: itemsTargetEl, items } = ctx.itemsTarget;
-    if (["number", "string"].includes(typeof item)) item = text(item);
-    if (typeof item === "function" && isStateGetter(item)) {
+    if (['number', 'string'].includes(typeof item)) item = text(item);
+    if (typeof item === 'function' && isStateGetter(item)) {
         const getter = item();
         let currentItem = normalize(getter.value);
         item = currentItem;
@@ -337,20 +334,20 @@ const __addItem__ = (ctx, adder, pusher, item, referenceNode = null, index = nul
             currentItem = nextItem;
         });
     }
-    if (typeof globalThis?.Node === "function" && item instanceof globalThis.Node) item = new UIElement({ element: item });
+    if (typeof globalThis?.Node === 'function' && item instanceof globalThis.Node) item = new UIElement({ element: item });
     if (item instanceof Promise) {
         return item.then(resolved => __addItem__(ctx, adder, pusher, resolved, referenceNode, index));
     }
     if (item?.isUINode) {
         item.cache.parent = ctx;
         item.target = itemsTargetEl;
-        if(adder === "insertBefore" && itemsTargetEl) 
+        if(adder === 'insertBefore' && itemsTargetEl) 
           itemsTargetEl.insertBefore(item.element, referenceNode);
-        else if (typeof itemsTargetEl?.[adder] === "function") 
+        else if (typeof itemsTargetEl?.[adder] === 'function') 
           itemsTargetEl[adder](item.element);
-        if (pusher === "splice" && index !== null) 
+        if (pusher === 'splice' && index !== null) 
           items.splice(index, 0, item);
-        else if (typeof items?.[pusher] === "function") 
+        else if (typeof items?.[pusher] === 'function') 
           items[pusher](item);
     }
 }
