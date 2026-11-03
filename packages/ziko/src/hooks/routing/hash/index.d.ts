@@ -1,4 +1,3 @@
-
 export type HashValue = string | null | undefined;
 
 export type HashUpdater = (
@@ -12,9 +11,13 @@ export type HashListener = (
 /**
  * Creates a utility for reading, updating and observing the URL hash.
  *
+ * The hash is normalized: the leading `#` is excluded from returned values.
+ *
  * @param initialValue - Initial hash value. Sets the URL hash only if it is empty.
  *
- * @returns A tuple containing `setHash` and `watchHash`.
+ * @returns A tuple containing:
+ * - `setHash`: Updates the URL hash.
+ * - `watchHash`: Observes hash changes and returns an unsubscribe function.
  *
  * @example
  * Basic usage:
@@ -40,6 +43,8 @@ export type HashListener = (
  * const [setHash] = useHash("home");
  *
  * setHash(current => `${current}/settings`);
+ *
+ * console.log(location.hash); // "#home/settings"
  * ```
  *
  * @example
@@ -50,6 +55,8 @@ export type HashListener = (
  * setHash(null);
  * // or
  * setHash(undefined);
+ *
+ * console.log(location.hash); // ""
  * ```
  *
  * @example
@@ -61,7 +68,7 @@ export type HashListener = (
  *     console.log("Current hash:", hash);
  * });
  *
- * setHash("about");
+ * setHash("about"); // "Current hash: about"
  *
  * unsubscribe();
  * ```
@@ -72,7 +79,10 @@ export type HashListener = (
  * const [setHash, watchHash] = useHash("home");
  *
  * setHash("profile");
+ *
  * setHash(current => `${current}/settings`);
+ *
+ * setHash(null);
  *
  * const unsubscribe = watchHash((hash: string) => {
  *     console.log(hash);

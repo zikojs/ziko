@@ -7,6 +7,7 @@ import { __State__ } from './__state__.js';
 export function __init__global__(){
     if ( !globalThis?.__Ziko__ ){
         globalThis.__Ziko__ = {
+                    __EVENT_EMITTER__ : {},
                     __UI__,
                     __HYDRATION__,
                     __State__,
