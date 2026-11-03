@@ -14,6 +14,12 @@ import {__init__global__} from '../../__ziko__/index.js';
 import { UIStore } from '../../__ziko__/__ui__.js';
 import { parse_props } from '../internal-utils/parse_props.js';
 
+import {
+  __addItems__,
+  // __addItem__,
+  maintain
+} from './utils.js'
+
 __init__global__();
 
 export class UIElement extends UINode {
@@ -41,10 +47,10 @@ export class UIElement extends UINode {
   }
   init({element, name, type, autoMount, props = {}, items = []} = {}){
       this.target = globalThis.__Ziko__.__Config__.default.target||globalThis?.document?.body;
-      if(typeof element === 'string') {
+      if(typeof element === 'string' && globalThis?.document) {
         switch(type){
-          case 'html' : element = globalThis?.document?.createElement(element); break;
-          case 'svg' : element = globalThis?.document?.createElementNS('http://www.w3.org/2000/svg', element); break;
+          case 'html' : element = document.createElement(element); break;
+          case 'svg' : element = document.createElementNS('http://www.w3.org/2000/svg', element); break;
           default : throw Error('Not supported')
         }
       }
@@ -189,24 +195,6 @@ export class UIElement extends UINode {
   get rect() {
     return this.element.getBoundingClientRect();
   }
-  // get width(){
-  //   return this.element.getBoundingClientRect().width;
-  // }
-  // get height(){
-  //   return this.element.getBoundingClientRect().height;
-  // }
-  // get top(){
-  //   return this.element.getBoundingClientRect().top;
-  // }
-  // get right(){
-  //   return this.element.getBoundingClientRect().right;
-  // }
-  // get bottom(){
-  //   return this.element.getBoundingClientRect().bottom;
-  // }
-  // get left(){
-  //   return this.element.getBoundingClientRect().left;
-  // }
 
   // Lifecycle
 
@@ -270,11 +258,11 @@ export class UIElement extends UINode {
   // Dom
 
   append(...ele) {
-    __addItems__(this, 'append', 'push', ...ele);
+    __addItems__(UIElement, this, 'append', 'push', ...ele);
     return this;
   }
   prepend(...ele) {
-    __addItems__(this, 'prepend', 'unshift', ...ele);
+    __addItems__(UIElement, this, 'prepend', 'unshift', ...ele);
     return this;
   }
   insertAt(index, ...ele) {
@@ -303,82 +291,3 @@ export class UIElement extends UINode {
 
 }
 
-const normalize = (value) => {
-  if (value?.isUINode) return value;
-  if (typeof globalThis.Node === 'function' && value instanceof globalThis.Node) {
-    return new UIElement({ element: value });
-  }
-  return text(value ?? '');
-};
-
-
-const __addItem__ = (ctx, adder, pusher, item, referenceNode = null, index = null) => {
-    const { element: itemsTargetEl, items } = ctx.itemsTarget;
-    if (['number', 'string'].includes(typeof item)) item = text(item);
-    if (typeof item === 'function' && isStateGetter(item)) {
-        const getter = item();
-        let currentItem = normalize(getter.value);
-        item = currentItem;
-        getter._subscribe((value) => {
-            const nextItem = normalize(value);
-            if (nextItem === currentItem) return;
-            const currentIndex = items.indexOf(currentItem);
-            if (currentIndex !== -1) {
-                currentItem.element.replaceWith(nextItem.element);
-                items[currentIndex] = nextItem;
-            } 
-            else if (currentItem.element.parentNode) currentItem.element.replaceWith(nextItem.element);
-            else return;
-            nextItem.cache.parent = ctx;
-            nextItem.target = itemsTargetEl;
-            currentItem = nextItem;
-        });
-    }
-    if (typeof globalThis?.Node === 'function' && item instanceof globalThis.Node) item = new UIElement({ element: item });
-    if (item instanceof Promise) {
-        return item.then(resolved => __addItem__(ctx, adder, pusher, resolved, referenceNode, index));
-    }
-    if (item?.isUINode) {
-        item.cache.parent = ctx;
-        item.target = itemsTargetEl;
-        if(adder === 'insertBefore' && itemsTargetEl) 
-          itemsTargetEl.insertBefore(item.element, referenceNode);
-        else if (typeof itemsTargetEl?.[adder] === 'function') 
-          itemsTargetEl[adder](item.element);
-        if (pusher === 'splice' && index !== null) 
-          items.splice(index, 0, item);
-        else if (typeof items?.[pusher] === 'function') 
-          items[pusher](item);
-    }
-}
-
-const __addItems__=(ctx, adder, pusher, ...elements)=>{
-    let pending = null;
-    for (const item of elements) {
-        if (pending) {
-            pending = pending.then(() =>__addItem__(ctx, adder, pusher, item));
-            continue;
-        }
-        const result = __addItem__(ctx, adder, pusher, item);
-        if (result instanceof Promise) pending = result;
-    }
-    if (pending) {
-        return pending.then(() => {
-            maintain(ctx);
-            return ctx;
-        });
-    }
-    maintain(ctx);
-    return ctx;
-}
-
-const maintain = (ctx) => {
-    for (let i = 0; i < ctx.items.length; i++) {
-      Object.defineProperty(ctx, i, {
-        value: ctx.items[i],
-        writable: true,
-        configurable: true,
-        enumerable: false 
-        });
-    }
-  }
