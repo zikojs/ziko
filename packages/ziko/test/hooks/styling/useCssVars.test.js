@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { useCssVars } from "ziko/hooks/document";
+import { useCssVars } from "ziko/hooks/styling";
 import { tags } from "ziko/dom";
 
 describe("useCssVars", () => {

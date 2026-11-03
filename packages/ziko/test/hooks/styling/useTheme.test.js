@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { useTheme } from "ziko/hooks/document";
+import { useTheme } from "ziko/hooks/styling";
 import { tags } from "ziko/dom";
 
 describe("useTheme", () => {

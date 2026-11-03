@@ -1,66 +1,203 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { useHistory } from 'ziko/hooks/routing';
 
-describe('useHistory', () => {
-    let back, forward, go;
+import {
+    describe,
+    it,
+    expect,
+    vi,
+    beforeEach,
+    afterEach
+} from "vitest";
+
+import { useHistory } from "ziko/hooks/routing";
+
+describe("useHistory", () => {
+    let historyBack;
+    let historyForward;
+    let historyGo;
 
     beforeEach(() => {
-        back = vi.spyOn(globalThis.history, 'back').mockImplementation(() => {});
-        forward = vi.spyOn(globalThis.history, 'forward').mockImplementation(() => {});
-        go = vi.spyOn(globalThis.history, 'go').mockImplementation(() => {});
+        historyBack = vi.spyOn(globalThis.history, "back")
+            .mockImplementation(() => {});
+
+        historyForward = vi.spyOn(globalThis.history, "forward")
+            .mockImplementation(() => {});
+
+        historyGo = vi.spyOn(globalThis.history, "go")
+            .mockImplementation(() => {});
     });
 
     afterEach(() => {
         vi.restoreAllMocks();
     });
 
-    /* Return value */
-    it('should return undo, redo and go methods', () => {
-        const history = useHistory();
-        expect(history).toEqual({
-            undo: expect.any(Function),
-            redo: expect.any(Function),
-            go: expect.any(Function)
+    /* Initialization */
+
+    describe("Initialization", () => {
+        it("should return undo, redo and go functions", () => {
+            const result = useHistory();
+
+            expect(result).toEqual({
+                undo: expect.any(Function),
+                redo: expect.any(Function),
+                go: expect.any(Function)
+            });
+        });
+
+        it("should return independent utility instances", () => {
+            const first = useHistory();
+            const second = useHistory();
+
+            expect(first).not.toBe(second);
+            expect(first.undo).not.toBe(second.undo);
         });
     });
 
     /* Undo */
-    it('should call history.back()', () => {
-        useHistory().undo();
-        expect(back).toHaveBeenCalledOnce();
+
+    describe("undo", () => {
+        it("should call history.back()", () => {
+            const { undo } = useHistory();
+
+            undo();
+
+            expect(historyBack).toHaveBeenCalledOnce();
+        });
+
+        it("should not pass arguments to history.back()", () => {
+            const { undo } = useHistory();
+
+            undo();
+
+            expect(historyBack).toHaveBeenCalledWith();
+        });
+
+        it("should return undefined", () => {
+            const { undo } = useHistory();
+
+            expect(undo()).toBeUndefined();
+        });
     });
 
     /* Redo */
-    it('should call history.forward()', () => {
-        useHistory().redo();
-        expect(forward).toHaveBeenCalledOnce();
+
+    describe("redo", () => {
+        it("should call history.forward()", () => {
+            const { redo } = useHistory();
+
+            redo();
+
+            expect(historyForward).toHaveBeenCalledOnce();
+        });
+
+        it("should not pass arguments to history.forward()", () => {
+            const { redo } = useHistory();
+
+            redo();
+
+            expect(historyForward).toHaveBeenCalledWith();
+        });
+
+        it("should return undefined", () => {
+            const { redo } = useHistory();
+
+            expect(redo()).toBeUndefined();
+        });
     });
 
     /* Go */
-    it('should call history.go() with a positive delta', () => {
-        useHistory().go(2);
-        expect(go).toHaveBeenCalledWith(2);
+
+    describe("go", () => {
+        it("should navigate forward by a positive delta", () => {
+            const { go } = useHistory();
+
+            go(2);
+
+            expect(historyGo).toHaveBeenCalledWith(2);
+        });
+
+        it("should navigate backward by a negative delta", () => {
+            const { go } = useHistory();
+
+            go(-3);
+
+            expect(historyGo).toHaveBeenCalledWith(-3);
+        });
+
+        it("should accept zero", () => {
+            const { go } = useHistory();
+
+            go(0);
+
+            expect(historyGo).toHaveBeenCalledWith(0);
+        });
+
+        it("should accept negative integers", () => {
+            const { go } = useHistory();
+
+            expect(() => go(-1)).not.toThrow();
+        });
+
+        it("should reject non-integer numbers", () => {
+            const { go } = useHistory();
+
+            for (const value of [1.5, -2.7, 0.1]) {
+                expect(() => go(value)).toThrow(TypeError);
+            }
+        });
+
+        it("should reject invalid types", () => {
+            const { go } = useHistory();
+
+            for (const value of [
+                "2",
+                null,
+                undefined,
+                true,
+                {},
+                [],
+                NaN,
+                Infinity
+            ]) {
+                expect(() => go(value)).toThrow(TypeError);
+            }
+        });
+
+        it("should include the correct error message", () => {
+            const { go } = useHistory();
+
+            expect(() => go(1.5))
+                .toThrow("delta must be an integer");
+        });
+
+        it("should not call history.go() when delta is invalid", () => {
+            const { go } = useHistory();
+
+            expect(() => go(1.5)).toThrow(TypeError);
+
+            expect(historyGo).not.toHaveBeenCalled();
+        });
+
+        it("should return undefined", () => {
+            const { go } = useHistory();
+
+            expect(go(1)).toBeUndefined();
+        });
     });
 
-    it('should call history.go() with a negative delta', () => {
-        useHistory().go(-2);
-        expect(go).toHaveBeenCalledWith(-2);
-    });
+    /* Combined operations */
 
-    it('should accept zero as a valid delta', () => {
-        useHistory().go(0);
-        expect(go).toHaveBeenCalledWith(0);
-    });
+    describe("Combined operations", () => {
+        it("should execute multiple history operations independently", () => {
+            const { undo, redo, go } = useHistory();
 
-    it('should reject non-integer deltas', () => {
-        const { go: navigate } = useHistory();
-        for (const value of [1.5, NaN, Infinity, '2', null, undefined, {}, []]) {
-            expect(() => navigate(value)).toThrow(TypeError);
-        }
-        expect(go).not.toHaveBeenCalled();
-    });
+            undo();
+            redo();
+            go(-2);
 
-    it('should include the expected error message', () => {
-        expect(() => useHistory().go(1.5)).toThrow('delta must be an integer');
+            expect(historyBack).toHaveBeenCalledOnce();
+            expect(historyForward).toHaveBeenCalledOnce();
+            expect(historyGo).toHaveBeenCalledOnce();
+            expect(historyGo).toHaveBeenCalledWith(-2);
+        });
     });
 });
