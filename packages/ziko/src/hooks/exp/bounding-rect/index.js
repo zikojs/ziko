@@ -28,8 +28,8 @@ export function useBoundingRect(target, callback, THROTTLE_DELAY = 100) {
 
     signal?.addEventListener('abort', unsubscribe, { once: true });
 
-    return [() => {
+    return () => {
         unsubscribe();
         signal?.removeEventListener('abort', unsubscribe);
-    }];
+    };
 }
