@@ -5,7 +5,7 @@ export default defineConfig({
         include : [ 'test/**/*.test.js'],
         snapshotFormat : { escapeString : false },
         environment: 'jsdom',
-        reporters:['html']
+        // reporters:['html']
         // reporters: ['json', ...configDefaults.reporters],
         // reporters: ['default', 'junit'], 
         // outputFile: './reports/junit.xml', 

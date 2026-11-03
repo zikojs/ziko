@@ -1,7 +1,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { useState, isStateGetter } from "ziko/hooks";
-import { tags, UIElement } from "ziko/dom";
+import { tags } from "ziko/dom";
 
 /* Initial state */
 

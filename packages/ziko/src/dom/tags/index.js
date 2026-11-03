@@ -1,8 +1,8 @@
 import {UIElement} from "../UIElement/index.js";
 import { HTMLTags, SVGTags, MathMLTags } from "./tags-list.js";
 import { isStateGetter } from "../../hooks/state/use-state/index.js";
-import { call_with_optional_props } from "../internal-utils/call_with_optional_props.js";
-import { isUIItem } from "../internal-utils/isUIItem.js";
+// import { call_with_optional_props } from "../internal-utils/call_with_optional_props.js";
+// import { isUIItem } from "../internal-utils/isUIItem.js";
 
 export const tags = new Proxy({}, {
   get(target, prop) {

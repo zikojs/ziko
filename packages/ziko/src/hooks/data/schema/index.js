@@ -1,5 +1,5 @@
 export function createSchema(rules = []) {
-    const rules = {
+    rules = {
         string: ({ value }) => typeof value === 'string',
         number: ({ value }) => typeof value === 'number' && !Number.isNaN(value),
         integer: ({ value }) => Number.isInteger(value),
