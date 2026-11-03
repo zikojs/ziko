@@ -1,8 +1,12 @@
 export type * from './state/index.d.ts'
+export type * from './styling'
 export type * from './communication/index.d.ts'
+export type * from './routing/index.d.ts'
+
+
+
 export type * from './document/index.ts'
 export type * from './viewport/index.d.ts'
 export type * from './storage/index.d.ts'
 export type * from './data/index.d.ts'
-export type * from './routing/index.d.ts'
 export type * from './events/index.d.ts'
