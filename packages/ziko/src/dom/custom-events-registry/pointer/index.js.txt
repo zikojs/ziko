@@ -1,0 +1,95 @@
+// export class PtrEvent extends PointerEvent {
+//     constructor(type, event, state) {
+//         super(type, event);
+
+//         Object.assign(this, state);
+//     }
+// }
+
+// const pointers = new Map();
+
+// export function registerPtrEvent(element) {
+//     const dispatch = (event, state) => {
+//         element.dispatchEvent(
+//             new PtrEvent('ptr', event, state)
+//         );
+//     };
+
+//     const onDown = event => {
+//         const state = {
+//             ux: event.clientX,
+//             uy: event.clientY,
+//             mx: event.clientX,
+//             my: event.clientY,
+//             dx: 0,
+//             dy: 0,
+//             isDown: true,
+//             isMoving: false,
+//             isDragging: false
+//         };
+
+//         pointers.set(event.pointerId, state);
+//         dispatch(event, state);
+//     };
+
+//     const onMove = event => {
+//         const previous = pointers.get(event.pointerId);
+
+//         const state = previous ?? {
+//             ux: event.clientX,
+//             uy: event.clientY,
+//             isDown: false,
+//             isMoving: false,
+//             isDragging: false
+//         };
+
+//         state.mx = event.clientX;
+//         state.my = event.clientY;
+//         state.dx = state.mx - state.ux;
+//         state.dy = state.my - state.uy;
+//         state.isMoving = true;
+//         state.isDragging = state.isDown;
+
+//         dispatch(event, state);
+//     };
+
+//     const onUp = event => {
+//         const state = pointers.get(event.pointerId);
+//         if (!state) return;
+
+//         state.mx = event.clientX;
+//         state.my = event.clientY;
+//         state.dx = state.mx - state.ux;
+//         state.dy = state.my - state.uy;
+//         state.isDown = false;
+//         state.isMoving = false;
+//         state.isDragging = false;
+
+//         dispatch(event, state);
+//         pointers.delete(event.pointerId);
+//     };
+
+//     const onCancel = event => {
+//         const state = pointers.get(event.pointerId);
+//         if (!state) return;
+
+//         state.isDown = false;
+//         state.isMoving = false;
+//         state.isDragging = false;
+
+//         dispatch(event, state);
+//         pointers.delete(event.pointerId);
+//     };
+
+//     element.addEventListener('pointerdown', onDown);
+//     element.addEventListener('pointermove', onMove);
+//     element.addEventListener('pointerup', onUp);
+//     element.addEventListener('pointercancel', onCancel);
+
+//     return () => {
+//         element.removeEventListener('pointerdown', onDown);
+//         element.removeEventListener('pointermove', onMove);
+//         element.removeEventListener('pointerup', onUp);
+//         element.removeEventListener('pointercancel', onCancel);
+//     };
+// }

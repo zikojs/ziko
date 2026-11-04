@@ -1,3 +1,4 @@
-export * from './click-away.js'
-export * from './resize.js'
-export * from './view.js'
+export * from './click-away/index.js'
+export * from './resize/index.js'
+export * from './view/index.js'
+export * from './pointer/index.js'

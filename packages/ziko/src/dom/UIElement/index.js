@@ -9,19 +9,14 @@ import { parse_props } from "../internal-utils/parse_props.js";
 import { __addItems__, maintain } from "./utils.js";
 import { throttle } from '../../time/throttle/index.js'
 
-Object.defineProperty(PointerEvent, 'a', {
-  get() {
-          return 1;
-        },
-    configurable: false,
-})
 
 __init__global__();
 
 import {
   registerClickAwayEvent,
   registerResizeEvent,
-  registerViewEvents
+  registerViewEvents,
+  registerPtrEvents
 } from '../custom-events-registry/index.js'
 
 export class UIElement extends UINode {
@@ -37,7 +32,8 @@ export class UIElement extends UINode {
     if (element) this.init({ element, name, type, autoMount, props });
     registerClickAwayEvent(this.element);
     registerResizeEvent(this.element);
-    registerViewEvents(this.element)
+    registerViewEvents(this.element);
+    registerPtrEvents(this.element)
   }
   init({ element, name, type, autoMount, props = {}, items = [] } = {}) {
     this.target =
