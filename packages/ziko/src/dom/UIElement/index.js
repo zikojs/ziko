@@ -6,8 +6,15 @@ import { UINode } from "../UINode/index.js";
 import { __init__global__ } from "../../__ziko__/index.js";
 import { UIStore } from "../../__ziko__/__ui__.js";
 import { parse_props } from "../internal-utils/parse_props.js";
-
 import { __addItems__, maintain } from "./utils.js";
+import { throttle } from '../../time/throttle/index.js'
+
+Object.defineProperty(PointerEvent, 'a', {
+  get() {
+          return 1;
+        },
+    configurable: false,
+})
 
 __init__global__();
 
@@ -251,14 +258,15 @@ export class UIElement extends UINode {
 
     if (callbacks.has(callback)) continue;
 
+    const THROTTLE_DELAY = options.throttle;
     const handler = (e) => {
       if (event.paused) return;
-      callback.call(this, e, this);
+        callback.call(this, e, this);
     };
 
     callbacks.set(callback, handler);
 
-    this.element.addEventListener(key, handler, {
+    this.element.addEventListener(key, THROTTLE_DELAY ? throttle(handler, THROTTLE_DELAY) : handler, {
       ...options,
       signal: AbortSignal.any([
         this.cache.eventsController.signal,
