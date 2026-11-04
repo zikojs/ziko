@@ -16,7 +16,8 @@ import {
   registerClickAwayEvent,
   registerResizeEvent,
   registerViewEvents,
-  registerPtrEvents
+  registerPtrEvents,
+  registerAttrUpdateEvent
 } from '../custom-events-registry/index.js'
 
 export class UIElement extends UINode {
@@ -33,7 +34,8 @@ export class UIElement extends UINode {
     registerClickAwayEvent(this.element);
     registerResizeEvent(this.element);
     registerViewEvents(this.element);
-    registerPtrEvents(this.element)
+    registerPtrEvents(this.element);
+    registerAttrUpdateEvent(this.element)
   }
   init({ element, name, type, autoMount, props = {}, items = [] } = {}) {
     this.target =
