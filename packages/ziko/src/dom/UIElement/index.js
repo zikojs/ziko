@@ -1,145 +1,68 @@
-import { register_to_class } from '../../internal-utils/register/register-to-class.js';
-import * as AttrsMethods from '../mixins/attrs.js';
-import {
-  EventController,
-  PtrListeners,
-  ClickListeners,
-  KeyListeners,
-  ViewListeners,
-} from '../../events/index.js';
-import { isStateGetter } from '../../hooks/state/use-state/index.js';
-import { text } from '../text/index.js';
-import { UINode } from '../UINode/index.js';
-import {__init__global__} from '../../__ziko__/index.js';
-import { UIStore } from '../../__ziko__/__ui__.js';
-import { parse_props } from '../internal-utils/parse_props.js';
+import { register_to_class } from "../../internal-utils/register/register-to-class.js";
+import * as AttrsMethods from "../mixins/attrs.js";
+import { isStateGetter } from "../../hooks/state/use-state/index.js";
+import { text } from "../text/index.js";
+import { UINode } from "../UINode/index.js";
+import { __init__global__ } from "../../__ziko__/index.js";
+import { UIStore } from "../../__ziko__/__ui__.js";
+import { parse_props } from "../internal-utils/parse_props.js";
 
-import {
-  __addItems__,
-  // __addItem__,
-  maintain
-} from './utils.js'
+import { __addItems__, maintain } from "./utils.js";
 
 __init__global__();
 
 export class UIElement extends UINode {
   constructor({
     element,
-    name = '',
-    type = 'html',
+    name = "",
+    type = "html",
     autoMount = __Ziko__.__Config__.default.autoMount,
     props,
   } = {}) {
     super();
-    this.exp = {
-      events: {},
-    };
-    register_to_class(
-      this,
-      AttrsMethods,
-      PtrListeners,
-      ClickListeners,
-      KeyListeners,
-      ViewListeners,
-    );
-
+    register_to_class(this, AttrsMethods);
     if (element) this.init({ element, name, type, autoMount, props });
   }
-  init({element, name, type, autoMount, props = {}, items = []} = {}){
-      this.target = globalThis.__Ziko__.__Config__.default.target||globalThis?.document?.body;
-      if(typeof element === 'string' && globalThis?.document) {
-        switch(type){
-          case 'html' : element = document.createElement(element); break;
-          case 'svg' : element = document.createElementNS('http://www.w3.org/2000/svg', element); break;
-          default : throw Error('Not supported')
-        }
+  init({ element, name, type, autoMount, props = {}, items = [] } = {}) {
+    this.target =
+      globalThis.__Ziko__.__Config__.default.target ||
+      globalThis?.document?.body;
+    if (typeof element === "string" && globalThis?.document) {
+      switch (type) {
+        case "html":
+          element = document.createElement(element); break;
+        case "svg":
+          element = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            element,
+          ); break;
+        default:
+          throw Error("Not supported");
       }
-      else this.target = element?.parentElement;
-      Object.assign(this.cache, {
-        name,
-        itemsTarget : this,
-        isInteractive : false,
-        parent:null,
-        // isBody:false,
-        // isRoot:false,
-        // isHidden: false,
-        // isFrozzen:false,
-        // attributes: {},
-        // filters: {},
-        // temp:{}
-      })
-      // this.events = {
-      //   ptr:null,
-      //   mouse:null,
-      //   wheel:null,
-      //   key:null,
-      //   drag:null,
-      //   drop:null,
-      //   click:null,
-      //   clipboard:null,
-      //   focus:null,
-      //   swipe:null,
-      //   custom:null,
-      // }
-      // this.observer={
-      //   resize:null,
-      //   intersection:null
-      // }
-      if(element) Object.assign(this.cache,{element});
-      this.items = new UIStore();
-      globalThis.__Ziko__.__UI__[this.cache.name]
-        ? globalThis.__Ziko__.__UI__[this.cache.name]?.push(this)
-        : globalThis.__Ziko__.__UI__[this.cache.name]=[this];
-      element && autoMount && this?.mount?.()
-      globalThis.__Ziko__.__UI__.push(this)
-      
-      const parsed_props = parse_props(props);
-      this.parsed_props = parsed_props;
-      this.style(parsed_props.style);
-      this.setAttr(parsed_props.attrs);
-      const Events = Object.entries(parsed_props.events);
-      Events.forEach(([ev, callback]) => this[ev](callback.bind(this)))
-      if(items.length > 0) this.append(...items)
-    }
-  
-  on(
-    event_name,
-    callback,
-    {
-      details_setter,
-      category = 'global',
-      isCustom = false,
-      preventDefault = false,
-    } = {},
-  ) {
-    if (event_name instanceof Array)
-      event_name.forEach((event) =>
-        this.on(event, callback, {
-          details_setter,
-          category,
-          isCustom,
-          preventDefault,
-        }),
-      );
-    if (category && !this.exp.events.hasOwnProperty(category))
-      this.exp.events[category] = new EventController(this, category);
-    isCustom && this.exp.events[category].cache.customEvents.add(event_name);
-    const EVENT = this.exp.events[category];
-    EVENT.addListener(
-      event_name,
-      (e) => {
-        if (details_setter) details_setter(EVENT);
-        callback(e);
-      },
-      {
-        preventDefault,
-      },
-    );
-    return this;
-  }
-  off(event, category = 'global') {
-    this.exp.events[category].removeListener(event);
-    return this;
+    } 
+    else this.target = element?.parentElement;
+    Object.assign(this.cache, {
+      name,
+      itemsTarget: this,
+      isInteractive: false,
+      parent: null,
+      events : {}
+    });
+    if (element) Object.assign(this.cache, { element });
+    this.items = new UIStore();
+    globalThis.__Ziko__.__UI__[this.cache.name]
+      ? globalThis.__Ziko__.__UI__[this.cache.name]?.push(this)
+      : (globalThis.__Ziko__.__UI__[this.cache.name] = [this]);
+    element && autoMount && this?.mount?.();
+    globalThis.__Ziko__.__UI__.push(this);
+
+    const parsed_props = parse_props(props);
+    this.parsed_props = parsed_props;
+    this.style(parsed_props.style);
+    this.setAttr(parsed_props.attrs);
+    const Events = Object.entries(parsed_props.events);
+    Events.forEach(([ev, callback]) => this[ev](callback.bind(this)));
+    if (items.length > 0) this.append(...items);
   }
   get element() {
     return this.cache.element;
@@ -161,24 +84,25 @@ export class UIElement extends UINode {
   useClient(directive) {
     if (!this.cache.isInteractive) {
       this.element.setAttribute(
-        'data-hydration-index',
+        "data-hydration-index",
         globalThis.__Ziko__.__HYDRATION__.index,
       );
       globalThis.__Ziko__.__HYDRATION__.register(() => this.constructor);
       this.cache.isInteractive = true;
     }
     if (directive)
-      this.element.setAttribute('data-hydration-directive', directive);
+      this.element.setAttribute("data-hydration-directive", directive);
     return this;
   }
   // get st(){
   //   return this.cache.style;
   // }
-  get attr() {
-    return this.cache.attributes;
-  }
-  get evt() {
-    return this.events;
+  // get attr() {
+  //   return this.cache.attributes;
+  // }
+
+  get events() {
+    return this.cache.events;
   }
   get html() {
     return this.element.innerHTML;
@@ -186,18 +110,10 @@ export class UIElement extends UINode {
   get text() {
     return this.element.textContent;
   }
-  // get isBody(){
-  //   return this.element === globalThis?.document.body;
-  // }
   get parent() {
     return this.cache.parent;
   }
-  get rect() {
-    return this.element.getBoundingClientRect();
-  }
-
   // Lifecycle
-
   mount(target = this.target, delay = 0) {
     if (this.isBody) return this;
     if (target?.isUIElement) target = target.element;
@@ -258,18 +174,18 @@ export class UIElement extends UINode {
   // Dom
 
   append(...ele) {
-    __addItems__(UIElement, this, 'append', 'push', ...ele);
+    __addItems__(UIElement, this, "append", "push", ...ele);
     return this;
   }
   prepend(...ele) {
-    __addItems__(UIElement, this, 'prepend', 'unshift', ...ele);
+    __addItems__(UIElement, this, "prepend", "unshift", ...ele);
     return this;
   }
   insertAt(index, ...ele) {
     const target = this.itemsTarget;
     if (index >= target.items.length) return this.append(...ele);
     for (let i = 0; i < ele.length; i++) {
-      if (['number', 'string'].includes(typeof ele[i])) ele[i] = text(ele[i]);
+      if (["number", "string"].includes(typeof ele[i])) ele[i] = text(ele[i]);
       target.element?.insertBefore(ele[i].element, target.items[index].element);
       target.items.splice(index, 0, ele[i]);
     }
@@ -278,7 +194,7 @@ export class UIElement extends UINode {
   }
   remove(...ele) {
     const remove = (ele) => {
-      if (typeof ele === 'number') ele = this.items[ele];
+      if (typeof ele === "number") ele = this.items[ele];
       if (ele?.isUIElement) this.itemsTarget.element?.removeChild(ele.element);
       this.items = this.items.filter((n) => n !== ele);
     };
@@ -288,6 +204,43 @@ export class UIElement extends UINode {
     // Remove from item
     return this;
   }
-
+  // Events :
+  on(events, options = {}) {
+    for (let key in events) {
+      if (!this.cache.events[key]) {
+        const event = (this.cache.events[key] = {
+          paused: false,
+          callbacks: new Map(),
+          pause: () => (event.paused = true),
+          resume: () => (event.paused = false),
+        });
+      }
+      const event = this.cache.events[key];
+      const callbacks = event.callbacks;
+      const callback = events[key];
+      if (callbacks.has(callback)) continue;
+      const handler = (e) => {
+        if (event.paused) return;
+        callback.call(this, e, this);
+        if (options.once) callbacks.delete(callback);
+      };
+      callbacks.set(callback, handler);
+      this.element.addEventListener(key, handler, options);
+    }
+    return this;
+  }
+  once(events){
+    return this.on(events, { once : true})
+  }
+  off(events) {
+    for (const key of events) {
+      const event = this.cache.events[key];
+      if (!event) continue;
+      for (const handler of event.callbacks.values()) {
+        this.element.removeEventListener(key, handler);
+      }
+      event.callbacks.clear();
+    }
+    return this;
+  }
 }
-
