@@ -11,6 +11,12 @@ import { __addItems__, maintain } from "./utils.js";
 
 __init__global__();
 
+import {
+  registerClickAwayEvent,
+  registerResizeEvent,
+  registerViewEvents
+} from '../custom-events-registry/index.js'
+
 export class UIElement extends UINode {
   constructor({
     element,
@@ -22,6 +28,9 @@ export class UIElement extends UINode {
     super();
     register_to_class(this, AttrsMethods);
     if (element) this.init({ element, name, type, autoMount, props });
+    registerClickAwayEvent(this.element);
+    registerResizeEvent(this.element);
+    registerViewEvents(this.element)
   }
   init({ element, name, type, autoMount, props = {}, items = [] } = {}) {
     this.target =
@@ -48,6 +57,7 @@ export class UIElement extends UINode {
       parent: null,
       events : {}
     });
+    this.cache.eventsController = new AbortController();
     if (element) Object.assign(this.cache, { element });
     this.items = new UIStore();
     globalThis.__Ziko__.__UI__[this.cache.name]
@@ -132,6 +142,23 @@ export class UIElement extends UINode {
     return this;
   }
 
+  destroy() {
+  if (this.cache.destroyed) return this;
+
+  this.unmount();
+
+  this.cache.eventsController.abort();
+
+  for (const event of Object.values(this.cache.events)) {
+    event.callbacks.clear();
+  }
+
+  this.cache.events = {};
+  this.cache.destroyed = true;
+
+  return this;
+}
+
   // Indexing
 
   at(index) {
@@ -206,29 +233,42 @@ export class UIElement extends UINode {
   }
   // Events :
   on(events, options = {}) {
-    for (let key in events) {
-      if (!this.cache.events[key]) {
-        const event = (this.cache.events[key] = {
-          paused: false,
-          callbacks: new Map(),
-          pause: () => (event.paused = true),
-          resume: () => (event.paused = false),
-        });
-      }
-      const event = this.cache.events[key];
-      const callbacks = event.callbacks;
-      const callback = events[key];
-      if (callbacks.has(callback)) continue;
-      const handler = (e) => {
-        if (event.paused) return;
-        callback.call(this, e, this);
-        if (options.once) callbacks.delete(callback);
-      };
-      callbacks.set(callback, handler);
-      this.element.addEventListener(key, handler, options);
+  if (this.cache.destroyed) return this;
+
+  for (let key in events) {
+    if (!this.cache.events[key]) {
+      const event = (this.cache.events[key] = {
+        paused: false,
+        callbacks: new Map(),
+        pause: () => (event.paused = true),
+        resume: () => (event.paused = false)
+      });
     }
-    return this;
+
+    const event = this.cache.events[key];
+    const callbacks = event.callbacks;
+    const callback = events[key];
+
+    if (callbacks.has(callback)) continue;
+
+    const handler = (e) => {
+      if (event.paused) return;
+      callback.call(this, e, this);
+    };
+
+    callbacks.set(callback, handler);
+
+    this.element.addEventListener(key, handler, {
+      ...options,
+      signal: AbortSignal.any([
+        this.cache.eventsController.signal,
+        ...(options.signal ? [options.signal] : [])
+      ])
+    });
   }
+
+  return this;
+}
   once(events){
     return this.on(events, { once : true})
   }
