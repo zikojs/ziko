@@ -1,28 +1,48 @@
-import { UIElement } from "../../../dom/UIElement/index.js";
-export const useLongPress = (target, callback, timeout = 500) => {
-    if(target instanceof UIElement) target = target.element
-    let timer;
-    let isPressed = false;
+export class LongPressEvent extends PointerEvent {
+    constructor(event, state) {
+        super('longpress', event);
+        Object.assign(this, state);
+    }
+}
 
-    const start = (event) => {
-        if (isPressed) return;
+export function registerLongPressEvent(element, delay = 500) {
+    const pointers = new Map();
 
-        isPressed = true;
+    const onDown = event => {
+        const pointer = { startedAt: performance.now() };
 
-        timer = setTimeout(() => {
-            callback(event);
-        }, timeout);
+        pointer.timer = setTimeout(() => {
+            if (!pointers.has(event.pointerId)) return;
+
+            element.dispatchEvent(new LongPressEvent(event, {
+                duration: performance.now() - pointer.startedAt
+            }));
+        }, delay);
+
+        pointers.set(event.pointerId, pointer);
     };
 
-    const cancel = () => {
-        clearTimeout(timer);
-        isPressed = false;
+    const onEnd = event => {
+        const pointer = pointers.get(event.pointerId);
+        if (!pointer) return;
+
+        clearTimeout(pointer.timer);
+        pointers.delete(event.pointerId);
     };
 
-    target.addEventListener('pointerdown', start);
-    target.addEventListener('pointerup', cancel);
-    target.addEventListener('pointerleave', cancel);
-    target.addEventListener('pointercancel', cancel);
+    element.addEventListener('pointerdown', onDown);
+    element.addEventListener('pointerup', onEnd);
+    element.addEventListener('pointercancel', onEnd);
 
-    return cancel;
-};
+    return () => {
+        element.removeEventListener('pointerdown', onDown);
+        element.removeEventListener('pointerup', onEnd);
+        element.removeEventListener('pointercancel', onEnd);
+
+        for (const pointer of pointers.values()) {
+            clearTimeout(pointer.timer);
+        }
+
+        pointers.clear();
+    };
+}

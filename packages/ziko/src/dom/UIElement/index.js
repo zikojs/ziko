@@ -18,7 +18,7 @@ import {
   registerViewEvents,
   registerPtrEvents,
   registerAttrUpdateEvent
-} from '../custom-events-registry/index.js'
+} from '../../hooks/events/index.js'
 
 export class UIElement extends UINode {
   constructor({
