@@ -106,17 +106,17 @@ export const HTMLTags = [
 ];
 
 export const SVGTags = [
-    "svg", "g", "defs", "symbol", "use", "image", "switch",
-    "rect", "circle", "ellipse", "line", "polyline", "polygon", "path",
-    "text", "tspan", "textPath", "altGlyph", "altGlyphDef", "altGlyphItem", "glyph", "glyphRef",
-    "linearGradient", "radialGradient", "pattern", "solidColor",
-    "filter", "feBlend", "feColorMatrix", "feComponentTransfer", "feComposite", "feConvolveMatrix",
-    "feDiffuseLighting", "feDisplacementMap", "feDropShadow", "feFlood", "feFuncA", "feFuncR", "feFuncG", "feFuncB",
-    "feGaussianBlur", "feImage", "feMerge", "feMergeNode", "feMorphology", "feOffset", "feSpecularLighting",
-    "feTile", "feTurbulence",
-    "animate", "animateMotion", "animateTransform", "set",
-    "script",
-    "desc", "title", "metadata", "foreignObject"
+    'svg', 'g', 'defs', 'symbol', 'use', 'image', 'switch',
+    'rect', 'circle', 'ellipse', 'line', 'polyline', 'polygon', 'path',
+    'text', 'tspan', 'textPath', 'altGlyph', 'altGlyphDef', 'altGlyphItem', 'glyph', 'glyphRef',
+    'linearGradient', 'radialGradient', 'pattern', 'solidColor',
+    'filter', 'feBlend', 'feColorMatrix', 'feComponentTransfer', 'feComposite', 'feConvolveMatrix',
+    'feDiffuseLighting', 'feDisplacementMap', 'feDropShadow', 'feFlood', 'feFuncA', 'feFuncR', 'feFuncG', 'feFuncB',
+    'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode', 'feMorphology', 'feOffset', 'feSpecularLighting',
+    'feTile', 'feTurbulence',
+    'animate', 'animateMotion', 'animateTransform', 'set',
+    'script',
+    'desc', 'title', 'metadata', 'foreignObject'
   ];
 
 export const MathMLTags = [

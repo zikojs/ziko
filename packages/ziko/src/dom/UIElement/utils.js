@@ -2,6 +2,7 @@ import { camel2hyphencase } from '../../string/index.js';
 import { text } from '../text/index.js'
 import { isStateGetter } from '../../hooks/state/use-state/index.js';
 import { ATTRIBUTE_NAMESPACES } from './ns.js'
+
 export const normalize = (UIElement, value) => {
   if (value?.isUINode) return value;
   if (typeof globalThis.Node === 'function' && value instanceof globalThis.Node) {
@@ -70,6 +71,38 @@ export const _addItems_=(UIElement, ctx, adder, pusher, ...elements)=>{
     maintain(ctx);
     return ctx;
 }
+
+export const _insertAt_ = (UIElement, ctx, index, ...elements) => {
+    const { items } = ctx.itemsTarget;
+    const length = items.length;
+    index = Math.max(0, Math.min(index < 0 ? length + index + 1 : index, length));
+    let pending = null;
+    for (const item of elements) {
+        const add = () => {
+            const referenceNode = items[index]?.element ?? null;
+            return _addItem_(
+                UIElement,
+                ctx,
+                'insertBefore',
+                'splice',
+                item,
+                referenceNode,
+                index++
+            );
+        };
+        if (pending) pending = pending.then(add);
+        else {
+            const result = add();
+            if (result instanceof Promise) pending = result;
+        }
+    }
+    if (pending) return pending.then(() => {
+        maintain(ctx);
+        return ctx;
+    });
+    maintain(ctx);
+    return ctx;
+};
 
 export const maintain = (ctx) => {
     for (let i = 0; i < ctx.items.length; i++) {

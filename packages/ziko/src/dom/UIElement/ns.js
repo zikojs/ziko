@@ -1,6 +1,6 @@
 export const NAMESPACES = {
   // html: 'http://www.w3.org/1999/xhtml',
-  html : null,
+  // html : null,
   svg: 'http://www.w3.org/2000/svg',
   mathml: 'http://www.w3.org/1998/Math/MathML',
   xul: 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
