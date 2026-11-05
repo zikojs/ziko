@@ -5,7 +5,7 @@ export class ResizeEvent extends CustomEvent {
 }
 
 export function registerResizeEvent(element) {
-    let resizeObserver;
+    if (typeof globalThis.ResizeObserver !== 'function') return () => {};
     const resizeCallback = entries => {
         for (let entry of entries) {
             const { width, height } = entry.contentRect;
@@ -18,7 +18,7 @@ export function registerResizeEvent(element) {
             );
         }
     };
-    resizeObserver = new ResizeObserver(resizeCallback);
+    let resizeObserver = new ResizeObserver(resizeCallback);
     resizeObserver.observe(element);
     // ---- UNREGISTER ----
     return () => {

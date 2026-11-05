@@ -1,135 +1,76 @@
-export const HTMLTags = [
-  'a',
-  'abb',
-  'address',
-  'area',
-  'article',
-  'aside',
-  'audio',
-  'b',
-  'base',
-  'bdi',
-  'bdo',
-  'blockquote',
-  'br',
-  'button',
-  'canvas',
-  'caption',
-  'cite',
-  'code',
-  'col',
-  'colgroup',
-  'data',
-  'datalist',
-  'dd',
-  'del',
-  'details',
-  'dfn',
-  'dialog',
-  'div',
-  'dl',
-  'dt',
-  'em',
-  'embed',
-  'fieldset',
-  'figcaption',
-  'figure',
-  'footer',
-  'form',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'header',
-  'hgroup',
-  'hr',
-  'i',
-  'iframe',
-  'img',
-  'ipnut',
-  'ins',
-  'kbd',
-  'label',
-  'legend',
-  'li',
-  'main',
-  'map',
-  'mark',
-  'menu',
-  'meter',
-  'nav',
-  'object',
-  'ol',
-  'optgroup',
-  'option',
-  'output',
-  'p',
-  'param',
-  'picture',
-  'pre',
-  'progress',
-  'q',
-  'rp',
-  'rt',
-  'ruby',
-  's',
-  'samp',
-  'search',
-  'section',
-  'select',
-  'small',
-  'source',
-  'span',
-  'strong',
-  'sub',
-  'summary',
-  'sup',
-  'table',
-  'tbody',
-  'td',
-  'template',
-  'textarea',
-  'tfoot',
-  'th',
-  'thead',
-  'time',
-  'title',
-  'tr',
-  'track',
-  'u',
-  'ul',
-  'var',
-  'video',
-  'wbr'
-];
+export const HTMLTags = new Set([
+  // Document
+  'html', 'head', 'body', 'title', 'base', 'link', 'meta', 'style',
+  // Sectioning
+  'address', 'article', 'aside', 'footer', 'header', 'h1', 'h2', 'h3',
+  'h4', 'h5', 'h6', 'hgroup', 'main', 'nav', 'section', 'search',
+  // Text content
+  'blockquote', 'dd', 'div', 'dl', 'dt', 'figcaption', 'figure',
+  'hr', 'li', 'menu', 'ol', 'p', 'pre', 'ul',
+  // Inline text
+  'a', 'abbr', 'b', 'bdi', 'bdo', 'br', 'cite', 'code', 'data',
+  'dfn', 'em', 'i', 'kbd', 'mark', 'q', 'rp', 'rt', 'ruby',
+  's', 'samp', 'small', 'span', 'strong', 'sub', 'sup', 'time',
+  'u', 'var', 'wbr',
+  // Media and embedded content
+  'area', 'audio', 'canvas', 'embed', 'iframe', 'img', 'map',
+  'object', 'picture', 'source', 'track', 'video',
+  // Tables
+  'caption', 'col', 'colgroup', 'table', 'tbody', 'td',
+  'tfoot', 'th', 'thead', 'tr',
+  // Forms
+  'button', 'datalist', 'fieldset', 'form', 'input', 'label',
+  'legend', 'meter', 'optgroup', 'option', 'output', 'progress',
+  'select', 'selectedcontent', 'textarea',
+  // Interactive
+  'details', 'dialog', 'summary',
+  // Scripting and templates
+  'noscript', 'script', 'template', 'slot'
+]);
 
-export const SVGTags = [
-    'svg', 'g', 'defs', 'symbol', 'use', 'image', 'switch',
-    'rect', 'circle', 'ellipse', 'line', 'polyline', 'polygon', 'path',
-    'text', 'tspan', 'textPath', 'altGlyph', 'altGlyphDef', 'altGlyphItem', 'glyph', 'glyphRef',
-    'linearGradient', 'radialGradient', 'pattern', 'solidColor',
-    'filter', 'feBlend', 'feColorMatrix', 'feComponentTransfer', 'feComposite', 'feConvolveMatrix',
-    'feDiffuseLighting', 'feDisplacementMap', 'feDropShadow', 'feFlood', 'feFuncA', 'feFuncR', 'feFuncG', 'feFuncB',
-    'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode', 'feMorphology', 'feOffset', 'feSpecularLighting',
-    'feTile', 'feTurbulence',
-    'animate', 'animateMotion', 'animateTransform', 'set',
-    'script',
-    'desc', 'title', 'metadata', 'foreignObject'
-  ];
+export const SVGTags = new Set([
+  // Structure
+  'svg', 'g', 'defs', 'symbol', 'use', 'switch', 'view',
+  // Shapes
+  'rect', 'circle', 'ellipse', 'line', 'polyline', 'polygon', 'path',
+  // Text
+  'text', 'tspan', 'textPath',
+  // Paint servers
+  'linearGradient', 'radialGradient', 'stop', 'pattern',
+  // Clipping and masking
+  'clipPath', 'mask', 'marker',
+  // Filters
+  'filter',
+  'feBlend', 'feColorMatrix', 'feComponentTransfer',
+  'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
+  'feDisplacementMap', 'feDropShadow', 'feFlood',
+  'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
+  'feMorphology', 'feOffset', 'feSpecularLighting',
+  'feTile', 'feTurbulence',
+  'feFuncA', 'feFuncR', 'feFuncG', 'feFuncB',
+  // Animation
+  'animate', 'animateMotion', 'animateTransform', 'set',
+  'mpath',
+  // Other
+  'a', 'image', 'foreignObject', 'script', 'style',
+  'desc', 'title', 'metadata'
+]);
 
-export const MathMLTags = [
-  'math', 'annotation', 
-  `merror`,
-  `mfrac`,
-  `mi`, 
-  `mprescripts`,
-  `mn`, 
-  `mo`, `mover`,
-  `mpadded`, `mphantom`, `mprescripts`,
-  `mroot`, `mrow`,
-  `ms`, `semantics`, `mspace`, `msqrt`, `mstyle`, `msub`, `msup`, `msubsup`,
-  `mtable`, `mtd`, `mtext`, `mtr`,
-  `munder`, `munderover`
-]
+export const MathMLTags = new Set([
+  'math','annotation','annotation-xml','semantics',
+  // Token elements
+  'mi', 'mn', 'mo', 'ms', 'mtext',
+  // General layout
+  'mrow', 'mstyle', 'merror', 'mpadded', 'mphantom',
+  'mspace', 'menclose',
+  // Fractions and roots
+  'mfrac', 'msqrt', 'mroot',
+  // Scripts
+  'msub', 'msup', 'msubsup',
+  'munder', 'mover', 'munderover',
+  'mmultiscripts', 'mprescripts',
+  // Tables
+  'mtable', 'mtr', 'mtd',
+  // Other
+  'maction'
+]);

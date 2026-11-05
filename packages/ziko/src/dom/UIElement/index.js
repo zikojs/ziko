@@ -72,11 +72,6 @@ export class UIElement extends UINode {
     Events.forEach(([ev, callback]) => this[ev](callback.bind(this)));
     if (items.length > 0) this.append(...items);
   }
-  static create(name, props = {}, ...children) {
-      const ui = new UIElement({ element : name, name, props, items: children });
-      ui.append(...children)
-      return ui
-  }
   get element() {
     return this.cache.element;
   }
