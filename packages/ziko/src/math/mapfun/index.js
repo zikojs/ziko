@@ -31,3 +31,5 @@ export const apply_fun = (x, fn) => {
     if (x instanceof Array) return mapfun(fn, ...x)
     return fn(x)
 }
+
+export const double = (...x) => mapfun(n => n*2, ...x)
