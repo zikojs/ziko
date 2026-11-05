@@ -1,5 +1,7 @@
+import { camel2hyphencase } from '../../string/index.js';
 import { text } from '../text/index.js'
 import { isStateGetter } from '../../hooks/state/use-state/index.js';
+import { ATTRIBUTE_NAMESPACES } from './ns.js'
 export const normalize = (UIElement, value) => {
   if (value?.isUINode) return value;
   if (typeof globalThis.Node === 'function' && value instanceof globalThis.Node) {
@@ -9,7 +11,7 @@ export const normalize = (UIElement, value) => {
 };
 
 
-export const __addItem__ = (UIElement, ctx, adder, pusher, item, referenceNode = null, index = null) => {
+export const _addItem_ = (UIElement, ctx, adder, pusher, item, referenceNode = null, index = null) => {
     const { element: itemsTargetEl, items } = ctx.itemsTarget;
     if (['number', 'string'].includes(typeof item)) item = text(item);
     if (typeof item === 'function' && isStateGetter(item)) {
@@ -33,7 +35,7 @@ export const __addItem__ = (UIElement, ctx, adder, pusher, item, referenceNode =
     }
     if (typeof globalThis?.Node === 'function' && item instanceof globalThis.Node) item = new UIElement({ element: item });
     if (item instanceof Promise) {
-        return item.then(resolved => __addItem__(UIElement, ctx, adder, pusher, resolved, referenceNode, index));
+        return item.then(resolved => _addItem_(UIElement, ctx, adder, pusher, resolved, referenceNode, index));
     }
     if (item?.isUINode) {
         item.cache.parent = ctx;
@@ -49,14 +51,14 @@ export const __addItem__ = (UIElement, ctx, adder, pusher, item, referenceNode =
     }
 }
 
-export const __addItems__=(UIElement, ctx, adder, pusher, ...elements)=>{
+export const _addItems_=(UIElement, ctx, adder, pusher, ...elements)=>{
     let pending = null;
     for (const item of elements) {
         if (pending) {
-            pending = pending.then(() =>__addItem__(UIElement, ctx, adder, pusher, item));
+            pending = pending.then(() =>_addItem_(UIElement, ctx, adder, pusher, item));
             continue;
         }
-        const result = __addItem__(UIElement, ctx, adder, pusher, item);
+        const result = _addItem_(UIElement, ctx, adder, pusher, item);
         if (result instanceof Promise) pending = result;
     }
     if (pending) {
@@ -79,3 +81,17 @@ export const maintain = (ctx) => {
         });
     }
   }
+
+export function _setAttr_(ctx, name, value) {
+  if (name.startsWith("data") || name.startsWith("aria")) name = camel2hyphencase(name);
+  const ns = ATTRIBUTE_NAMESPACES[name.split(":")[0]];
+  const set = value => {
+    if (ns) ctx.element?.setAttributeNS(ns, name, value);
+    else ctx.element?.setAttribute(name, value);
+  };
+  if (isStateGetter(value)) {
+    const getter = value();
+    set(getter.value);
+    getter._subscribe(set, ctx);
+  } else set(value);
+}
