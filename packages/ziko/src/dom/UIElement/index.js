@@ -205,7 +205,7 @@ export class UIElement extends UINode {
     return this;
   }
   prepend(...ele) {
-    _addItems_(UIElement, this, 'prepend', 'unshift', ...ele);
+    _addItems_(UIElement, this, 'prepend', 'unshift', ...ele.reverse());
     return this;
   }
   insertAt(index, ...elements) {
@@ -228,16 +228,23 @@ export class UIElement extends UINode {
   }
   remove(...elements) {
     const { element, items } = this.itemsTarget;
-    for (let item of elements) {
-        if (typeof item === 'number') item = items.at(item);
-        if (!item?.isUINode) continue;
-        if (item.element?.parentNode === element) {
-            element.removeChild(item.element);
-        }
-        const index = items.indexOf(item);
-        if (index !== -1) items.splice(index, 1);
-        item.cache.parent = null;
-        item.target = null;
+
+    const targets = elements.map(item =>
+      typeof item === 'number' ? items.at(item) : item
+    );
+
+    for (const item of new Set(targets)) {
+      if (!item?.isUINode) continue;
+
+      if (item.element?.parentNode === element) {
+        element.removeChild(item.element);
+      }
+
+      const index = items.indexOf(item);
+      if (index !== -1) items.splice(index, 1);
+
+      item.cache.parent = null;
+      item.target = null;
     }
 
     maintain(this);

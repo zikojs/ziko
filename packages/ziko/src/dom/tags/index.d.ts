@@ -1,5 +1,5 @@
-import { UIElement } from "../constructors/UIElement.js";
-import { UINode } from "../constructors/UINode.js";
+import { UIElement } from "../UIElement";
+import { UINode } from "../UINode";
 
 /**
  * All valid DOM tag names (HTML + SVG + MathML)
