@@ -1,31 +1,51 @@
 export class UIStore extends Array {
-    constructor(...args) {
-        super(...args); 
+  constructor(...args) {
+    super(...args);
+  }
+
+  static get [Symbol.species]() {
+    return Array;
+  }
+
+  *[Symbol.iteratorRecursive]() {
+    for (const item of this) {
+      yield item;
+      if (item.items) yield* item.items[Symbol.iteratorRecursive]();
     }
-    clear(){
-        this.length = 0;
-        return this;
+  }
+
+  getItemById(id) {
+    for (const item of this[Symbol.iteratorRecursive]()) {
+      if (item.element?.id === id) return item;
     }
-    getItemById(id) {
-        return this.find(n => n.element.id === id);
+    return null;
+  }
+
+  getItemsByTagName(tag) {
+    tag = tag.toLowerCase();
+    return [...this[Symbol.iteratorRecursive]()].filter(
+      item => item.element?.tagName?.toLowerCase() === tag
+    );
+  }
+
+  getItemsByClassName(className) {
+    return [...this[Symbol.iteratorRecursive]()].filter(
+      item => item.element?.classList?.contains(className)
+    );
+  }
+
+  querySelector(selector) {
+    for (const item of this[Symbol.iteratorRecursive]()) {
+      if (item.element?.matches?.(selector)) return item;
     }
-    getItemsByTagName(tag) {
-        return this.filter(n => n.element.tagName.toLowerCase() === tag.toLowerCase());
-    }
-    getItemsByClassName(className) {
-        return this.filter(n => n.element.classList?.contains(className));
-    }
-    querySelector(selector) {
-        const el = globalThis?.document?.querySelector(selector);
-        if (!el) return null;
-        return this.find(ui => ui.element === el) || null;
-    }
-    querySelectorAll(selector) {
-        const els = globalThis?.document?.querySelectorAll(selector);
-        return Array.from(els)
-            .map(el => this.find(ui => ui.element === el))
-            .filter(Boolean);
-    }
+    return null;
+  }
+
+  querySelectorAll(selector) {
+    return [...this[Symbol.iteratorRecursive]()].filter(
+      item => item.element?.matches?.(selector)
+    );
+  }
 }
 
 // create the singleton
