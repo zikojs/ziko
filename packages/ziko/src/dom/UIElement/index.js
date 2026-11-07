@@ -250,61 +250,94 @@ export class UIElement extends UINode {
     maintain(this);
     return this;
   }
-  // Events :
-  on(events, options = {}) {
-    if (this.cache.destroyed) return this;
+// Events :
+on(events, options = {}) {
+  if (this.cache.destroyed || !this.element) return this;
 
-    for (let key in events) {
-      if (!this.cache.events[key]) {
-        const event = (this.cache.events[key] = {
-          paused: false,
-          callbacks: new Map(),
-          pause: () => (event.paused = true),
-          resume: () => (event.paused = false),
-        });
-      }
+  const { throttle: delay, signal, ...listenerOptions } = options;
+  if (signal?.aborted || this.cache.eventsController.signal.aborted) return this;
 
-      const event = this.cache.events[key];
-      const callbacks = event.callbacks;
-      const callback = events[key];
+  for (const [key, callback] of Object.entries(events)) {
+    if (typeof callback !== 'function') continue;
 
-      if (callbacks.has(callback)) continue;
+    let event = this.cache.events[key];
 
-      const THROTTLE_DELAY = options.throttle;
-      const handler = (e) => {
-        if (event.paused) return;
-        callback.call(this, e, this);
+    if (!event) {
+      event = this.cache.events[key] = {
+        paused: false,
+        callbacks: new Map(),
+        pause() { this.paused = true; },
+        resume() { this.paused = false; }
       };
-
-      callbacks.set(callback, handler);
-
-      this.element.addEventListener(
-        key,
-        THROTTLE_DELAY ? throttle(handler, THROTTLE_DELAY) : handler,
-        {
-          ...options,
-          signal: AbortSignal.any([
-            this.cache.eventsController.signal,
-            ...(options.signal ? [options.signal] : []),
-          ]),
-        },
-      );
     }
 
-    return this;
+    const { callbacks } = event;
+    if (callbacks.has(callback)) continue;
+
+    const controller = new AbortController();
+
+    const cleanup = () => {
+      callbacks.delete(callback);
+      controller.abort();
+    };
+
+    const handler = e => {
+      if (listenerOptions.once) cleanup();
+      if (event.paused) return;
+      callback.call(this, e, this);
+    };
+
+    const listener = delay ? throttle(handler, delay) : handler;
+
+    callbacks.set(callback, { controller, listener });
+
+    this.cache.eventsController.signal.addEventListener('abort', cleanup, { once: true });
+    signal?.addEventListener('abort', cleanup, { once: true });
+
+    this.element.addEventListener(key, listener, {
+      ...listenerOptions,
+      signal: controller.signal
+    });
   }
-  once(events) {
-    return this.on(events, { once: true });
-  }
-  off(events) {
-    for (const key of events) {
-      const event = this.cache.events[key];
-      if (!event) continue;
-      for (const handler of event.callbacks.values()) {
-        this.element.removeEventListener(key, handler);
-      }
-      event.callbacks.clear();
+
+  return this;
+}
+
+once(events, options = {}) {
+  return this.on(events, { ...options, once: true });
+}
+
+emit(event, data, options = {}) {
+  if (this.cache.destroyed || !this.element) return this;
+
+  this.element.dispatchEvent(new CustomEvent(event, {
+    detail: data,
+    bubbles: options.bubbles ?? false,
+    cancelable: options.cancelable ?? false,
+    composed: options.composed ?? false
+  }));
+
+  return this;
+}
+
+off(...events) {
+  if (this.cache.destroyed) return this;
+
+  const keys = events.length
+    ? events.flat(Infinity)
+    : Object.keys(this.cache.events);
+
+  for (const key of keys) {
+    const event = this.cache.events[key];
+    if (!event) continue;
+
+    for (const { controller } of event.callbacks.values()) {
+      controller.abort();
     }
-    return this;
+
+    event.callbacks.clear();
   }
+
+  return this;
+}
 }
