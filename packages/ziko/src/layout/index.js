@@ -1,5 +1,5 @@
 import { tags } from '../dom/tags/index.js'
-import { call_with_optional_props } from '../dom/internal-utils/call_with_optional_props.js'
+import { callWithOptionalProps } from '../dom/utils/index.js'
 
 const { meta, link, script } = tags;
 
@@ -95,4 +95,4 @@ export class UILayout {
 
 }
 
-export const Layout = call_with_optional_props(UILayout)
+export const Layout = callWithOptionalProps(UILayout)

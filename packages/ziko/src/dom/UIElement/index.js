@@ -2,7 +2,7 @@ import { isStateGetter } from '../../hooks/state/use-state/index.js';
 import { UINode } from '../UINode/index.js';
 import { __init__global__ } from '../../__ziko__/index.js';
 import { UIStore } from '../../__ziko__/__ui__.js';
-import { parse_props } from '../internal-utils/parse_props.js';
+import { parse_props } from '../utils/internal.js';
 import { _addItems_, maintain, _setAttr_, _insertAt_ } from './utils.js';
 import { throttle } from '../../time/throttle/index.js';
 import { NAMESPACES, ATTRIBUTE_NAMESPACES } from './ns.js';

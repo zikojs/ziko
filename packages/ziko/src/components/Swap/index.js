@@ -1,5 +1,5 @@
 import { UIElement } from "../../dom/UIElement/index.js";
-import { call_with_optional_props } from '../../dom/internal-utils/call_with_optional_props.js';
+import { callWithOptionalProps } from '../../dom/utils/index.js';
 
 export class UISwap extends UIElement {
     #DISPLAYS_MAP = new WeakMap()
@@ -61,4 +61,4 @@ export class UISwap extends UIElement {
     }
 }
 
-export const Swap = call_with_optional_props(UISwap);
+export const Swap = callWithOptionalProps(UISwap);

@@ -10,7 +10,8 @@
     - Add `useWindowScroll` and `useWindowSize` hooks
     - Add `validateSchema` in `ziko/utils`
     - Add History hooks
-    - move `/ufunc`, `/matrix`, `/typed-matrix`, `/complex`, `/stats`, `/discret`, `/signal` Math submodules to `numz` package 
+    - move `/ufunc`, `/matrix`, `/typed-matrix`, `/complex`, `/stats`, `/discret`, `/signal` Math submodules to `numz` package
+    - Rename `call_with_optional_props` to `callWithOptionalProps` 
 1.10.0
     - File-Based Router Modernization
         - Environment Agnostic: Decoupled the router execution engine from browser-specific APIs (globalThis.location, document.body, HTMLElement). The router can now run seamlessly in Node.js, Express, Bun, Deno, Edge Workers, SSG, and browser environments.
