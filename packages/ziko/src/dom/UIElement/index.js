@@ -14,6 +14,8 @@ import {
   registerAttrUpdateEvent,
 } from '../../hooks/events/index.js';
 
+import { camel2hyphencase } from '../../string/index.js';
+
 __init__global__();
 
 export class UIElement extends UINode {
@@ -158,6 +160,36 @@ export class UIElement extends UINode {
       else this.element?.removeAttribute(name);
     }
     return this;
+  }
+
+  get attr() {
+    const element = this.element;
+
+    return new Proxy({}, {
+      get(_, name) {
+        if (typeof name !== 'string') return undefined;
+
+        if (name.startsWith('data') || name.startsWith('aria')) {
+          name = camel2hyphencase(name);
+        }
+
+        const ns = ATTRIBUTE_NAMESPACES[name.split(':')[0]];
+
+        return ns
+          ? element?.getAttributeNS(ns, name.split(':').pop())
+          : element?.getAttribute(name);
+      },
+
+      has(_, name) {
+        if (typeof name !== 'string') return false;
+
+        const ns = ATTRIBUTE_NAMESPACES[name.split(':')[0]];
+
+        return ns
+          ? element?.hasAttributeNS(ns, name.split(':').pop()) ?? false
+          : element?.hasAttribute(name) ?? false;
+      }
+    });
   }
 
   // Indexing
