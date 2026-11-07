@@ -169,6 +169,7 @@ describe('Tag children', () => {
   });
 });
 
+
 /* Namespace isolation */
 describe('Namespace isolation', () => {
   it('uses HTML at the root even for ambiguous names', () => {
@@ -187,4 +188,80 @@ describe('Namespace isolation', () => {
     expect(tags.svg[Symbol.iterator]).toBeUndefined();
     expect(tags.mathml[Symbol.iterator]).toBeUndefined();
   });
+
+  /* Promise children */
+describe('Promise children', () => {
+  it('supports promises resolving to strings', async () => {
+    const parent = tags.div(Promise.resolve('Hello'));
+
+    await vi.waitFor(() => {
+      expect(parent.element.textContent).toBe('Hello');
+    });
+  });
+
+  it('supports promises resolving to numbers', async () => {
+    const parent = tags.div(Promise.resolve(42));
+
+    await vi.waitFor(() => {
+      expect(parent.element.textContent).toBe('42');
+    });
+  });
+
+  it('supports promises resolving to UIElements', async () => {
+    const child = tags.span('Hello');
+    const parent = tags.div(Promise.resolve(child));
+
+    await vi.waitFor(() => {
+      expect(parent.element.firstElementChild).toBe(child.element);
+    });
+  });
+
+  it('supports promises resolving to native DOM elements', async () => {
+    const child = document.createElement('span');
+    child.textContent = 'Hello';
+
+    const parent = tags.div(Promise.resolve(child));
+
+    await vi.waitFor(() => {
+      expect(parent.element.firstElementChild).toBe(child);
+    });
+  });
+
+  it('supports multiple promises', async () => {
+    const parent = tags.div(
+      Promise.resolve('Hello '),
+      Promise.resolve(42),
+      Promise.resolve(' World')
+    );
+
+    await vi.waitFor(() => {
+      expect(parent.element.textContent).toBe('Hello 42 World');
+    });
+  });
+
+  it('supports mixed synchronous and asynchronous children', async () => {
+    const child = tags.span('UIElement');
+    const parent = tags.div(
+      'Start ',
+      child,
+      Promise.resolve(' End')
+    );
+
+    await vi.waitFor(() => {
+      expect(parent.element.textContent).toBe('Start UIElement End');
+    });
+
+    expect(parent.element.children[0]).toBe(child.element);
+  });
+
+  it('supports promises resolving to nested promises', async () => {
+    const parent = tags.div(
+      Promise.resolve(Promise.resolve('Nested'))
+    );
+
+    await vi.waitFor(() => {
+      expect(parent.element.textContent).toBe('Nested');
+    });
+  });
+});
 });
