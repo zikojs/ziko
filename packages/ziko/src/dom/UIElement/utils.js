@@ -105,15 +105,21 @@ export const _insertAt_ = (UIElement, ctx, index, ...elements) => {
 };
 
 export const maintain = (ctx) => {
-    for (let i = 0; i < ctx.items.length; i++) {
-      Object.defineProperty(ctx, i, {
-        value: ctx.items[i],
-        writable: true,
-        configurable: true,
-        enumerable: false 
-        });
-    }
+  for (let i = 0; i < ctx.items.length; i++) {
+    Object.defineProperty(ctx, i, {
+      value: ctx.items[i],
+      writable: true,
+      configurable: true,
+      enumerable: false
+    });
   }
+
+  for (let i = ctx.items.length; i < (ctx.cache._lastLength ?? 0); i++) {
+    delete ctx[i];
+  }
+
+  ctx.cache._lastLength = ctx.items.length;
+};
 
 export function _setAttr_(ctx, name, value) {
   if (name.startsWith("data") || name.startsWith("aria")) name = camel2hyphencase(name);

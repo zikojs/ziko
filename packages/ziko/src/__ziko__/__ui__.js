@@ -12,7 +12,7 @@ export class UIStore extends Array {
     getItemsByTagName(tag) {
         return this.filter(n => n.element.tagName.toLowerCase() === tag.toLowerCase());
     }
-    getElementsByClassName(className) {
+    getItemsByClassName(className) {
         return this.filter(n => n.element.classList?.contains(className));
     }
     querySelector(selector) {

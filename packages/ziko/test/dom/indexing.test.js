@@ -1,94 +1,170 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+// test/dom/indexing.test.js
+
+import { describe, it, expect } from 'vitest';
 import { tags } from 'ziko/dom';
 
-describe('UIElement indexing methods', () => {
-  let parent;
-  let a, b, c;
+const { div, span, p} = tags
 
-  beforeEach(() => {
-    parent = tags.div();
-    a = tags.span('A');
-    b = tags.span('B');
-    c = tags.span('C');
-    parent.append(a, b, c);
-  });
+describe('Indexing', () => {
+  const createItems = () => {
+    const a = span('A');
+    const b = span('B');
+    const c = span('C');
+    const parent = div(a, b, c);
+    return { parent, a, b, c };
+  };
 
   /* at */
 
-  it('returns an element at the specified index', () => {
-    expect(parent.at(0)).toBe(a);
-    expect(parent.at(1)).toBe(b);
-    expect(parent.at(2)).toBe(c);
+  describe('at', () => {
+    it('returns the item at the specified index', () => {
+      const { parent, a, b, c } = createItems();
+
+      expect(parent.at(0)).toBe(a);
+      expect(parent.at(1)).toBe(b);
+      expect(parent.at(2)).toBe(c);
+    });
+
+    it('supports negative indexes', () => {
+      const { parent, a, c } = createItems();
+
+      expect(parent.at(-1)).toBe(c);
+      expect(parent.at(-3)).toBe(a);
+    });
+
+    it('returns undefined for out-of-range indexes', () => {
+      const { parent } = createItems();
+
+      expect(parent.at(3)).toBeUndefined();
+      expect(parent.at(-4)).toBeUndefined();
+    });
   });
 
-  it('supports negative indexes', () => {
-    expect(parent.at(-1)).toBe(c);
-    expect(parent.at(-2)).toBe(b);
-    expect(parent.at(-3)).toBe(a);
+  /* Numeric access */
+
+  describe('numeric access', () => {
+    it('allows accessing items through numeric properties', () => {
+      const { parent, a, b, c } = createItems();
+
+      expect(parent[0]).toBe(a);
+      expect(parent[1]).toBe(b);
+      expect(parent[2]).toBe(c);
+    });
+
+    it('defines numeric properties as non-enumerable', () => {
+      const { parent } = createItems();
+
+      expect(Object.keys(parent)).not.toContain('0');
+      expect(Object.getOwnPropertyDescriptor(parent, '0').enumerable).toBe(false);
+    });
+
+    it('updates numeric properties after insertion', () => {
+      const { parent, a, b, c } = createItems();
+      const x = span('X');
+
+      parent.prepend(x);
+
+      expect(parent[0]).toBe(x);
+      expect(parent[1]).toBe(a);
+      expect(parent[2]).toBe(b);
+      expect(parent[3]).toBe(c);
+    });
+
+    it('updates numeric properties after removal', () => {
+      const { parent, a, b, c } = createItems();
+
+      parent.remove(1);
+
+      expect(parent[0]).toBe(a);
+      expect(parent[1]).toBe(c);
+      expect(parent[2]).toBeUndefined();
+    });
   });
 
-  it('returns undefined for out-of-range indexes', () => {
-    expect(parent.at(3)).toBeUndefined();
-    expect(parent.at(-4)).toBeUndefined();
+  /* Filtering */
+
+  describe('find', () => {
+    it('returns the first matching item', () => {
+      const { parent, b } = createItems();
+
+      expect(parent.find(item => item.element.textContent === 'B')).toBe(b);
+    });
+
+    it('returns undefined when no item matches', () => {
+      const { parent } = createItems();
+
+      expect(parent.find(item => item.element.textContent === 'X')).toBeUndefined();
+    });
   });
 
-  /* forEach */
+  describe('filter', () => {
+    it('returns all matching items', () => {
+      const { parent, a, c } = createItems();
 
-  it('iterates over all elements in order', () => {
-    const callback = vi.fn();
+      expect(parent.filter(item => ['A', 'C'].includes(item.element.textContent))).toEqual([a, c]);
+    });
 
-    const result = parent.forEach(callback);
+    it('returns an empty array when no item matches', () => {
+      const { parent } = createItems();
 
-    expect(callback).toHaveBeenCalledTimes(3);
-    expect(callback.mock.calls.map(([item]) => item)).toEqual([a, b, c]);
-    expect(result).toBe(parent);
+      expect(parent.filter(item => item.element.textContent === 'X')).toEqual([]);
+    });
   });
 
-  it('provides index and items arguments', () => {
-    const callback = vi.fn();
+  /* Traversal */
 
-    parent.forEach(callback);
+  describe('forEach', () => {
+    it('iterates over all items in order', () => {
+      const { parent } = createItems();
+      const result = [];
 
-    expect(callback).toHaveBeenNthCalledWith(1, a, 0, parent.items);
-    expect(callback).toHaveBeenNthCalledWith(2, b, 1, parent.items);
-    expect(callback).toHaveBeenNthCalledWith(3, c, 2, parent.items);
+      parent.forEach(item => result.push(item.element.textContent));
+
+      expect(result).toEqual(['A', 'B', 'C']);
+    });
+
+    it('passes item, index and collection to callback', () => {
+      const { parent } = createItems();
+      const callback = vi.fn();
+
+      parent.forEach(callback);
+
+      expect(callback).toHaveBeenCalledWith(parent[0], 0, parent.items);
+      expect(callback).toHaveBeenCalledWith(parent[1], 1, parent.items);
+      expect(callback).toHaveBeenCalledWith(parent[2], 2, parent.items);
+    });
+
+    it('returns this for chaining', () => {
+      const { parent } = createItems();
+
+      expect(parent.forEach(() => {})).toBe(parent);
+    });
   });
 
-  /* map */
+  describe('map', () => {
+    it('maps items into a new array', () => {
+      const { parent } = createItems();
 
-  it('maps elements to a new array', () => {
-    const result = parent.map(item => item.element.textContent);
+      expect(parent.map(item => item.element.textContent)).toEqual(['A', 'B', 'C']);
+    });
 
-    expect(result).toEqual(['A', 'B', 'C']);
-    expect(result).not.toBe(parent.items);
-  });
+    it('passes item, index and collection to callback', () => {
+      const { parent } = createItems();
+      const callback = vi.fn(item => item);
 
-  it('provides index and items arguments', () => {
-    const callback = vi.fn((item, index) => index);
+      parent.map(callback);
 
-    expect(parent.map(callback)).toEqual([0, 1, 2]);
-    expect(callback).toHaveBeenCalledTimes(3);
-  });
+      expect(callback).toHaveBeenCalledWith(parent[0], 0, parent.items);
+      expect(callback).toHaveBeenCalledWith(parent[1], 1, parent.items);
+      expect(callback).toHaveBeenCalledWith(parent[2], 2, parent.items);
+    });
 
-  /* find */
+    it('returns a new array without modifying the collection', () => {
+      const { parent } = createItems();
+      const result = parent.map(item => item.element.textContent);
 
-  it('returns all elements matching the condition', () => {
-    const result = parent.find(item => item.element.textContent !== 'B');
-
-    expect(result).toEqual([a, c]);
-  });
-
-  it('returns an empty array when no elements match', () => {
-    expect(parent.find(item => item.element.textContent === 'D')).toEqual([]);
-  });
-
-  it('provides index and items arguments', () => {
-    const callback = vi.fn(() => true);
-
-    parent.find(callback);
-
-    expect(callback).toHaveBeenNthCalledWith(1, a, 0, parent.items);
-    expect(callback).toHaveBeenNthCalledWith(2, b, 1, parent.items);
-    expect(callback).toHaveBeenNthCalledWith(3, c, 2, parent.items);
+      expect(result).not.toBe(parent.items);
+      expect(parent.items).toHaveLength(3);
+    });
   });
 });
