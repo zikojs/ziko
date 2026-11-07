@@ -16,273 +16,359 @@ describe('UIElement events', () => {
 
   /* on */
 
-  it('registers an event listener', () => {
-    const callback = vi.fn();
+  describe('on', () => {
+    it('registers an event listener using an object', () => {
+      const callback = vi.fn();
 
-    ui.on({ click: callback });
-    dispatch('click');
+      ui.on({ click: callback });
+      dispatch('click');
 
-    expect(callback).toHaveBeenCalledOnce();
-  });
-
-  it('passes the event and UIElement to the callback', () => {
-    const callback = vi.fn();
-
-    ui.on({ click: callback });
-    const event = new Event('click');
-    ui.element.dispatchEvent(event);
-
-    expect(callback).toHaveBeenCalledWith(event, ui);
-  });
-
-  it('binds this to the UIElement', () => {
-    let context;
-
-    ui.on({
-      click() {
-        context = this;
-      }
+      expect(callback).toHaveBeenCalledOnce();
     });
 
-    dispatch('click');
-    expect(context).toBe(ui);
-  });
+    it('registers an event listener using a string', () => {
+      const callback = vi.fn();
 
-  it('supports multiple callbacks for the same event', () => {
-    const first = vi.fn();
-    const second = vi.fn();
+      ui.on('click', callback);
+      dispatch('click');
 
-    ui.on({ click: first });
-    ui.on({ click: second });
+      expect(callback).toHaveBeenCalledOnce();
+    });
 
-    dispatch('click');
+    it('supports options with a single event', () => {
+      const callback = vi.fn();
 
-    expect(first).toHaveBeenCalledOnce();
-    expect(second).toHaveBeenCalledOnce();
-  });
+      ui.on('click', callback, { once: true });
+      dispatch('click');
+      dispatch('click');
 
-  it('does not register the same callback twice', () => {
-    const callback = vi.fn();
+      expect(callback).toHaveBeenCalledOnce();
+    });
 
-    ui.on({ click: callback });
-    ui.on({ click: callback });
+    it('supports options with an event object', () => {
+      const callback = vi.fn();
 
-    dispatch('click');
+      ui.on({ click: callback }, { once: true });
+      dispatch('click');
+      dispatch('click');
 
-    expect(callback).toHaveBeenCalledOnce();
-  });
+      expect(callback).toHaveBeenCalledOnce();
+    });
 
-  it('ignores non-function callbacks', () => {
-    ui.on({ click: null, mouseover: 'invalid' });
+    it('supports a shared callback for multiple events', () => {
+      const callback = vi.fn();
 
-    expect(ui.cache.events.click).toBeUndefined();
-    expect(ui.cache.events.mouseover).toBeUndefined();
+      ui.on({ click: true, input: true }, callback);
+
+      dispatch('click');
+      dispatch('input');
+
+      expect(callback).toHaveBeenCalledTimes(2);
+    });
+
+    it('supports a shared callback and options for multiple events', () => {
+      const callback = vi.fn();
+
+      ui.on({ click: true, input: true }, callback, { once: true });
+
+      dispatch('click');
+      dispatch('click');
+      dispatch('input');
+
+      expect(callback).toHaveBeenCalledTimes(2);
+    });
+
+    it('passes the event and UIElement to the callback', () => {
+      const callback = vi.fn();
+
+      ui.on('click', callback);
+      const event = new Event('click');
+      ui.element.dispatchEvent(event);
+
+      expect(callback).toHaveBeenCalledWith(event, ui);
+    });
+
+    it('binds this to the UIElement', () => {
+      let context;
+
+      ui.on('click', function () {
+        context = this;
+      });
+
+      dispatch('click');
+
+      expect(context).toBe(ui);
+    });
+
+    it('supports multiple callbacks for the same event', () => {
+      const first = vi.fn();
+      const second = vi.fn();
+
+      ui.on('click', first);
+      ui.on('click', second);
+
+      dispatch('click');
+
+      expect(first).toHaveBeenCalledOnce();
+      expect(second).toHaveBeenCalledOnce();
+    });
+
+    it('does not register the same callback twice', () => {
+      const callback = vi.fn();
+
+      ui.on('click', callback);
+      ui.on('click', callback);
+
+      dispatch('click');
+
+      expect(callback).toHaveBeenCalledOnce();
+    });
+
+    it('ignores non-function callbacks', () => {
+      ui.on({ click: null, mouseover: 'invalid' });
+
+      expect(ui.cache.events.click).toBeUndefined();
+      expect(ui.cache.events.mouseover).toBeUndefined();
+    });
+
+    it('returns the UIElement for chaining', () => {
+      expect(ui.on('click', vi.fn())).toBe(ui);
+      expect(ui.on({ click: vi.fn() })).toBe(ui);
+    });
   });
 
   /* once */
 
-  it('registers a listener that fires only once', () => {
-    const callback = vi.fn();
+  describe('once', () => {
+    it('registers a listener that fires only once', () => {
+      const callback = vi.fn();
 
-    ui.once({ click: callback });
+      ui.once({ click: callback });
 
-    dispatch('click');
-    dispatch('click');
+      dispatch('click');
+      dispatch('click');
 
-    expect(callback).toHaveBeenCalledOnce();
-  });
+      expect(callback).toHaveBeenCalledOnce();
+    });
 
-  it('removes once callbacks from the registry', () => {
-    const callback = vi.fn();
+    it('supports a single event', () => {
+      const callback = vi.fn();
 
-    ui.once({ click: callback });
-    dispatch('click');
+      ui.once('click', callback);
 
-    expect(ui.cache.events.click.callbacks.has(callback)).toBe(false);
+      dispatch('click');
+      dispatch('click');
+
+      expect(callback).toHaveBeenCalledOnce();
+    });
+
+    it('supports options with a single event', () => {
+      const callback = vi.fn();
+
+      ui.once('click', callback, { capture: true });
+
+      dispatch('click');
+      dispatch('click');
+
+      expect(callback).toHaveBeenCalledOnce();
+    });
+
+    it('removes once callbacks from the registry', () => {
+      const callback = vi.fn();
+
+      ui.once('click', callback);
+      dispatch('click');
+
+      expect(ui.cache.events.click.callbacks.has(callback)).toBe(false);
+    });
   });
 
   /* off */
 
-  it('removes all callbacks for the specified event', () => {
-    const first = vi.fn();
-    const second = vi.fn();
+  describe('off', () => {
+    it('removes all callbacks for the specified event', () => {
+      const first = vi.fn();
+      const second = vi.fn();
 
-    ui.on({ click: first });
-    ui.on({ click: second });
+      ui.on('click', first);
+      ui.on('click', second);
 
-    ui.off('click');
-    dispatch('click');
+      ui.off('click');
+      dispatch('click');
 
-    expect(first).not.toHaveBeenCalled();
-    expect(second).not.toHaveBeenCalled();
-    expect(ui.cache.events.click.callbacks.size).toBe(0);
-  });
+      expect(first).not.toHaveBeenCalled();
+      expect(second).not.toHaveBeenCalled();
+      expect(ui.cache.events.click.callbacks.size).toBe(0);
+    });
 
-  it('accepts an array of event names', () => {
-    const click = vi.fn();
-    const input = vi.fn();
+    it('accepts an array of event names', () => {
+      const click = vi.fn();
+      const input = vi.fn();
 
-    ui.on({ click, input });
-    ui.off(['click', 'input']);
+      ui.on({ click, input });
+      ui.off(['click', 'input']);
 
-    dispatch('click');
-    dispatch('input');
+      dispatch('click');
+      dispatch('input');
 
-    expect(click).not.toHaveBeenCalled();
-    expect(input).not.toHaveBeenCalled();
-  });
+      expect(click).not.toHaveBeenCalled();
+      expect(input).not.toHaveBeenCalled();
+    });
 
-  it('does not remove callbacks for other events', () => {
-    const click = vi.fn();
-    const input = vi.fn();
+    it('does not remove callbacks for other events', () => {
+      const click = vi.fn();
+      const input = vi.fn();
 
-    ui.on({ click, input });
-    ui.off('click');
+      ui.on({ click, input });
+      ui.off('click');
 
-    dispatch('click');
-    dispatch('input');
+      dispatch('click');
+      dispatch('input');
 
-    expect(click).not.toHaveBeenCalled();
-    expect(input).toHaveBeenCalledOnce();
-  });
+      expect(click).not.toHaveBeenCalled();
+      expect(input).toHaveBeenCalledOnce();
+    });
 
-  it('ignores unknown event names', () => {
-    expect(() => ui.off('unknown')).not.toThrow();
-  });
+    it('ignores unknown event names', () => {
+      expect(() => ui.off('unknown')).not.toThrow();
+    });
 
-  it('returns the UIElement for chaining', () => {
-    expect(ui.off('click')).toBe(ui);
+    it('returns the UIElement for chaining', () => {
+      expect(ui.off('click')).toBe(ui);
+    });
   });
 
   /* pause / resume */
 
-  it('pauses callbacks for an event', () => {
-    const callback = vi.fn();
+  describe('pause / resume', () => {
+    it('pauses callbacks for an event', () => {
+      const callback = vi.fn();
 
-    ui.on({ click: callback });
-    ui.cache.events.click.pause();
+      ui.on('click', callback);
+      ui.cache.events.click.pause();
 
-    dispatch('click');
+      dispatch('click');
 
-    expect(callback).not.toHaveBeenCalled();
-  });
+      expect(callback).not.toHaveBeenCalled();
+    });
 
-  it('resumes callbacks for an event', () => {
-    const callback = vi.fn();
+    it('resumes callbacks for an event', () => {
+      const callback = vi.fn();
 
-    ui.on({ click: callback });
-    const event = ui.cache.events.click;
+      ui.on('click', callback);
+      const event = ui.cache.events.click;
 
-    event.pause();
-    dispatch('click');
+      event.pause();
+      dispatch('click');
 
-    event.resume();
-    dispatch('click');
+      event.resume();
+      dispatch('click');
 
-    expect(callback).toHaveBeenCalledOnce();
+      expect(callback).toHaveBeenCalledOnce();
+    });
   });
 
   /* options */
 
-  it('supports capture listeners', () => {
-    const callback = vi.fn();
-    const parent = tags.div();
-    parent.append(ui);
+  describe('options', () => {
+    it('supports capture listeners', () => {
+      const callback = vi.fn();
+      const parent = tags.div();
+      parent.append(ui);
 
-    parent.on({ click: callback }, { capture: true });
-    parent.off('click');
+      parent.on('click', callback, { capture: true });
+      parent.off('click');
 
-    dispatch('click');
+      dispatch('click');
 
-    expect(callback).not.toHaveBeenCalled();
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    it('removes a listener when the external signal aborts', () => {
+      const controller = new AbortController();
+      const callback = vi.fn();
+
+      ui.on('click', callback, { signal: controller.signal });
+      controller.abort();
+
+      dispatch('click');
+
+      expect(callback).not.toHaveBeenCalled();
+      expect(ui.cache.events.click.callbacks.has(callback)).toBe(false);
+    });
+
+    it('does not register a listener with an already aborted signal', () => {
+      const controller = new AbortController();
+      controller.abort();
+
+      const callback = vi.fn();
+      ui.on('click', callback, { signal: controller.signal });
+
+      dispatch('click');
+
+      expect(callback).not.toHaveBeenCalled();
+    });
   });
 
-  it('removes a listener when the external signal aborts', () => {
-    const controller = new AbortController();
-    const callback = vi.fn();
-
-    ui.on({ click: callback }, { signal: controller.signal });
-    controller.abort();
-
-    dispatch('click');
-
-    expect(callback).not.toHaveBeenCalled();
-    expect(ui.cache.events.click.callbacks.has(callback)).toBe(false);
-  });
-
-  it('does not register a listener with an already aborted signal', () => {
-    const controller = new AbortController();
-    controller.abort();
-
-    const callback = vi.fn();
-    ui.on({ click: callback }, { signal: controller.signal });
-
-    dispatch('click');
-
-    expect(callback).not.toHaveBeenCalled();
-  });
   /* emit */
 
-  it('emits a custom event', () => {
-    const callback = vi.fn();
+  describe('emit', () => {
+    it('emits a custom event', () => {
+      const callback = vi.fn();
 
-    ui.on({ 'user:login': callback });
-    ui.emit('user:login');
+      ui.on('user:login', callback);
+      ui.emit('user:login');
 
-    expect(callback).toHaveBeenCalledOnce();
-  });
-
-  it('passes data through event.detail', () => {
-    const callback = vi.fn();
-    const data = { id: 1, username: 'Zakaria' };
-
-    ui.on({
-      'user:login': e => callback(e.detail)
+      expect(callback).toHaveBeenCalledOnce();
     });
 
-    ui.emit('user:login', data);
+    it('passes data through event.detail', () => {
+      const callback = vi.fn();
+      const data = { id: 1, username: 'Zakaria' };
 
-    expect(callback).toHaveBeenCalledWith(data);
-  });
+      ui.on('user:login', e => callback(e.detail));
+      ui.emit('user:login', data);
 
-  it('supports bubbling', () => {
-    const parent = tags.div();
-    parent.append(ui);
+      expect(callback).toHaveBeenCalledWith(data);
+    });
 
-    const callback = vi.fn();
-    parent.on({ 'user:login': callback });
+    it('supports bubbling', () => {
+      const parent = tags.div();
+      parent.append(ui);
 
-    ui.emit('user:login', null, { bubbles: true });
+      const callback = vi.fn();
+      parent.on('user:login', callback);
 
-    expect(callback).toHaveBeenCalledOnce();
-  });
+      ui.emit('user:login', null, { bubbles: true });
 
-  it('supports cancelable events', () => {
-    let event;
+      expect(callback).toHaveBeenCalledOnce();
+    });
 
-    ui.on({
-      test: e => {
+    it('supports cancelable events', () => {
+      let event;
+
+      ui.on('test', e => {
         event = e;
         e.preventDefault();
-      }
+      });
+
+      ui.emit('test', null, { cancelable: true });
+
+      expect(event.defaultPrevented).toBe(true);
     });
 
-    ui.emit('test', null, { cancelable: true });
+    it('returns the UIElement for chaining', () => {
+      expect(ui.emit('test')).toBe(ui);
+    });
 
-    expect(event.defaultPrevented).toBe(true);
-  });
+    it('does nothing when destroyed', () => {
+      const callback = vi.fn();
 
-  it('returns the UIElement for chaining', () => {
-    expect(ui.emit('test')).toBe(ui);
-  });
+      ui.on('test', callback);
+      ui.destroy();
+      ui.emit('test');
 
-  it('does nothing when destroyed', () => {
-    const callback = vi.fn();
-
-    ui.on({ test: callback });
-    ui.destroy();
-    ui.emit('test');
-
-    expect(callback).not.toHaveBeenCalled();
+      expect(callback).not.toHaveBeenCalled();
+    });
   });
 });

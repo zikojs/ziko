@@ -445,7 +445,7 @@ describe("useState with tags and UIElement", () => {
     it("should update state inside SVG tags", () => {
         const [get, set] = useState("10");
 
-        const element = tags.svg(
+        const element = tags.svg.svg(
             tags.text(get)
         ).mount(container);
 

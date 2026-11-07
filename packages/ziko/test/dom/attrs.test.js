@@ -162,7 +162,7 @@ describe('UIElement attributes', () => {
   /* Namespaced attributes */
 
   it('sets and gets xlink:href', () => {
-    const svg = tags.svg();
+    const svg = tags.svg.svg();
 
     svg.setAttr('xlink:href', '#icon');
 
@@ -170,7 +170,7 @@ describe('UIElement attributes', () => {
   });
 
   it('removes xlink:href', () => {
-    const svg = tags.svg();
+    const svg = tags.svg.svg();
 
     svg.setAttr('xlink:href', '#icon');
     svg.removeAttr('xlink:href');
@@ -209,7 +209,7 @@ describe('UIElement attributes', () => {
   /* SVG */
 
   it('supports SVG attributes', () => {
-    const svg = tags.svg();
+    const svg = tags.svg.svg();
 
     svg.setAttr({
       viewBox: '0 0 100 100',
