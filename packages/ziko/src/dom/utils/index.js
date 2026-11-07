@@ -12,9 +12,14 @@ export const callWithOptionalProps = (Component) => {
 };
 export const isUIItem = item => {
     return (
-        ['string', 'number'].includes(item)
-        || isStateGetter(item)
-        || item instanceof HTMLElement
-        || item instanceof UIElement
+        ['string', 'number'].includes(typeof item) ||
+        item instanceof UIElement ||
+        isStateGetter(item) ||
+        isHTMLElement(item) ||
+        item instanceof Promise
     )
 }
+
+export const isHTMLElement = value =>
+  typeof globalThis.HTMLElement === 'function' &&
+  value instanceof globalThis.HTMLElement;

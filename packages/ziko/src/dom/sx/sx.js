@@ -38,7 +38,7 @@ export function sx(item, obj = {}, THROTTLE_DELAY = 30) {
       }
     }
     
-    item.onResizeView(
+    item.on('resize',
         throttle(()=>{
           const w = item.element.clientWidth;
           for(let bp of BREAKPOINTS){
