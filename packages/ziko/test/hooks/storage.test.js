@@ -4,7 +4,8 @@ import {
     it,
     expect,
     beforeEach,
-    afterEach
+    afterEach,
+    vi
 } from 'vitest';
 
 import {

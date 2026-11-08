@@ -5,11 +5,3 @@ export * from './hooks/index.js';
 export * from './router/index.js';
 export * from './components/index.js';
 export * from './string/index.js';
-
-// if(globalThis?.document){
-//     document?.addEventListener('DOMContentLoaded', __Ziko__.__Config__.init());
-// }
-
-// import './math/functions/proxy.js'
-
-

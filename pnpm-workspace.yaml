@@ -6,7 +6,9 @@ packages:
   - "demo/"
   # - "dev-tools/*"
 allowBuilds:
+  core-js: false
   esbuild: false
+  puppeteer: true
 catalog:
   vite: "^8.2.2"
   acorn: ^8.19.0

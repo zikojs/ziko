@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { tags } from 'ziko/dom';
 import { HTMLTags, SVGTags, MathMLTags } from '../../src/dom/tags/tags-list.js';
 

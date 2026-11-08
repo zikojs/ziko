@@ -1,6 +1,6 @@
 // test/dom/indexing.test.js
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { tags } from 'ziko/dom';
 
 const { div, span, p} = tags

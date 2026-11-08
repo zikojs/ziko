@@ -1,6 +1,6 @@
 {
   "name": "ziko",
-  "version": "2.0.0-rc.11",
+  "version": "2.0.0-rc.12",
   "description": "A versatile JavaScript library offering a rich set of Hyperscript Based UI components, advanced mathematical utilities, interactivity, animations, client-side routing and more ...",
   "keywords": [
     "front-end",
@@ -65,6 +65,7 @@
     "@rollup/plugin-terser": "catalog:",
     "@vitest/ui": "5.0.5",
     "jsdom": "catalog:",
+    "pdfkit": "^0.20.2",
     "rollup": "catalog:",
     "vitest": "^5.0.5"
   }
