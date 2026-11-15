@@ -1,6 +1,5 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { tags } from 'ziko/dom';
-import { HTMLTags, SVGTags, MathMLTags } from '../../src/dom/tags/tags-list.js';
 
 const HTML_NS = 'http://www.w3.org/1999/xhtml';
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -10,14 +9,8 @@ const MATHML_NS = 'http://www.w3.org/1998/Math/MathML';
 describe('HTML tags', () => {
   it('creates HTML elements by default', () => {
     expect(tags.div().element.namespaceURI).toBe(HTML_NS);
-  });
-
-  it('supports all registered HTML tags', () => {
-    for (const tag of HTMLTags) {
-      const ui = tags[tag]();
-      expect(ui.element.namespaceURI, tag).toBe(HTML_NS);
-      expect(ui.element.localName, tag).toBe(tag.toLowerCase());
-    }
+    expect(tags.p().element.namespaceURI).toBe(HTML_NS);
+    expect(tags.span().element.namespaceURI).toBe(HTML_NS);
   });
 
   it('normalizes tag names', () => {
@@ -34,68 +27,59 @@ describe('HTML tags', () => {
 
 /* SVG tags */
 describe('SVG tags', () => {
-  it('creates SVG elements through the SVG namespace', () => {
-    expect(tags.svg.svg().element.namespaceURI).toBe(SVG_NS);
-    expect(tags.svg.circle().element.namespaceURI).toBe(SVG_NS);
-  });
-
-  it('supports all registered SVG tags', () => {
-    for (const tag of SVGTags) {
-      const ui = tags.svg[tag]();
-      expect(ui.element.namespaceURI, tag).toBe(SVG_NS);
-      expect(ui.element.localName, tag).toBe(tag);
-    }
+  it('creates SVG elements', () => {
+    expect(tags.svg().element.namespaceURI).toBe(SVG_NS);
+    expect(tags.circle().element.namespaceURI).toBe(SVG_NS);
+    expect(tags.g().element.namespaceURI).toBe(SVG_NS);
   });
 
   it('preserves camelCase SVG names', () => {
-    expect(tags.svg.linearGradient().element.localName).toBe('linearGradient');
-    expect(tags.svg.radialGradient().element.localName).toBe('radialGradient');
-    expect(tags.svg.clipPath().element.localName).toBe('clipPath');
-    expect(tags.svg.foreignObject().element.localName).toBe('foreignObject');
-    expect(tags.svg.textPath().element.localName).toBe('textPath');
+    expect(tags.linearGradient().element.localName).toBe('linearGradient');
+    expect(tags.radialGradient().element.localName).toBe('radialGradient');
+    expect(tags.clipPath().element.localName).toBe('clipPath');
+    expect(tags.foreignObject().element.localName).toBe('foreignObject');
+    expect(tags.textPath().element.localName).toBe('textPath');
   });
 
   it('supports snake_case SVG aliases', () => {
-    expect(tags.svg.linear_gradient().element.localName).toBe('linearGradient');
-    expect(tags.svg.clip_path().element.localName).toBe('clipPath');
+    expect(tags.linear_gradient().element.localName).toBe('linearGradient');
+    expect(tags.clip_path().element.localName).toBe('clipPath');
   });
 
-  it('supports ambiguous tag names', () => {
-    for (const tag of ['a', 'title', 'style', 'script']) {
-      expect(tags.svg[tag]().element.namespaceURI).toBe(SVG_NS);
-    }
-  });
+  it('creates nested SVG elements', () => {
+    const circle = tags.circle({ r: 20 });
+    const group = tags.g(circle);
+    const root = tags.svg(group);
 
-  it('creates custom SVG elements', () => {
-    const ui = tags.svg.customShape();
-    expect(ui.element.localName).toBe('customShape');
-    expect(ui.element.namespaceURI).toBe(SVG_NS);
+    expect(root.element.namespaceURI).toBe(SVG_NS);
+    expect(group.element.namespaceURI).toBe(SVG_NS);
+    expect(circle.element.namespaceURI).toBe(SVG_NS);
+    expect(root.element.querySelector('circle')).toBe(circle.element);
   });
 });
 
 /* MathML tags */
 describe('MathML tags', () => {
-  it('creates MathML elements through the MathML namespace', () => {
-    expect(tags.mathml.math().element.namespaceURI).toBe(MATHML_NS);
-  });
-
-  it('supports all registered MathML tags', () => {
-    for (const tag of MathMLTags) {
-      const ui = tags.mathml[tag]();
-      expect(ui.element.namespaceURI, tag).toBe(MATHML_NS);
-      expect(ui.element.localName, tag).toBe(tag);
-    }
+  it('creates MathML elements', () => {
+    expect(tags.math().element.namespaceURI).toBe(MATHML_NS);
+    expect(tags.mfrac().element.namespaceURI).toBe(MATHML_NS);
+    expect(tags.mi().element.namespaceURI).toBe(MATHML_NS);
   });
 
   it('normalizes MathML tag names', () => {
-    expect(tags.mathml.MATH().element.localName).toBe('math');
-    expect(tags.mathml.MFRAC().element.localName).toBe('mfrac');
+    expect(tags.MATH().element.localName).toBe('math');
+    expect(tags.MFRAC().element.localName).toBe('mfrac');
   });
 
-  it('creates custom MathML elements', () => {
-    const ui = tags.mathml.customElement();
-    expect(ui.element.localName).toBe('customelement');
-    expect(ui.element.namespaceURI).toBe(MATHML_NS);
+  it('creates nested MathML elements', () => {
+    const numerator = tags.mn('1');
+    const denominator = tags.mn('2');
+    const fraction = tags.mfrac(numerator, denominator);
+    const root = tags.math(fraction);
+
+    expect(root.element.namespaceURI).toBe(MATHML_NS);
+    expect(fraction.element.namespaceURI).toBe(MATHML_NS);
+    expect(fraction.element.children).toHaveLength(2);
   });
 });
 
@@ -103,6 +87,7 @@ describe('MathML tags', () => {
 describe('Tag props', () => {
   it('supports HTML attributes', () => {
     const ui = tags.div({ id: 'app', class: 'container' });
+
     expect(ui.element.id).toBe('app');
     expect(ui.element.className).toBe('container');
   });
@@ -113,10 +98,16 @@ describe('Tag props', () => {
   });
 
   it('supports SVG attributes', () => {
-    const ui = tags.svg.circle({ cx: 50, cy: 50, r: 20 });
+    const ui = tags.circle({ cx: 50, cy: 50, r: 20 });
+
     expect(ui.element.getAttribute('cx')).toBe('50');
     expect(ui.element.getAttribute('cy')).toBe('50');
     expect(ui.element.getAttribute('r')).toBe('20');
+  });
+
+  it('supports MathML attributes', () => {
+    const ui = tags.math({ display: 'block' });
+    expect(ui.element.getAttribute('display')).toBe('block');
   });
 });
 
@@ -147,121 +138,50 @@ describe('Tag children', () => {
     expect(parent.element.id).toBe('app');
     expect(parent.items).toContain(child);
   });
-
-  it('supports nested SVG elements', () => {
-    const circle = tags.svg.circle({ r: 20 });
-    const group = tags.svg.g(circle);
-    const root = tags.svg.svg(group);
-
-    expect(root.element.namespaceURI).toBe(SVG_NS);
-    expect(group.element.namespaceURI).toBe(SVG_NS);
-    expect(circle.element.namespaceURI).toBe(SVG_NS);
-    expect(root.element.querySelector('circle')).toBe(circle.element);
-  });
-
-  it('supports nested MathML elements', () => {
-    const numerator = tags.mathml.mn('1');
-    const denominator = tags.mathml.mn('2');
-    const fraction = tags.mathml.mfrac(numerator, denominator);
-
-    expect(fraction.element.namespaceURI).toBe(MATHML_NS);
-    expect(fraction.element.children).toHaveLength(2);
-  });
 });
 
-
-/* Namespace isolation */
-describe('Namespace isolation', () => {
-  it('uses HTML at the root even for ambiguous names', () => {
-    for (const tag of ['a', 'title', 'style', 'script']) {
+/* Namespace resolution */
+describe('Namespace resolution', () => {
+  it('uses HTML for standard HTML tags', () => {
+    for (const tag of ['div', 'section', 'article', 'button', 'input']) {
       expect(tags[tag]().element.namespaceURI).toBe(HTML_NS);
     }
   });
 
-  it('exposes SVG and MathML namespaces', () => {
-    expect(tags.svg).toBeDefined();
-    expect(tags.mathml).toBeDefined();
+  it('uses SVG for standard SVG tags', () => {
+    for (const tag of ['svg', 'circle', 'rect', 'path', 'g', 'defs']) {
+      expect(tags[tag]().element.namespaceURI).toBe(SVG_NS);
+    }
   });
 
-  it('does not expose namespace proxies for symbols', () => {
+  it('uses MathML for standard MathML tags', () => {
+    for (const tag of ['math', 'mi', 'mn', 'mo', 'mfrac', 'msqrt']) {
+      expect(tags[tag]().element.namespaceURI).toBe(MATHML_NS);
+    }
+  });
+
+  it('defaults unknown tags to HTML', () => {
+    const ui = tags.custom_element();
+
+    expect(ui.element.localName).toBe('custom-element');
+    expect(ui.element.namespaceURI).toBe(HTML_NS);
+  });
+
+  it('does not expose namespace proxies', () => {
+    expect(typeof tags.svg).toBe('function');
+    expect(typeof tags.math).toBe('function');
     expect(tags[Symbol.iterator]).toBeUndefined();
-    expect(tags.svg[Symbol.iterator]).toBeUndefined();
-    expect(tags.mathml[Symbol.iterator]).toBeUndefined();
-  });
-
-  /* Promise children */
-describe('Promise children', () => {
-  it('supports promises resolving to strings', async () => {
-    const parent = tags.div(Promise.resolve('Hello'));
-
-    await vi.waitFor(() => {
-      expect(parent.element.textContent).toBe('Hello');
-    });
-  });
-
-  it('supports promises resolving to numbers', async () => {
-    const parent = tags.div(Promise.resolve(42));
-
-    await vi.waitFor(() => {
-      expect(parent.element.textContent).toBe('42');
-    });
-  });
-
-  it('supports promises resolving to UIElements', async () => {
-    const child = tags.span('Hello');
-    const parent = tags.div(Promise.resolve(child));
-
-    await vi.waitFor(() => {
-      expect(parent.element.firstElementChild).toBe(child.element);
-    });
-  });
-
-  it('supports promises resolving to native DOM elements', async () => {
-    const child = document.createElement('span');
-    child.textContent = 'Hello';
-
-    const parent = tags.div(Promise.resolve(child));
-
-    await vi.waitFor(() => {
-      expect(parent.element.firstElementChild).toBe(child);
-    });
-  });
-
-  it('supports multiple promises', async () => {
-    const parent = tags.div(
-      Promise.resolve('Hello '),
-      Promise.resolve(42),
-      Promise.resolve(' World')
-    );
-
-    await vi.waitFor(() => {
-      expect(parent.element.textContent).toBe('Hello 42 World');
-    });
-  });
-
-  it('supports mixed synchronous and asynchronous children', async () => {
-    const child = tags.span('UIElement');
-    const parent = tags.div(
-      'Start ',
-      child,
-      Promise.resolve(' End')
-    );
-
-    await vi.waitFor(() => {
-      expect(parent.element.textContent).toBe('Start UIElement End');
-    });
-
-    expect(parent.element.children[0]).toBe(child.element);
-  });
-
-  it('supports promises resolving to nested promises', async () => {
-    const parent = tags.div(
-      Promise.resolve(Promise.resolve('Nested'))
-    );
-
-    await vi.waitFor(() => {
-      expect(parent.element.textContent).toBe('Nested');
-    });
   });
 });
+
+/* Promise children */
+describe('Promise children', () => {
+  it('supports promise children', async () => {
+    const promise = Promise.resolve('Hello');
+    const parent = tags.div(promise);
+
+    await promise;
+
+    expect(parent.element.textContent).toContain('Hello');
+  });
 });

@@ -1,16 +1,66 @@
 import { UIElement } from '../UIElement/index.js';
 import { isUIItem } from '../utils/index.js';
 
+const SVG_TAGS = new Set([
+  'svg', 'g', 'defs', 'desc', 'title', 'metadata',
+  'symbol', 'use', 'switch',
+  'path', 'rect', 'circle', 'ellipse', 'line',
+  'polyline', 'polygon',
+  'text', 'tspan', 'textPath',
+  'marker', 'pattern', 'mask', 'clipPath',
+  'linearGradient', 'radialGradient', 'stop',
+  'filter', 'feBlend', 'feColorMatrix', 'feComponentTransfer',
+  'feComposite', 'feConvolveMatrix', 'feDiffuseLighting',
+  'feDisplacementMap', 'feDistantLight', 'feDropShadow',
+  'feFlood', 'feFuncA', 'feFuncB', 'feFuncG', 'feFuncR',
+  'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode',
+  'feMorphology', 'feOffset', 'fePointLight', 'feSpecularLighting',
+  'feSpotLight', 'feTile', 'feTurbulence',
+  'foreignObject', 'image', 'view',
+  'animate', 'animateMotion', 'animateTransform', 'set',
+  'color-profile', 'cursor', 'discard',
+  'hatch', 'hatchpath', 'mesh', 'meshgradient',
+  'meshpatch', 'meshrow', 'solidcolor'
+]);
+
+const MATHML_TAGS = new Set([
+  'math', 'mi', 'mn', 'mo', 'ms', 'mtext',
+  'mrow', 'mfrac', 'msqrt', 'mroot',
+  'msub', 'msup', 'msubsup',
+  'munder', 'mover', 'munderover',
+  'mmultiscripts', 'mprescripts', 'none',
+  'mtable', 'mtr', 'mtd',
+  'maligngroup', 'malignmark',
+  'menclose', 'merror', 'mfenced',
+  'mpadded', 'mphantom',
+  'mstyle', 'mspace',
+  'semantics', 'annotation', 'annotation-xml',
+  'maction',
+  'mlabeledtr', 'mstack', 'mlongdiv',
+  'msgroup', 'msline', 'msrow',
+  'mscarries', 'mscarry',
+  'mglyph', 'mglyph'
+]);
+
 function normalizeTag(tag, type) {
   if (type === 'svg') {
-    // linear_gradient -> linearGradient
     return tag.replace(/_([a-z])/g, (_, char) => char.toUpperCase());
   }
 
   return tag.replaceAll('_', '-').toLowerCase();
 }
 
-function createTag(tag, type, args) {
+function resolveNamespace(tag) {
+  const svgTag = normalizeTag(tag, 'svg');
+
+  if (SVG_TAGS.has(svgTag)) return 'svg';
+  if (MATHML_TAGS.has(tag.toLowerCase())) return 'mathml';
+
+  return 'html';
+}
+
+function createTag(tag, args) {
+  const type = resolveNamespace(tag);
   tag = normalizeTag(tag, type);
 
   const first = args[0];
@@ -27,26 +77,10 @@ function createTag(tag, type, args) {
 
   return ui;
 }
+export const tags = new Proxy(Object.create(null), {
+  get(_, prop) {
+    if (typeof prop !== 'string') return undefined;
 
-function createNamespace(type) {
-  return new Proxy(Object.create(null), {
-    get(_, prop) {
-      if (typeof prop !== 'string') return undefined;
-
-      return (...args) => createTag(prop, type, args);
-    }
-  });
-}
-
-const svg = createNamespace('svg');
-const mathml = createNamespace('mathml');
-const html = createNamespace('html');
-
-export const tags = new Proxy(html, {
-  get(target, prop) {
-    if (prop === 'svg') return svg;
-    if (prop === 'mathml') return mathml;
-
-    return Reflect.get(target, prop);
+    return (...args) => createTag(prop, args);
   }
 });

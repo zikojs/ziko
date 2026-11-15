@@ -7,13 +7,6 @@ export type TagProps = Record<string, any>;
 
 /**
  * Arguments accepted by a tag factory.
- *
- * @example
- * div()
- * div('Hello')
- * div({ id: 'app' })
- * div({ id: 'app' }, span('Hello'))
- * div(span('Hello'), span('World'))
  */
 export type TagArgs = [props?: TagProps, ...children: any[]] | any[];
 
@@ -81,24 +74,24 @@ export type MathMLTagName =
   | 'mtable' | 'mtr' | 'mtd' | 'maction';
 
 /**
- * HTML tag factories.
+ * All supported tag names.
  */
-export type HTMLTags = Record<HTMLTagName, TagFactory>;
+export type TagName = HTMLTagName | SVGTagName | MathMLTagName;
 
 /**
- * SVG tag factories.
+ * Tag factories.
+ *
+ * All namespaces share the same flat API.
  */
-export type SVGTags = Record<SVGTagName, TagFactory>;
-
-/**
- * MathML tag factories.
- */
-export type MathMLTags = Record<MathMLTagName, TagFactory>;
+export type Tags = Record<TagName, TagFactory>;
 
 /**
  * Main tags API.
  *
- * HTML is the default namespace.
+ * Namespace resolution is handled internally:
+ * - SVGTagName -> SVG
+ * - MathMLTagName -> MathML
+ * - Everything else -> HTML
  *
  * @example
  * import { tags } from 'ziko/dom';
@@ -109,20 +102,17 @@ export type MathMLTags = Record<MathMLTagName, TagFactory>;
  * );
  *
  * @example
- * const icon = tags.svg.svg(
+ * const icon = tags.svg(
  *   { viewBox: '0 0 24 24' },
- *   tags.svg.circle({ cx: 12, cy: 12, r: 10 })
+ *   tags.circle({ cx: 12, cy: 12, r: 10 })
  * );
  *
  * @example
- * const formula = tags.mathml.math(
- *   tags.mathml.mfrac(
- *     tags.mathml.mn('1'),
- *     tags.mathml.mn('2')
+ * const formula = tags.math(
+ *   tags.mfrac(
+ *     tags.mn('1'),
+ *     tags.mn('2')
  *   )
  * );
  */
-export declare const tags: HTMLTags & {
-  svg: SVGTags;
-  mathml: MathMLTags;
-};
+export declare const tags: Tags;
