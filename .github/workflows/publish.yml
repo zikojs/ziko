@@ -30,8 +30,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: zikojs/workflow@v1
+      - uses: zikojs/workflow@v1.2.0
         with:
           tag-prefix: ziko-v
           dist-tag: ${{ inputs.tag }}   # empty on tag push, so auto-detected
           npm-token: ${{ secrets.NPM_TOKEN }}
+          sync-templates: true
