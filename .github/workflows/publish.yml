@@ -38,3 +38,4 @@ jobs:
           sync-templates: true
           template-patterns: "packages/create-ziko/templates/*"
           fail-on-build-error: false
+          dist-tag : "latest"
