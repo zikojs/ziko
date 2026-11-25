@@ -36,5 +36,5 @@ jobs:
           dist-tag: ${{ inputs.tag }}
           npm-token: ${{ secrets.NPM_TOKEN }}
           sync-templates: true
-          template-patterns: "create-ziko/templates/*"
+          template-patterns: "packages/create-ziko/templates/*"
           fail-on-build-error: false
