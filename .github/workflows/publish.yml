@@ -30,11 +30,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: zikojs/pnpm-publish@v1.1
+      - uses: zikojs/pnpm-publish@v1.2
         with:
           tag-prefix: ziko-v
-          dist-tag: ${{ inputs.tag }}
+          # dist-tag: ${{ inputs.tag }}
           npm-token: ${{ secrets.NPM_TOKEN }}
           sync-templates: true
-          # template-patterns: "packages/create-ziko/templates/*"
+          template-patterns: "packages/create-ziko/templates/*"
           fail-on-build-error: false
+          dist-tag : 'latest'
