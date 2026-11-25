@@ -36,4 +36,4 @@ jobs:
           dist-tag: ${{ inputs.tag }}   # empty on tag push, so auto-detected
           npm-token: ${{ secrets.NPM_TOKEN }}
           sync-templates: true
-          template-patterns: "scafy/create-ziko/templates/*"
+          template-patterns: "create-ziko/templates/*"
